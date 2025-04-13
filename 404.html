@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Pagina non trovata - Stefano Girard" />
+    <title>404 - girste's</title>
+    <link rel="icon" href="favicons/girstefav.png" type="image/png" />
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      body {
+        background: #000;
+        color: #ffe100;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        text-align: center;
+        font-family: sans-serif;
+      }
+
+      main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding-bottom: 150px;
+      }
+
+      h1 {
+        font-size: 8rem;
+        font-weight: bold;
+        margin: 0;
+      }
+
+      a {
+        margin-top: 1rem;
+        color: #ffe100;
+        text-decoration: underline;
+        font-size: 1.2rem;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>404</h1>
+      <a href="/">Torna alla home</a>
+    </main>
+
+    <!-- Sticky Yellow Bar -->
+    <div id="sticky-bar">
+      <div class="icon-group">
+        <a href="mailto:me@girste.com" title="email"><img src="assets/mail-icon.svg" alt="email" /></a>
+        <a href="tel:+393405445704" title="call"><img src="assets/tel-icon.svg" alt="call" /></a>
+        <button onclick="location.reload()" title="refresh"><img src="assets/ric-icon.svg" alt="refresh" /></button>
+        <button id="toggle-theme" title="bright/dark"><img src="assets/dark-icon.svg" alt="dark/bright" /></button>
+        <a href="/diario" title="texts"><img src="assets/diar-icon.svg" alt="texts" /></a>
+      </div>
+      <div class="icon-footer">
+        <img src="assets/text-icon.svg" alt="Footer Icon" />
+      </div>
+    </div>
+
+    <script>
+      // Tema chiaro/scuro anche nella 404
+      document.getElementById("toggle-theme").addEventListener("click", () => {
+        document.body.classList.toggle("light-mode");
+      });
+    </script>
+  </body>
+</html>
