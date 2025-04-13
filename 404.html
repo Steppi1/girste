@@ -45,6 +45,7 @@
       }
     </style>
   </head>
+
   <body>
     <main>
       <h1>404</h1>
@@ -58,7 +59,7 @@
         <a href="tel:+393405445704" title="call"><img src="assets/tel-icon.svg" alt="call" /></a>
         <button onclick="location.reload()" title="refresh"><img src="assets/ric-icon.svg" alt="refresh" /></button>
         <button id="toggle-theme" title="bright/dark"><img src="assets/dark-icon.svg" alt="dark/bright" /></button>
-        <a href="/diario" title="texts"><img src="assets/diar-icon.svg" alt="texts" /></a>
+        <a href="/pages/sandbox.html" title="sandbox"><img src="assets/box-icon.svg" alt="sandbox" /></a>
       </div>
       <div class="icon-footer">
         <img src="assets/text-icon.svg" alt="Footer Icon" />
@@ -66,56 +67,21 @@
     </div>
 
     <script>
-      // Tema chiaro/scuro anche nella 404
-      document.getElementById("toggle-theme").addEventListener("click", () => {
-        document.body.classList.toggle("light-mode");
+      window.addEventListener("load", () => {
+        const toggleThemeBtn = document.getElementById("toggle-theme");
+        if (toggleThemeBtn) {
+          toggleThemeBtn.addEventListener("click", () => {
+            document.body.classList.toggle("light-mode");
+          });
+        }
+
+        const group = document.querySelector('.icon-group');
+        const footerIcon = document.querySelector('.icon-footer img');
+        if (group && footerIcon) {
+          const groupWidth = group.offsetWidth;
+          footerIcon.style.width = `${groupWidth}px`;
+        }
       });
-
-
-
-    
-  document.getElementById("toggle-theme").addEventListener("click", () => {
-    document.body.classList.toggle("light-mode");
-  });
-
-
-
-  window.addEventListener("load", () => {
-    const group = document.querySelector('.icon-group');
-    const footerIcon = document.querySelector('.icon-footer img');
-    if (group && footerIcon) {
-      const groupWidth = group.offsetWidth;
-      footerIcon.style.width = `${groupWidth}px`;
-    }
-  });
-
-
-
-
-
-  window.addEventListener("load", () => {
-    // Tema chiaro/scuro
-    const toggleThemeBtn = document.getElementById("toggle-theme");
-    if (toggleThemeBtn) {
-      toggleThemeBtn.addEventListener("click", () => {
-        document.body.classList.toggle("light-mode");
-      });
-    }
-
-    function resizeFooterIcon() {
-  const group = document.querySelector('.icon-group');
-  const footerIcon = document.querySelector('.icon-footer img');
-  if (group && footerIcon) {
-    const groupWidth = group.offsetWidth;
-    footerIcon.style.width = `${groupWidth}px`;
-  }
-}
-
-  });
-
-
-
-
     </script>
   </body>
 </html>

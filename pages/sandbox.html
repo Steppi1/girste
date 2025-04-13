@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- 🔧 PERSONALIZZA QUI -->
     <meta name="description" content="Sandbox di Stefano Girard per esperimenti creativi" />
     <title>Sandbox – Stefano Girard</title>
 
@@ -39,7 +38,6 @@
   </head>
 
   <body>
-
     <!-- Sticky Yellow Bar -->
     <div id="sticky-bar">
       <div class="icon-group">
@@ -61,23 +59,22 @@
     </div>
 
     <!-- JS -->
-    <script src="/script.js">
+    <script>
+      window.addEventListener("load", () => {
+        const toggleThemeBtn = document.getElementById("toggle-theme");
+        if (toggleThemeBtn) {
+          toggleThemeBtn.addEventListener("click", () => {
+            document.body.classList.toggle("light-mode");
+          });
+        }
 
-
-
-
-function resizeFooterIcon() {
-  const group = document.querySelector('.icon-group');
-  const footerIcon = document.querySelector('.icon-footer img');
-  if (group && footerIcon) {
-    const groupWidth = group.offsetWidth;
-    footerIcon.style.width = `${groupWidth}px`;
-  }
-}
-
-
-
-
+        const group = document.querySelector('.icon-group');
+        const footerIcon = document.querySelector('.icon-footer img');
+        if (group && footerIcon) {
+          const groupWidth = group.offsetWidth;
+          footerIcon.style.width = `${groupWidth}px`;
+        }
+      });
     </script>
   </body>
 </html>
