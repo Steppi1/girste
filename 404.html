@@ -70,6 +70,26 @@
       document.getElementById("toggle-theme").addEventListener("click", () => {
         document.body.classList.toggle("light-mode");
       });
+
+
+
+    
+  document.getElementById("toggle-theme").addEventListener("click", () => {
+    document.body.classList.toggle("light-mode");
+  });
+
+
+
+  window.addEventListener("load", () => {
+    const group = document.querySelector('.icon-group');
+    const footerIcon = document.querySelector('.icon-footer img');
+    if (group && footerIcon) {
+      const groupWidth = group.offsetWidth;
+      footerIcon.style.width = `${groupWidth}px`;
+    }
+  });
+  
+
     </script>
   </body>
 </html>
