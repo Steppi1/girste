@@ -1,63 +1,38 @@
 const wrapper = document.getElementById('wrapper');
 const panzoomEl = document.getElementById('panzoom');
 
-// Lista immagini
-const totalImages = 75;
-const images = [
-  "imgs/img-1.webp", "imgs/img-2.webp", "imgs/img-3.webp", "imgs/img-4.webp", "imgs/img-5.webp",
-  "imgs/img-6.webp", "imgs/img-7.webp", "imgs/img-8.webp", "imgs/img-9.webp", "imgs/img-10.webp",
-  "imgs/img-11.webp", "imgs/img-12.webp", "imgs/img-13.webp", "imgs/img-14.webp", "imgs/img-15.webp",
-  "imgs/img-17.webp", "imgs/img-18.webp", "imgs/img-19.webp", "imgs/img-20.webp", "imgs/img-21.webp",
-  "imgs/img-22.webp", "imgs/img-23.webp", "imgs/img-24.webp", "imgs/img-25.webp", "imgs/img-26.webp",
-  "imgs/img-28.webp", "imgs/img-29.webp", "imgs/img-30.webp", "imgs/img-31.webp", "imgs/img-32.webp",
-  "imgs/img-33.webp", "imgs/img-34.webp", "imgs/img-35.webp", "imgs/img-36.webp", "imgs/img-37.webp",
-  "imgs/img-38.webp", "imgs/img-39.webp", "imgs/img-40.webp", "imgs/img-41.webp", "imgs/img-42.webp",
-  "imgs/img-43.webp", "imgs/img-44.webp", "imgs/img-45.webp", "imgs/img-46.webp", "imgs/img-47.webp",
-  "imgs/img-48.webp", "imgs/img-49.webp", "imgs/img-50.webp", "imgs/img-51.webp", "imgs/img-52.webp",
-  "imgs/img-53.webp", "imgs/img-54.webp", "imgs/img-55.webp", "imgs/img-56.webp", "imgs/img-57.webp",
-  "imgs/img-58.webp", "imgs/img-59.webp", "imgs/img-60.webp", "imgs/img-61.webp", "imgs/img-62.webp",
-  "imgs/img-63.webp", "imgs/img-64.webp", "imgs/img-65.webp", "imgs/img-66.webp", "imgs/img-67.webp",
-  "imgs/img-68.webp", "imgs/img-69.webp", "imgs/img-70.webp", "imgs/img-71.webp", "imgs/img-72.webp",
-  "imgs/img-73.webp", "imgs/img-74.webp", "imgs/img-75.webp", "imgs/img-76.webp", "imgs/img-77.webp"
-];
-
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [array[i], array[j]] = [array[j], array[i]];
   }
 }
-shuffle(images);
 
-const numColumns = Math.floor(Math.sqrt(totalImages));
-const columns = Array.from({ length: numColumns }, () => {
-  const col = document.createElement('div');
-  col.className = 'column';
-  panzoomEl.appendChild(col);
-  return col;
-});
+function buildGallery(images) {
+  shuffle(images);
 
-for (let i = 0; i < totalImages; i++) {
-  const imgEl = document.createElement('img');
-  imgEl.src = images[i];
-  const tile = document.createElement('div');
-  tile.className = 'tile';
-  tile.appendChild(imgEl);
-  const shortestCol = columns.reduce((prev, curr) =>
-    prev.offsetHeight < curr.offsetHeight ? prev : curr
-  );
-  shortestCol.appendChild(tile);
-}
+  const totalImages = images.length;
+  const numColumns = Math.floor(Math.sqrt(totalImages));
+  const columns = Array.from({ length: numColumns }, () => {
+    const col = document.createElement('div');
+    col.className = 'column';
+    panzoomEl.appendChild(col);
+    return col;
+  });
 
-let scale = 1, originX = 0, originY = 0, isPanning = false;
-let startX = 0, startY = 0;
+  for (let i = 0; i < totalImages; i++) {
+    const imgEl = document.createElement('img');
+    imgEl.src = images[i];
+    const tile = document.createElement('div');
+    tile.className = 'tile';
+    tile.appendChild(imgEl);
+    const shortestCol = columns.reduce((prev, curr) =>
+      prev.offsetHeight < curr.offsetHeight ? prev : curr
+    );
+    shortestCol.appendChild(tile);
+  }
 
-function updateTransform() {
-  panzoomEl.style.transform = `translate(${originX}px, ${originY}px) scale(${scale})`;
-  panzoomEl.style.transformOrigin = "0 0";
-}
-
-window.addEventListener('load', () => {
+  // Pan e zoom iniziali
   const isDesktop = window.innerWidth >= 768;
   scale = isDesktop ? 1.8 : 1.1;
   originX = (wrapper.clientWidth / 2) - (panzoomEl.clientWidth * scale / 2);
@@ -71,7 +46,21 @@ window.addEventListener('load', () => {
     const groupWidth = group.offsetWidth;
     footerIcon.style.width = `${groupWidth}px`;
   }
-});
+}
+
+// Fetch immagini da images.json
+fetch('images.json')
+  .then(res => res.json())
+  .then(images => buildGallery(images))
+  .catch(err => console.error("Errore nel caricamento delle immagini:", err));
+
+let scale = 1, originX = 0, originY = 0, isPanning = false;
+let startX = 0, startY = 0;
+
+function updateTransform() {
+  panzoomEl.style.transform = `translate(${originX}px, ${originY}px) scale(${scale})`;
+  panzoomEl.style.transformOrigin = "0 0";
+}
 
 wrapper.addEventListener('wheel', (e) => {
   e.preventDefault();
@@ -146,6 +135,6 @@ wrapper.addEventListener('touchend', (e) => {
 });
 
 const toggleThemeBtn = document.getElementById("toggle-theme");
-toggleThemeBtn.addEventListener("click", () => {
+toggleThemeBtn?.addEventListener("click", () => {
   document.body.classList.toggle("light-mode");
 });
