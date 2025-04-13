@@ -20,18 +20,9 @@ function buildGallery(images) {
     return col;
   });
 
-  const imagePromises = [];
-
   for (let i = 0; i < totalImages; i++) {
     const imgEl = document.createElement('img');
     imgEl.src = images[i];
-
-    const imgPromise = new Promise(resolve => {
-      imgEl.onload = resolve;
-      imgEl.onerror = resolve;
-    });
-    imagePromises.push(imgPromise);
-
     const tile = document.createElement('div');
     tile.className = 'tile';
     tile.appendChild(imgEl);
@@ -41,22 +32,23 @@ function buildGallery(images) {
     shortestCol.appendChild(tile);
   }
 
-  Promise.all(imagePromises).then(() => {
-    const isDesktop = window.innerWidth >= 768;
-    scale = isDesktop ? 1.8 : 1.1;
-    originX = (wrapper.clientWidth / 2) - (panzoomEl.clientWidth * scale / 2);
-    originY = (wrapper.clientHeight / 2) - (panzoomEl.clientHeight * scale / 2);
-    updateTransform();
+  // Pan e zoom iniziali
+  const isDesktop = window.innerWidth >= 768;
+  scale = isDesktop ? 1.8 : 1.1;
+  originX = (wrapper.clientWidth / 2) - (panzoomEl.clientWidth * scale / 2);
+  originY = (wrapper.clientHeight / 2) - (panzoomEl.clientHeight * scale / 2);
+  updateTransform();
 
-    const group = document.querySelector('.icon-group');
-    const footerIcon = document.querySelector('.icon-footer img');
-    if (group && footerIcon) {
-      const groupWidth = group.offsetWidth;
-      footerIcon.style.width = `${groupWidth}px`;
-    }
-  });
+  // Larghezza dinamica del text-icon
+  const group = document.querySelector('.icon-group');
+  const footerIcon = document.querySelector('.icon-footer img');
+  if (group && footerIcon) {
+    const groupWidth = group.offsetWidth;
+    footerIcon.style.width = `${groupWidth}px`;
+  }
 }
 
+// Fetch immagini da images.json
 fetch('images.json')
   .then(res => res.json())
   .then(images => buildGallery(images))
