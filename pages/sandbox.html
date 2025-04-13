@@ -63,14 +63,18 @@
     <!-- JS -->
     <script src="/script.js">
 
-const group = document.querySelector('.icon-group');
-const footerIcon = document.querySelector('.icon-footer img');
-if (group && footerIcon) {
-  requestAnimationFrame(() => {
+
+
+
+function resizeFooterIcon() {
+  const group = document.querySelector('.icon-group');
+  const footerIcon = document.querySelector('.icon-footer img');
+  if (group && footerIcon) {
     const groupWidth = group.offsetWidth;
     footerIcon.style.width = `${groupWidth}px`;
-  });
+  }
 }
+
 
 
 
