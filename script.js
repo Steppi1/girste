@@ -59,7 +59,7 @@ function updateTransform() {
 
 window.addEventListener('load', () => {
   const isDesktop = window.innerWidth >= 768;
-  scale = isDesktop ? 1.8 : 1.5;
+  scale = isDesktop ? 1.8 : 1.1;
   originX = (wrapper.clientWidth / 2) - (panzoomEl.clientWidth * scale / 2);
   originY = (wrapper.clientHeight / 2) - (panzoomEl.clientHeight * scale / 2);
   updateTransform();
