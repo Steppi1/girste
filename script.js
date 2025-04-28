@@ -146,3 +146,16 @@ const toggleThemeBtn = document.getElementById("toggle-theme");
 toggleThemeBtn?.addEventListener("click", () => {
   document.body.classList.toggle("light-mode");
 });
+
+// --- OVERRIDE del pulsante "refresh" per ricaricare solo la gallery ---
+const refreshBtn = document.querySelector('button[title="refresh"]');
+if (refreshBtn) {
+  refreshBtn.removeAttribute('onclick');
+  refreshBtn.addEventListener('click', () => {
+    panzoomEl.innerHTML = '';
+    fetch('images.json')
+      .then(res => res.json())
+      .then(images => buildGallery(images))
+      .catch(err => console.error("Errore nel ricaricare le immagini:", err));
+  });
+}
