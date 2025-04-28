@@ -43,7 +43,7 @@ function buildGallery(images) {
 
   Promise.all(imagePromises).then(() => {
     const isDesktop = window.innerWidth >= 768;
-    scale = isDesktop ? -1 : 0.3;
+    scale = isDesktop ? 0.1 : 0.3;
     originX = (wrapper.clientWidth / 2) - (panzoomEl.clientWidth * scale / 2);
     originY = (wrapper.clientHeight / 2) - (panzoomEl.clientHeight * scale / 2);
     updateTransform();
