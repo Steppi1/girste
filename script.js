@@ -6,14 +6,12 @@ const panzoomEl = document.getElementById('panzoom');
 
 // — pan/zoom state
 let scale = 1, originX = 0, originY = 0;
-let initialPinchData = null;
 
-// — detect iOS Safari for native pinch gestures
-const isIOSSafari = /iP(hone|ad|od)/.test(navigator.userAgent)
-                 && /Safari/.test(navigator.userAgent)
-                 && !/Chrome|CriOS/.test(navigator.userAgent);
+// — track active pointers
+const pointers = {};
+let initialPinch = null;
 
-// — helper: apply transform
+// — helper: apply CSS transform
 function updateTransform() {
   panzoomEl.style.transform =
     `translate3d(${originX}px, ${originY}px, 0) scale(${scale})`;
@@ -27,7 +25,7 @@ function shuffle(arr) {
   }
 }
 
-// — center gallery after build
+// — center gallery after all images loaded
 function centerGallery() {
   scale = 1;
   originX = (wrapper.clientWidth  - panzoomEl.clientWidth  * scale) / 2;
@@ -35,7 +33,7 @@ function centerGallery() {
   updateTransform();
 }
 
-// — build Masonry-style gallery
+// — build Masonry-style gallery from an array of image URLs
 function buildGallery(images) {
   shuffle(images);
   const n = Math.floor(Math.sqrt(images.length));
@@ -54,8 +52,8 @@ function buildGallery(images) {
   let loaded = 0, total = images.length;
   images.forEach(src => {
     const img = document.createElement('img');
-    img.src = src;           // full-quality
-    img.loading = 'lazy';
+    img.src      = src;    // full-quality
+    img.loading  = 'lazy';
     img.decoding = 'async';
     img.onload = () => {
       loaded++;
@@ -72,90 +70,81 @@ function buildGallery(images) {
   });
 }
 
-// — fetch images.json and build
+// — fetch images.json and initialize gallery
 fetch('images.json')
   .then(r => r.json())
   .then(buildGallery)
   .catch(e => console.error('Errore:', e));
 
-// — iOS Safari: native gesture events
-if (isIOSSafari) {
-  wrapper.style.touchAction = 'auto';
-  let initialScale = scale;
+// — enable pointer events pan & pinch everywhere
+wrapper.style.touchAction = 'none';
 
-  wrapper.addEventListener('gesturestart', e => {
-    e.preventDefault();
-    initialScale = scale;
-  });
-
-  wrapper.addEventListener('gesturechange', e => {
-    e.preventDefault();
-    scale = Math.min(Math.max(initialScale * e.scale, 0.1), 5);
-    updateTransform();
-  });
-}
-
-// — custom pan & pinch for non-iOS Safari
-const pointers = new Map();
-
+// — pointerdown: register pointer and maybe start pinch
 wrapper.addEventListener('pointerdown', e => {
-  if (isIOSSafari) return;
   wrapper.setPointerCapture(e.pointerId);
-  pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
-  if (pointers.size === 2) {
-    const [p1, p2] = Array.from(pointers.values());
-    initialPinchData = {
-      distance: Math.hypot(p1.x - p2.x, p1.y - p2.y),
-      center:   { x: (p1.x + p2.x) / 2, y: (p1.y + p2.y) / 2 },
-      originX, originY, scale
+  pointers[e.pointerId] = { x: e.clientX, y: e.clientY };
+  const ids = Object.keys(pointers);
+  if (ids.length === 2) {
+    const [p1, p2] = ids.map(id => pointers[id]);
+    // record initial pinch data
+    const dx = p1.x - p2.x, dy = p1.y - p2.y;
+    initialPinch = {
+      distance: Math.hypot(dx, dy),
+      scale,
+      // world focal point under fingers:
+      worldFocal: getWorldFocal(p1, p2)
     };
   }
 });
 
+// — pointermove: pan if one pointer, pinch if two
 wrapper.addEventListener('pointermove', e => {
-  if (isIOSSafari) return;
-  if (!pointers.has(e.pointerId)) return;
-  const prev = pointers.get(e.pointerId);
-  pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  if (!(e.pointerId in pointers)) return;
+  const prev = pointers[e.pointerId];
+  pointers[e.pointerId] = { x: e.clientX, y: e.clientY };
+  const ids = Object.keys(pointers);
 
-  if (pointers.size === 1) {
+  if (ids.length === 1) {
     // pan
-    originX += e.clientX - prev.x;
-    originY += e.clientY - prev.y;
+    const dx = e.clientX - prev.x;
+    const dy = e.clientY - prev.y;
+    originX += dx;
+    originY += dy;
     updateTransform();
-  } else if (pointers.size === 2 && initialPinchData) {
+  } else if (ids.length === 2 && initialPinch) {
     // pinch-to-zoom
-    const [a, b] = Array.from(pointers.values());
-    const dist   = Math.hypot(a.x - b.x, a.y - b.y);
-    const center = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
-    const factor = dist / initialPinchData.distance;
-    const newScale = Math.min(
-      Math.max(initialPinchData.scale * factor, 0.1),
-      5
-    );
-    originX = initialPinchData.originX
-            + (center.x - initialPinchData.center.x)
-            - (center.x - initialPinchData.center.x) * (newScale / initialPinchData.scale);
-    originY = initialPinchData.originY
-            + (center.y - initialPinchData.center.y)
-            - (center.y - initialPinchData.center.y) * (newScale / initialPinchData.scale);
-    scale = newScale;
+    const [a, b] = ids.map(id => pointers[id]);
+    const dist    = Math.hypot(a.x - b.x, a.y - b.y);
+    const ratio   = dist / initialPinch.distance;
+    let newScale  = initialPinch.scale * ratio;
+    newScale      = Math.min(Math.max(newScale, 0.1), 5);
+
+    // compute local focal point in container coords
+    const focal   = getDOMFocal(a, b);
+    // adjust origin so worldFocal maps to focal
+    originX = focal.x - initialPinch.worldFocal.x * newScale;
+    originY = focal.y - initialPinch.worldFocal.y * newScale;
+    scale   = newScale;
     updateTransform();
   }
 });
 
-wrapper.addEventListener('pointerup', e => {
-  if (isIOSSafari) return;
-  pointers.delete(e.pointerId);
-  wrapper.releasePointerCapture(e.pointerId);
-  if (pointers.size < 2) initialPinchData = null;
-});
+// — pointerup / pointercancel: release pointers
+wrapper.addEventListener('pointerup',   cleanupPointer);
+wrapper.addEventListener('pointercancel', cleanupPointer);
 
-// — wheel zoom (desktop)
+function cleanupPointer(e) {
+  delete pointers[e.pointerId];
+  wrapper.releasePointerCapture(e.pointerId);
+  if (Object.keys(pointers).length < 2) initialPinch = null;
+}
+
+// — wheel zoom for mouse
 wrapper.addEventListener('wheel', e => {
   e.preventDefault();
-  const rect = wrapper.getBoundingClientRect();
-  const x = e.clientX - rect.left, y = e.clientY - rect.top;
+  const rect  = wrapper.getBoundingClientRect();
+  const x     = e.clientX - rect.left;
+  const y     = e.clientY - rect.top;
   const delta = -e.deltaY * 0.001;
   const newScale = Math.min(Math.max(scale * (1 + delta), 0.1), 5);
   originX -= (x - originX) * (newScale/scale - 1);
@@ -164,13 +153,35 @@ wrapper.addEventListener('wheel', e => {
   updateTransform();
 }, { passive: false });
 
+// — helpers to compute focal points
+function getWorldFocal(p1, p2) {
+  const fX   = (p1.x + p2.x) / 2;
+  const fY   = (p1.y + p2.y) / 2;
+  const rect = wrapper.getBoundingClientRect();
+  const localX = fX - rect.left;
+  const localY = fY - rect.top;
+  return {
+    x: (localX - originX) / scale,
+    y: (localY - originY) / scale
+  };
+}
+function getDOMFocal(p1, p2) {
+  const fX   = (p1.x + p2.x) / 2;
+  const fY   = (p1.y + p2.y) / 2;
+  const rect = wrapper.getBoundingClientRect();
+  return {
+    x: fX - rect.left,
+    y: fY - rect.top
+  };
+}
+
 // — theme toggle
 document.getElementById('toggle-theme')
   .addEventListener('click', () =>
     document.body.classList.toggle('light-mode')
   );
 
-// — refresh button
+// — refresh gallery
 document.querySelector('button[title="refresh"]')
   .addEventListener('click', () => {
     panzoomEl.innerHTML = '';
