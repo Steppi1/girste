@@ -7,6 +7,11 @@
   <title>girste's</title>
   <link rel="icon" href="girstefav.png" type="image/png">
   <link rel="stylesheet" href="style.css">
+  <style>
+    /* wrapper e panzoom: visibili e touch-free */
+    #wrapper { overflow: visible; touch-action: none; }
+    #panzoom { overflow: visible; touch-action: none; transform-origin: 0 0; }
+  </style>
 </head>
 <body>
   <div id="wrapper">
@@ -27,9 +32,8 @@
     </div>
   </div>
 
-  <!-- Interact.js per drag/pinch/inerzia -->
-  <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script> :contentReference[oaicite:0]{index=0}
-  <!-- tuo script -->
+  <!-- pan-zoom: pan, pinch, wheel, inertia su qualsiasi elemento -->
+  <script src="https://unpkg.com/pan-zoom@3.5.2/index.js"></script> :contentReference[oaicite:0]{index=0}
   <script src="script.js"></script>
 </body>
 </html>
