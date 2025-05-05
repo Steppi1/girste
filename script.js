@@ -3,13 +3,10 @@ const wrapper   = document.getElementById('wrapper');
 const panzoomEl = document.getElementById('panzoom');
 
 // — stato pan/zoom
-let scale = 1;
-let originX = 0, originY = 0;
-
-// — variabili per pinch nativo
-let lastScale = 1;
-let gestureStartOriginX = 0;
-let gestureStartOriginY = 0;
+let scale = 1, originX = 0, originY = 0;
+let lastScale = 1, lastOriginX = 0, lastOriginY = 0;
+let gestureCenterX = 0, gestureCenterY = 0;
+let gestureStartOriginX = 0, gestureStartOriginY = 0;
 
 // — applica trasformazione
 function updateTransform() {
@@ -17,7 +14,7 @@ function updateTransform() {
     `translate3d(${originX}px, ${originY}px, 0) scale(${scale})`;
 }
 
-// — centra la gallery (solo al caricamento)
+// — centra la gallery al caricamento
 function centerGallery() {
   originX = (wrapper.clientWidth  - panzoomEl.clientWidth * scale)  / 2;
   originY = (wrapper.clientHeight - panzoomEl.clientHeight * scale) / 2;
@@ -46,12 +43,10 @@ function buildGallery(images) {
     cols.push(col);
   }
 
-  let loaded = 0, total = images.length;
+  let loaded = 0;
   images.forEach(src => {
-    // creo **una sola volta** l'img
     const img = document.createElement('img');
     img.src = src;
-    // srcset per caricare risoluzioni più grandi allo zoom
     img.srcset =
       `${src.replace(/(\.\w+)$/, '_300$1')} 300w, ` +
       `${src.replace(/(\.\w+)$/, '_600$1')} 600w, ` +
@@ -65,11 +60,11 @@ function buildGallery(images) {
       const tile = document.createElement('div');
       tile.className = 'tile';
       tile.appendChild(img);
-      const shortest = cols.reduce((a, b) =>
+      const shortest = cols.reduce((a,b) =>
         a.offsetHeight < b.offsetHeight ? a : b
       );
       shortest.appendChild(tile);
-      if (loaded === total) centerGallery();
+      if (loaded === images.length) centerGallery();
     };
   });
 }
@@ -77,46 +72,48 @@ function buildGallery(images) {
 // — fetch + init gallery
 fetch('images.json')
   .then(r => r.json())
-  .then(images => { buildGallery(images); })
-  .catch(e => console.error(e));
+  .then(buildGallery)
+  .catch(e => console.error('Errore:', e));
 
-// — drag con Interact.js
-interact(wrapper).draggable({
-  inertia: true,
-  listeners: {
-    move(event) {
-      originX += event.dx;
-      originY += event.dy;
-      updateTransform();
-    }
-  }
+// — setup Hammer.js per pan & pinch
+const hammer = new Hammer(wrapper);
+hammer.get('pinch').set({ enable: true });
+hammer.get('pan').set({ direction: Hammer.DIRECTION_ALL });
+
+// Pan
+hammer.on('panstart', () => {
+  lastOriginX = originX;
+  lastOriginY = originY;
+});
+hammer.on('panmove', ev => {
+  originX = lastOriginX + ev.deltaX;
+  originY = lastOriginY + ev.deltaY;
+  updateTransform();
 });
 
-// — pinch con Interact.js
-interact(wrapper).gesturable({
-  listeners: {
-    start(event) {
-      lastScale = scale;
-    },
-    move(event) {
-      const newScale = Math.max(0.1, Math.min(5, lastScale * event.scale));
-      const rect = wrapper.getBoundingClientRect();
-      const cx = event.clientX - rect.left;
-      const cy = event.clientY - rect.top;
-      originX = cx - (cx - originX) * (newScale / scale);
-      originY = cy - (cy - originY) * (newScale / scale);
-      scale = newScale;
-      updateTransform();
-    }
-  }
+// Pinch
+hammer.on('pinchstart', ev => {
+  lastScale = scale;
+  const rect = wrapper.getBoundingClientRect();
+  gestureCenterX = ev.center.x - rect.left;
+  gestureCenterY = ev.center.y - rect.top;
+  gestureStartOriginX = originX;
+  gestureStartOriginY = originY;
+});
+hammer.on('pinchmove', ev => {
+  const newScale = Math.max(0.1, Math.min(5, lastScale * ev.scale));
+  originX = gestureCenterX - (gestureCenterX - gestureStartOriginX) * (newScale / lastScale);
+  originY = gestureCenterY - (gestureCenterY - gestureStartOriginY) * (newScale / lastScale);
+  scale = newScale;
+  updateTransform();
 });
 
 // — zoom con wheel (desktop)
 wrapper.addEventListener('wheel', e => {
   e.preventDefault();
-  const rect  = wrapper.getBoundingClientRect();
-  const cx    = e.clientX - rect.left;
-  const cy    = e.clientY - rect.top;
+  const rect = wrapper.getBoundingClientRect();
+  const cx   = e.clientX - rect.left;
+  const cy   = e.clientY - rect.top;
   const delta = -e.deltaY * 0.001;
   const newScale = Math.min(5, Math.max(0.1, scale * (1 + delta)));
   originX = cx - (cx - originX) * (newScale / scale);
@@ -125,60 +122,17 @@ wrapper.addEventListener('wheel', e => {
   updateTransform();
 }, { passive: false });
 
-// — refresh & tema (invariati)
+// — refresh & theme toggle (invariati)
 document.querySelector('button[title="refresh"]')
   .addEventListener('click', () => {
     panzoomEl.innerHTML = '';
     scale = 1; originX = 0; originY = 0;
     fetch('images.json')
       .then(r => r.json())
-      .then(imgs => buildGallery(imgs));
+      .then(buildGallery);
   });
 
 document.getElementById('toggle-theme')
   .addEventListener('click', () =>
     document.body.classList.toggle('light-mode')
   );
-
-// — GESTURE NATIVE iOS / Safari MOBILE —
-wrapper.addEventListener('gesturestart', e => {
-  lastScale = scale;
-  gestureStartOriginX = originX;
-  gestureStartOriginY = originY;
-});
-
-wrapper.addEventListener('gesturechange', e => {
-  e.preventDefault();
-  const unclamped = lastScale * e.scale;
-  const newScale  = Math.max(0.1, Math.min(5, unclamped));
-  const rect = wrapper.getBoundingClientRect();
-  const cx   = e.clientX - rect.left;
-  const cy   = e.clientY - rect.top;
-  originX = cx - (cx - gestureStartOriginX) * (newScale / lastScale);
-  originY = cy - (cy - gestureStartOriginY) * (newScale / lastScale);
-  scale = newScale;
-  updateTransform();
-});
-
-wrapper.addEventListener('gestureend', () => {
-  lastScale = scale;
-});
-
-// — HAMMER.JS PINCH (fallback solo su touch devices) —
-if ('ontouchstart' in window) {
-  const hammer = new Hammer(wrapper);
-  hammer.get('pinch').set({ enable: true });
-
-  let hammerStartScale = scale;
-  hammer.on('pinchstart', () => { hammerStartScale = scale; });
-  hammer.on('pinchmove', ev => {
-    const newScale = Math.max(0.1, Math.min(5, hammerStartScale * ev.scale));
-    const rect = wrapper.getBoundingClientRect();
-    const cx   = ev.center.x - rect.left;
-    const cy   = ev.center.y - rect.top;
-    originX = cx - (cx - originX) * (newScale / scale);
-    originY = cy - (cy - originY) * (newScale / scale);
-    scale = newScale;
-    updateTransform();
-  });
-}
