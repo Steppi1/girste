@@ -2,29 +2,20 @@
 const wrapper   = document.getElementById('wrapper');
 const panzoomEl = document.getElementById('panzoom');
 
-// — pan/zoom state
-let scale = 1, originX = 0, originY = 0;
-
-// — helper: apply CSS transform
-function updateTransform() {
-  panzoomEl.style.transform =
-    `translate3d(${originX}px, ${originY}px, 0) scale(${scale})`;
-}
-
-// — helper: center gallery
-function centerGallery(panzoom) {
-  panzoom.reset();
-  const offsetX = (wrapper.clientWidth  - panzoomEl.clientWidth  * scale) / 2;
-  const offsetY = (wrapper.clientHeight - panzoomEl.clientHeight * scale) / 2;
-  panzoom.pan(offsetX, offsetY, { animate: true });
-}
-
 // — helper: shuffle array (Fisher–Yates)
 function shuffle(arr) {
   for (let i = arr.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [arr[i], arr[j]] = [arr[j], arr[i]];
   }
+}
+
+// — center gallery after all images loaded
+function centerGallery(panzoom) {
+  panzoom.reset();
+  const offsetX = (wrapper.clientWidth  - panzoomEl.clientWidth ) / 2;
+  const offsetY = (wrapper.clientHeight - panzoomEl.clientHeight) / 2;
+  panzoom.pan(offsetX, offsetY, { animate: true });
 }
 
 // — build Masonry-style gallery
@@ -43,31 +34,25 @@ function buildGallery(images, panzoom) {
   }
 
   // load images
-  let loaded = 0, total = images.length;
+  let loaded = 0;
   images.forEach(src => {
     const img = document.createElement('img');
-    img.src = src;
-    // srcset per alta qualità al zoom
-    img.srcset =
-      `${src.replace(/(\.\w+)$/, '_300$1')} 300w, ` +
-      `${src.replace(/(\.\w+)$/, '_600$1')} 600w, ` +
-      `${src.replace(/(\.\w+)$/, '_1200$1')} 1200w`;
-    img.sizes    = '300px';
+    img.src      = src;
     img.loading  = 'lazy';
     img.decoding = 'async';
-
     img.onload = () => {
       loaded++;
       const tile = document.createElement('div');
       tile.className = 'tile';
       tile.appendChild(img);
 
+      // append to shortest column
       const shortest = columns.reduce((a, b) =>
         a.offsetHeight < b.offsetHeight ? a : b
       );
       shortest.appendChild(tile);
 
-      if (loaded === total) centerGallery(panzoom);
+      if (loaded === images.length) centerGallery(panzoom);
     };
   });
 }
