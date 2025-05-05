@@ -2,15 +2,24 @@
 const wrapper   = document.getElementById('wrapper');
 const panzoomEl = document.getElementById('panzoom');
 
-// — helper: centra e resetta la gallery
-function centerGallery(panzoomInstance) {
-  panzoomInstance.reset();
-  const offsetX = (wrapper.clientWidth  - panzoomEl.clientWidth ) / 2;
-  const offsetY = (wrapper.clientHeight - panzoomEl.clientHeight) / 2;
-  panzoomInstance.pan(offsetX, offsetY, { animate: true });
+// — stato pan/zoom
+let scale = 1;
+let originX = 0, originY = 0;
+
+// — applica trasformazione
+function updateTransform() {
+  panzoomEl.style.transform =
+    `translate3d(${originX}px, ${originY}px,0) scale(${scale})`;
 }
 
-// — helper: mescola l’array (Fisher-Yates)
+// — centra la gallery (solo al caricamento)
+function centerGallery() {
+  originX = (wrapper.clientWidth  - panzoomEl.clientWidth * scale)  / 2;
+  originY = (wrapper.clientHeight - panzoomEl.clientHeight * scale) / 2;
+  updateTransform();
+}
+
+// — shuffle Fisher-Yates
 function shuffle(arr) {
   for (let i = arr.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -18,18 +27,18 @@ function shuffle(arr) {
   }
 }
 
-// — build Masonry-style gallery
-function buildGallery(images, panzoomInstance) {
+// — build Masonry-style
+function buildGallery(images) {
   shuffle(images);
   const n = Math.floor(Math.sqrt(images.length));
-  const columns = [];
+  const cols = [];
   panzoomEl.innerHTML = '';
 
   for (let i = 0; i < n; i++) {
     const col = document.createElement('div');
     col.className = 'column';
     panzoomEl.appendChild(col);
-    columns.push(col);
+    cols.push(col);
   }
 
   let loaded = 0, total = images.length;
@@ -43,51 +52,85 @@ function buildGallery(images, panzoomInstance) {
       const tile = document.createElement('div');
       tile.className = 'tile';
       tile.appendChild(img);
-
       // append alla colonna più corta
-      const shortest = columns.reduce((a, b) =>
-        a.offsetHeight < b.offsetHeight ? a : b
-      );
+      const shortest = cols.reduce((a,b)=> a.offsetHeight<b.offsetHeight?a:b);
       shortest.appendChild(tile);
-
-      if (loaded === total) centerGallery(panzoomInstance);
+      if (loaded === total) centerGallery();
     };
   });
 }
 
-// — fetch immagini e inizializza Panzoom + gallery
+// — fetch + init gallery
 fetch('images.json')
   .then(r => r.json())
   .then(images => {
-    // 1) Inizializza Panzoom SENZA contain → panning/zoom liberi
-    const panzoom = Panzoom(panzoomEl, {
-      maxScale: 5,
-      minScale: 0.1,
-      animate: true,
-      step: 0.3
-    });
-
-    // 2) Zoom via rotellina
-    wrapper.addEventListener('wheel', panzoom.zoomWithWheel, { passive: false });
-    // 3) Pan su pointerdown
-    wrapper.addEventListener('pointerdown', panzoom.handlePointerDown);
-
-    // 4) Build + centra
-    buildGallery(images, panzoom);
-
-    // 5) Refresh gallery
-    document.querySelector('button[title="refresh"]')
-      .addEventListener('click', () => {
-        panzoom.reset();
-        panzoomEl.innerHTML = '';
-        fetch('images.json')
-          .then(r => r.json())
-          .then(imgs => buildGallery(imgs, panzoom));
-      });
+    buildGallery(images);
   })
-  .catch(e => console.error('Errore:', e));
+  .catch(e=>console.error(e));
 
-// — toggle tema
+// — drag con Interact.js
+interact(wrapper)
+  .draggable({
+    inertia: true,
+    listeners: {
+      move(event) {
+        originX += event.dx;
+        originY += event.dy;
+        updateTransform();
+      }
+    }
+  });
+
+// — pinch con Interact.js
+let lastScale = 1;
+interact(wrapper)
+  .gesturable({
+    listeners: {
+      start() {
+        lastScale = scale;
+      },
+      move(event) {
+        // calcola nuovo scale
+        scale = Math.max(0.1, Math.min(5, lastScale * event.scale));
+        // mantieni il focus al centro del gesto
+        const rect = wrapper.getBoundingClientRect();
+        const cx = event.clientX - rect.left;
+        const cy = event.clientY - rect.top;
+        // aggiorna origin per tenere fermo il punto di focus
+        originX = cx - (cx - originX) * (scale / lastScale);
+        originY = cy - (cy - originY) * (scale / lastScale);
+        updateTransform();
+      }
+    }
+  });
+
+// — zoom con wheel (desktop)
+wrapper.addEventListener('wheel', e => {
+  e.preventDefault();
+  const rect = wrapper.getBoundingClientRect();
+  const cx = e.clientX - rect.left;
+  const cy = e.clientY - rect.top;
+  const delta = -e.deltaY * 0.001;
+  let newScale = Math.min(5, Math.max(0.1, scale * (1 + delta)));
+  originX = cx - (cx - originX) * (newScale / scale);
+  originY = cy - (cy - originY) * (newScale / scale);
+  scale = newScale;
+  updateTransform();
+}, { passive: false });
+
+// — refresh & tema (invariati)
+document.querySelector('button[title="refresh"]')
+  .addEventListener('click', () => {
+    panzoomEl.innerHTML = '';
+    fetch('images.json')
+      .then(r=>r.json())
+      .then(imgs => {
+        // reset stato
+        scale = 1; originX = 0; originY = 0;
+        buildGallery(imgs);
+      });
+  });
+
 document.getElementById('toggle-theme')
   .addEventListener('click', () =>
     document.body.classList.toggle('light-mode')
