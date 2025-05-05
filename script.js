@@ -54,9 +54,7 @@ function buildGallery(images) {
       tile.appendChild(img);
 
       // append to shortest column
-      const shortest = columns.reduce((a,b) =>
-        a.offsetHeight < b.offsetHeight ? a : b
-      );
+      const shortest = columns.reduce((a,b) => a.offsetHeight < b.offsetHeight ? a : b);
       shortest.appendChild(tile);
 
       // once all are in, center
@@ -124,10 +122,7 @@ wrapper.addEventListener('pointermove', e => {
     const dist   = Math.hypot(a.x - b.x, a.y - b.y);
     const center = { x:(a.x+b.x)/2, y:(a.y+b.y)/2 };
     const factor = dist / initialPinch.distance;
-    const newScale = Math.min(
-      Math.max(0.1, initialPinch.scale * factor),
-      5
-    );
+    const newScale = Math.min(Math.max(0.1, initialPinch.scale * factor), 5);
 
     originX = initialPinch.originX
             + (center.x - initialPinch.center.x)

@@ -54,6 +54,7 @@ body.light-mode { background: #fff; }
   display: flex; flex-direction: column; align-items: center;
   z-index: 9999;
   box-shadow: 0 0 20px rgba(0,0,0,0.2);
+  font-family: monospace;
 }
 .icon-group {
   display: flex; gap: 32px;
@@ -73,17 +74,19 @@ body.light-mode { background: #fff; }
   text-align: center;
 }
 .icon-footer strong {
-  font-size: 1.2rem;
+  font-size: 1rem;
 }
 .icon-footer small {
   display: block;
-  font-size: 0.75rem;
+  font-size: 0.6rem;
   margin-top: 4px;
 }
 
-/* responsive sticky-bar */
+/* mobile tweaks */
 @media (max-width: 768px) {
-  #sticky-bar { padding: 10px 32px 6px; }
-  .icon-group { gap: 24px; }
-  #sticky-bar img { width: 26px; height: 26px; }
+  #sticky-bar { padding: 8px 24px 6px; }
+  .icon-group { gap: 16px; }
+  #sticky-bar img { width: 24px; height: 24px; }
+  .icon-footer strong { font-size: 0.9rem; }
+  .icon-footer small { font-size: 0.5rem; }
 }
