@@ -52,7 +52,6 @@ function buildGallery(images) {
       const tile = document.createElement('div');
       tile.className = 'tile';
       tile.appendChild(img);
-      // append alla colonna più corta
       const shortest = cols.reduce((a,b)=> a.offsetHeight<b.offsetHeight?a:b);
       shortest.appendChild(tile);
       if (loaded === total) centerGallery();
@@ -63,10 +62,8 @@ function buildGallery(images) {
 // — fetch + init gallery
 fetch('images.json')
   .then(r => r.json())
-  .then(images => {
-    buildGallery(images);
-  })
-  .catch(e=>console.error(e));
+  .then(images => { buildGallery(images); })
+  .catch(e => console.error(e));
 
 // — drag con Interact.js
 interact(wrapper)
@@ -90,13 +87,10 @@ interact(wrapper)
         lastScale = scale;
       },
       move(event) {
-        // calcola nuovo scale
         scale = Math.max(0.1, Math.min(5, lastScale * event.scale));
-        // mantieni il focus al centro del gesto
         const rect = wrapper.getBoundingClientRect();
         const cx = event.clientX - rect.left;
         const cy = event.clientY - rect.top;
-        // aggiorna origin per tenere fermo il punto di focus
         originX = cx - (cx - originX) * (scale / lastScale);
         originY = cy - (cy - originY) * (scale / lastScale);
         updateTransform();
@@ -122,16 +116,34 @@ wrapper.addEventListener('wheel', e => {
 document.querySelector('button[title="refresh"]')
   .addEventListener('click', () => {
     panzoomEl.innerHTML = '';
+    scale = 1; originX = 0; originY = 0;
     fetch('images.json')
-      .then(r=>r.json())
-      .then(imgs => {
-        // reset stato
-        scale = 1; originX = 0; originY = 0;
-        buildGallery(imgs);
-      });
+      .then(r => r.json())
+      .then(imgs => buildGallery(imgs));
   });
 
 document.getElementById('toggle-theme')
   .addEventListener('click', () =>
     document.body.classList.toggle('light-mode')
   );
+
+
+// — NATIVE GESTURE EVENTS PER iOS PINCH FIX — 
+wrapper.addEventListener('gesturestart', e => {
+  lastScale = scale;
+});
+wrapper.addEventListener('gesturechange', e => {
+  e.preventDefault();
+  let newScale = lastScale * e.scale;
+  newScale = Math.max(0.1, Math.min(5, newScale));
+  const rect = wrapper.getBoundingClientRect();
+  const cx = e.clientX - rect.left;
+  const cy = e.clientY - rect.top;
+  originX = cx - (cx - originX) * (newScale / scale);
+  originY = cy - (cy - originY) * (newScale / scale);
+  scale = newScale;
+  updateTransform();
+});
+wrapper.addEventListener('gestureend', e => {
+  lastScale = scale;
+});
