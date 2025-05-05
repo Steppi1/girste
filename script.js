@@ -6,10 +6,11 @@ const panzoomEl = document.getElementById('panzoom');
 
 // — pan/zoom state
 let scale = 1, originX = 0, originY = 0;
-
-// — track active pointers
-const pointers = {};
 let initialPinch = null;
+const pointers = new Map();
+
+// — disable native touch actions so pointer events handle everything
+wrapper.style.touchAction = 'none';
 
 // — helper: apply CSS transform
 function updateTransform() {
@@ -52,7 +53,7 @@ function buildGallery(images) {
   let loaded = 0, total = images.length;
   images.forEach(src => {
     const img = document.createElement('img');
-    img.src      = src;    // full-quality
+    img.src      = src;    // full-quality image
     img.loading  = 'lazy';
     img.decoding = 'async';
     img.onload = () => {
@@ -76,104 +77,79 @@ fetch('images.json')
   .then(buildGallery)
   .catch(e => console.error('Errore:', e));
 
-// — enable pointer events pan & pinch everywhere
-wrapper.style.touchAction = 'none';
 
-// — pointerdown: register pointer and maybe start pinch
+// — POINTER PAN & PINCH (all devices)
 wrapper.addEventListener('pointerdown', e => {
   wrapper.setPointerCapture(e.pointerId);
-  pointers[e.pointerId] = { x: e.clientX, y: e.clientY };
-  const ids = Object.keys(pointers);
-  if (ids.length === 2) {
-    const [p1, p2] = ids.map(id => pointers[id]);
-    // record initial pinch data
+  pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  if (pointers.size === 2) {
+    const [p1, p2] = Array.from(pointers.values());
     const dx = p1.x - p2.x, dy = p1.y - p2.y;
     initialPinch = {
       distance: Math.hypot(dx, dy),
       scale,
-      // world focal point under fingers:
-      worldFocal: getWorldFocal(p1, p2)
+      originX,
+      originY,
+      center: { x: (p1.x + p2.x) / 2, y: (p1.y + p2.y) / 2 }
     };
   }
 });
 
-// — pointermove: pan if one pointer, pinch if two
 wrapper.addEventListener('pointermove', e => {
-  if (!(e.pointerId in pointers)) return;
-  const prev = pointers[e.pointerId];
-  pointers[e.pointerId] = { x: e.clientX, y: e.clientY };
-  const ids = Object.keys(pointers);
+  if (!pointers.has(e.pointerId)) return;
+  const prev = pointers.get(e.pointerId);
+  pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
 
-  if (ids.length === 1) {
+  if (pointers.size === 1) {
     // pan
-    const dx = e.clientX - prev.x;
-    const dy = e.clientY - prev.y;
-    originX += dx;
-    originY += dy;
+    originX += e.clientX - prev.x;
+    originY += e.clientY - prev.y;
     updateTransform();
-  } else if (ids.length === 2 && initialPinch) {
+  } else if (pointers.size === 2 && initialPinch) {
     // pinch-to-zoom
-    const [a, b] = ids.map(id => pointers[id]);
-    const dist    = Math.hypot(a.x - b.x, a.y - b.y);
-    const ratio   = dist / initialPinch.distance;
-    let newScale  = initialPinch.scale * ratio;
-    newScale      = Math.min(Math.max(newScale, 0.1), 5);
+    const [a, b] = Array.from(pointers.values());
+    const dx = a.x - b.x, dy = a.y - b.y;
+    const dist = Math.hypot(dx, dy);
+    const factor = dist / initialPinch.distance;
+    let newScale = initialPinch.scale * factor;
+    newScale = Math.min(Math.max(newScale, 0.1), 5);
 
-    // compute local focal point in container coords
-    const focal   = getDOMFocal(a, b);
-    // adjust origin so worldFocal maps to focal
-    originX = focal.x - initialPinch.worldFocal.x * newScale;
-    originY = focal.y - initialPinch.worldFocal.y * newScale;
-    scale   = newScale;
+    // focal point in wrapper coords
+    const rect = wrapper.getBoundingClientRect();
+    const focalX = initialPinch.center.x - rect.left;
+    const focalY = initialPinch.center.y - rect.top;
+
+    // adjust origin so focal point stays under fingers
+    originX = focalX - (focalX - initialPinch.originX) * (newScale / initialPinch.scale);
+    originY = focalY - (focalY - initialPinch.originY) * (newScale / initialPinch.scale);
+
+    scale = newScale;
     updateTransform();
   }
 });
 
-// — pointerup / pointercancel: release pointers
-wrapper.addEventListener('pointerup',   cleanupPointer);
-wrapper.addEventListener('pointercancel', cleanupPointer);
-
-function cleanupPointer(e) {
-  delete pointers[e.pointerId];
+wrapper.addEventListener('pointerup', e => {
+  pointers.delete(e.pointerId);
   wrapper.releasePointerCapture(e.pointerId);
-  if (Object.keys(pointers).length < 2) initialPinch = null;
-}
+  if (pointers.size < 2) initialPinch = null;
+});
 
-// — wheel zoom for mouse
+// — WHEEL ZOOM (mouse wheel)
 wrapper.addEventListener('wheel', e => {
   e.preventDefault();
   const rect  = wrapper.getBoundingClientRect();
   const x     = e.clientX - rect.left;
   const y     = e.clientY - rect.top;
   const delta = -e.deltaY * 0.001;
-  const newScale = Math.min(Math.max(scale * (1 + delta), 0.1), 5);
+  let newScale = scale * (1 + delta);
+  newScale = Math.min(Math.max(newScale, 0.1), 5);
+
   originX -= (x - originX) * (newScale/scale - 1);
   originY -= (y - originY) * (newScale/scale - 1);
   scale = newScale;
   updateTransform();
 }, { passive: false });
 
-// — helpers to compute focal points
-function getWorldFocal(p1, p2) {
-  const fX   = (p1.x + p2.x) / 2;
-  const fY   = (p1.y + p2.y) / 2;
-  const rect = wrapper.getBoundingClientRect();
-  const localX = fX - rect.left;
-  const localY = fY - rect.top;
-  return {
-    x: (localX - originX) / scale,
-    y: (localY - originY) / scale
-  };
-}
-function getDOMFocal(p1, p2) {
-  const fX   = (p1.x + p2.x) / 2;
-  const fY   = (p1.y + p2.y) / 2;
-  const rect = wrapper.getBoundingClientRect();
-  return {
-    x: fX - rect.left,
-    y: fY - rect.top
-  };
-}
 
 // — theme toggle
 document.getElementById('toggle-theme')
@@ -181,7 +157,7 @@ document.getElementById('toggle-theme')
     document.body.classList.toggle('light-mode')
   );
 
-// — refresh gallery
+// — refresh button
 document.querySelector('button[title="refresh"]')
   .addEventListener('click', () => {
     panzoomEl.innerHTML = '';
