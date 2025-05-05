@@ -35,7 +35,7 @@ body.light-mode {
   transform-origin: 0 0;
 }
 
-/* colonne e tile senza gap (margini usati al loro posto) */
+/* colonne e tile senza gap (margini) */
 .column {
   display: flex;
   flex-direction: column;
