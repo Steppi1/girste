@@ -1,9 +1,21 @@
-const wrapper = document.getElementById('wrapper');
+// script.js
+const wrapper   = document.getElementById('wrapper');
 const panzoomEl = document.getElementById('panzoom');
 
-wrapper.style.touchAction = 'none';
-panzoomEl.style.touchAction = 'none';
+let scale = 1, lastScale = 1;
+let posX = 0, posY = 0;
 
+// Applica trasformazione
+function setTransform() {
+  panzoomEl.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
+}
+
+// Limita valore tra min e max
+function clamp(v, min, max) {
+  return v < min ? min : v > max ? max : v;
+}
+
+// Fisher–Yates shuffle
 function shuffle(arr) {
   for (let i = arr.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -11,16 +23,19 @@ function shuffle(arr) {
   }
 }
 
-function centerGallery(panzoom) {
-  requestAnimationFrame(() => {
-    panzoom.reset();
-    const offsetX = (wrapper.clientWidth - panzoomEl.scrollWidth) / 2;
-    const offsetY = (wrapper.clientHeight - panzoomEl.scrollHeight) / 2;
-    panzoom.pan(offsetX, offsetY, { animate: true });
-  });
+// Centra e resetta gallery
+function centerGallery() {
+  scale = lastScale = 1;
+  posX = posY = 0;
+  setTransform();
+  const offsetX = (wrapper.clientWidth  - panzoomEl.scrollWidth ) / 2;
+  const offsetY = (wrapper.clientHeight - panzoomEl.scrollHeight) / 2;
+  posX = offsetX; posY = offsetY;
+  setTransform();
 }
 
-function buildGallery(images, panzoom) {
+// Costruisce la masonry gallery
+function buildGallery(images) {
   shuffle(images);
   const n = Math.floor(Math.sqrt(images.length));
   const columns = [];
@@ -49,70 +64,80 @@ function buildGallery(images, panzoom) {
       loaded++;
       const tile = document.createElement('div');
       tile.appendChild(img);
-
       const shortest = columns.reduce((a, b) =>
         a.offsetHeight < b.offsetHeight ? a : b
       );
       shortest.appendChild(tile);
-
-      if (loaded === images.length) centerGallery(panzoom);
+      if (loaded === images.length) centerGallery();
     };
   });
 }
 
+// Carica immagini e inizializza interazioni
 fetch('images.json')
   .then(r => r.json())
   .then(images => {
-    const panzoom = Panzoom(panzoomEl, {
-      maxScale: 5,
-      minScale: 0.25,
-      contain: 'outside',
-      animate: true,
-      step: 0.2,
-      duration: 200,
-      easing: (t) => 1 - Math.pow(1 - t, 3) // ease-out cubic
-    });
+    buildGallery(images);
 
-    const pointerDown = panzoom.handlePointerDown;
-    wrapper.addEventListener('pointerdown', e => pointerDown(e));
-    wrapper.addEventListener('wheel', panzoom.zoomWithWheel, { passive: false });
-
-    // inertia simulation on drag release
-    let last = { x: 0, y: 0, t: 0 };
-    let vx = 0, vy = 0;
-
-    wrapper.addEventListener('pointermove', e => {
-      const now = performance.now();
-      vx = (e.clientX - last.x) / (now - last.t);
-      vy = (e.clientY - last.y) / (now - last.t);
-      last = { x: e.clientX, y: e.clientY, t: now };
-    });
-
-    wrapper.addEventListener('pointerup', () => {
-      let decay = 0.92;
-      function step() {
-        if (Math.abs(vx) < 0.01 && Math.abs(vy) < 0.01) return;
-        panzoom.pan(vx * 40, vy * 40, { animate: false });
-        vx *= decay;
-        vy *= decay;
-        requestAnimationFrame(step);
-      }
-      step();
-    });
-
-    document.querySelector('button[title="refresh"]')
-      .addEventListener('click', () => {
-        panzoom.reset();
-        panzoomEl.innerHTML = '';
-        fetch('images.json')
-          .then(r => r.json())
-          .then(imgs => buildGallery(imgs, panzoom));
+    // Interact.js: drag + inertia + elastic limits
+    interact(panzoomEl)
+      .draggable({
+        inertia: {
+          resistance: 20,
+          minSpeed: 100,
+          endSpeed: 10
+        },
+        modifiers: [
+          interact.modifiers.restrictRect({
+            restriction: wrapper,
+            endOnly: true,
+            elementRect: { top: -0.25, left: -0.25, bottom: 1.25, right: 1.25 }
+          })
+        ],
+        listeners: {
+          move(event) {
+            posX += event.dx;
+            posY += event.dy;
+            setTransform();
+          }
+        }
+      })
+      .gesturable({
+        listeners: {
+          move(event) {
+            scale = clamp(lastScale * event.scale, 0.25, 5);
+            setTransform();
+          },
+          end() {
+            lastScale = scale;
+          }
+        }
       });
 
-    buildGallery(images, panzoom);
+    // Panzoom: wheel zoom centrato sul cursore
+    const panzoomWheel = Panzoom(panzoomEl, { minScale: 0.25, maxScale: 5, animate: false });
+    wrapper.addEventListener('wheel', e => {
+      e.preventDefault();
+      panzoomWheel.zoomWithWheel(e);
+      const t = panzoomWheel.getTransform();
+      scale = lastScale = t.scale;
+      posX = t.x; posY = t.y;
+    }, { passive: false });
   })
-  .catch(e => console.error('Errore:', e));
+  .catch(console.error);
 
+// Refresh gallery
+document.querySelector('button[title="refresh"]')
+  .addEventListener('click', () => {
+    fetch('images.json')
+      .then(r => r.json())
+      .then(imgs => {
+        buildGallery(imgs);
+        centerGallery();
+      });
+  });
+
+// Toggle tema chiaro/scuro
 document.getElementById('toggle-theme')
   .addEventListener('click', () =>
     document.body.classList.toggle('light-mode')
