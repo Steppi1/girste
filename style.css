@@ -1,4 +1,4 @@
-/* reset e base */
+/* reset base */
 html, body {
   margin: 0; padding: 0;
   width: 100%; height: 100%;
@@ -20,7 +20,7 @@ body.light-mode { background: #fff; }
 
 /* container immagini */
 #panzoom {
-  position: absolute; top:0; left:0;
+  position: absolute; top: 0; left: 0;
   display: flex; align-items: flex-start;
   will-change: transform;
   transform-origin: 0 0;
@@ -37,20 +37,18 @@ body.light-mode { background: #fff; }
 .tile {
   width: 300px;
   margin-bottom: 10px;
-  overflow: hidden;
-}
-/* canvas al posto di <img> */
-.tile canvas {
-  display: block;
-  width: 100%;
-  height: auto;
   user-select: none;
   pointer-events: none;
 }
+.tile img {
+  width: 100%; height: auto;
+  display: block;
+  object-fit: cover;
+}
 
-/* sticky yellow bar */
+/* Sticky Yellow Bar */
 #sticky-bar {
-  position: fixed; bottom:20px; left:50%;
+  position: fixed; bottom: 20px; left: 50%;
   transform: translateX(-50%);
   background: #ffe100;
   border-radius: 100px;
@@ -76,13 +74,11 @@ body.light-mode { background: #fff; }
   margin-top: 2px;
   display: flex; justify-content: center; align-items: center;
 }
-.icon-footer img {
-  display: block; height: auto;
-}
+.icon-footer img { display: block; height: auto; }
 
 /* responsive */
 @media (max-width: 768px) {
   #sticky-bar { padding: 10px 32px 6px; }
   .icon-group { gap: 24px; }
-  #sticky-bar img { width:26px; height:26px; }
+  #sticky-bar img { width: 26px; height: 26px; }
 }
