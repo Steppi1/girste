@@ -4,33 +4,32 @@
 const wrapper   = document.getElementById('wrapper');
 const panzoomEl = document.getElementById('panzoom');
 
-// stato pan/zoom
-let scale = 1, originX = 0, originY = 0;
-let initialPinch = null;
+// pan/zoom state
+let scale = 1, originX = 0, originY = 0, initialPinch = null;
 const pointers = new Map();
-
-// riconosciamo desktop
 const isDesktop = window.innerWidth >= 768;
 
-// shuffle e updateTransform
+// shuffle helper
 function shuffle(arr) {
   for (let i = arr.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [arr[i], arr[j]] = [arr[j], arr[i]];
   }
 }
+
+// apply CSS transform
 function updateTransform() {
   panzoomEl.style.transform =
     `translate3d(${originX}px, ${originY}px, 0) scale(${scale})`;
 }
 
-// build gallery
+// build the Masonry-style gallery
 function buildGallery(images) {
   shuffle(images);
   const n = Math.floor(Math.sqrt(images.length));
   const columns = [];
-
   panzoomEl.innerHTML = '';
+
   for (let i = 0; i < n; i++) {
     const col = document.createElement('div');
     col.className = 'column';
@@ -38,57 +37,60 @@ function buildGallery(images) {
     columns.push(col);
   }
 
-  let loadedCount = 0;
-  const total = images.length;
-
+  let loaded = 0, total = images.length;
   images.forEach(src => {
     const img = document.createElement('img');
-    img.src = src;       // qualità originale
+    img.src = src;
+    img.srcset = `${src} 1x, ${src.replace(/\.(\w+)$/, '@2x.$1')} 2x`;
+    img.sizes = '(min-width:768px) 300px, 100vw';
     img.loading = 'lazy';
     img.decoding = 'async';
 
     img.onload = () => {
-      loadedCount++;
+      loaded++;
       const tile = document.createElement('div');
       tile.className = 'tile';
       tile.appendChild(img);
 
-      const short = columns.reduce((a, b) =>
+      const shortest = columns.reduce((a, b) =>
         a.offsetHeight < b.offsetHeight ? a : b
       );
-      short.appendChild(tile);
+      shortest.appendChild(tile);
 
-      if (loadedCount === total) {
+      if (loaded === total && isDesktop) {
         centerGallery();
       }
     };
   });
 }
 
-// centra gallery (solo desktop)
+// center gallery on desktop
 function centerGallery() {
-  if (!isDesktop) return;
   scale = 1;
   originX = (wrapper.clientWidth  - panzoomEl.clientWidth  * scale) / 2;
   originY = (wrapper.clientHeight - panzoomEl.clientHeight * scale) / 2;
   updateTransform();
 }
 
-// fetch & build
+// fetch & initialize
 fetch('images.json')
   .then(r => r.json())
   .then(buildGallery)
   .catch(e => console.error('Errore:', e));
 
-// pan/zoom custom (solo desktop)
+// desktop-only custom pan/zoom
 if (isDesktop) {
+  // prevent native touch
+  wrapper.style.overflow = 'hidden';
+  wrapper.style.touchAction = 'none';
+
   // wheel zoom
   wrapper.addEventListener('wheel', e => {
     e.preventDefault();
     const r = wrapper.getBoundingClientRect();
     const x = e.clientX - r.left, y = e.clientY - r.top;
-    const d = -e.deltaY * 0.001;
-    const newScale = Math.min(Math.max(0.1, scale * (1 + d)), 5);
+    const delta = -e.deltaY * 0.001;
+    const newScale = Math.min(Math.max(0.1, scale * (1 + delta)), 5);
     originX -= (x - originX) * (newScale/scale - 1);
     originY -= (y - originY) * (newScale/scale - 1);
     scale = newScale;
@@ -103,7 +105,7 @@ if (isDesktop) {
       const [p1, p2] = Array.from(pointers.values());
       initialPinch = {
         distance: Math.hypot(p1.x - p2.x, p1.y - p2.y),
-        center: { x: (p1.x + p2.x)/2, y: (p1.y + p2.y)/2 },
+        center: { x: (p1.x+p2.x)/2, y: (p1.y+p2.y)/2 },
         originX, originY, scale
       };
     }
@@ -121,13 +123,12 @@ if (isDesktop) {
     } else if (pointers.size === 2 && initialPinch) {
       const [a, b] = Array.from(pointers.values());
       const dist = Math.hypot(a.x - b.x, a.y - b.y);
-      const center = { x: (a.x + b.x)/2, y: (a.y + b.y)/2 };
+      const center = { x: (a.x+b.x)/2, y: (a.y+b.y)/2 };
       const factor = dist / initialPinch.distance;
       const newScale = Math.min(
         Math.max(0.1, initialPinch.scale * factor),
         5
       );
-
       originX = initialPinch.originX
               + (center.x - initialPinch.center.x)
               - (center.x - initialPinch.center.x) * (newScale/initialPinch.scale);
@@ -148,7 +149,9 @@ if (isDesktop) {
 
 // theme toggle & refresh
 document.getElementById('toggle-theme')
-  .addEventListener('click', () => document.body.classList.toggle('light-mode'));
+  .addEventListener('click', () =>
+    document.body.classList.toggle('light-mode')
+  );
 
 document.querySelector('button[title="refresh"]')
   .addEventListener('click', () => {
@@ -158,17 +161,18 @@ document.querySelector('button[title="refresh"]')
       .then(buildGallery);
   });
 
-// Chrome-only: ridimensiona footer icons text
+// Chrome-only: ridimensiona footer icon-footer img
 window.addEventListener('load', () => {
-  const isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
+  const isChrome = /Chrome/.test(navigator.userAgent)
+                && /Google Inc/.test(navigator.vendor);
   if (!isChrome) return;
 
   const icons = document.querySelectorAll('#sticky-bar .icon-group img');
   const footerImg = document.querySelector('#sticky-bar .icon-footer img');
-  let totalWidth = 0;
+  let widthSum = 0;
   icons.forEach(img => {
-    totalWidth += img.getBoundingClientRect().width;
+    widthSum += img.getBoundingClientRect().width;
   });
-  footerImg.style.width = `${totalWidth}px`;
+  footerImg.style.width = `${widthSum}px`;
   footerImg.style.height = 'auto';
 });
