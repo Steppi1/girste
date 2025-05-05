@@ -49,15 +49,13 @@ function buildGallery(images) {
   let loaded = 0, total = images.length;
   images.forEach(src => {
     const img = document.createElement('img');
-    img.src      = src;
-       const img = document.createElement('img');
-    img.src      = src;
-   // --- Aggiunta per il srcset: sostituisci i percorsi con i tuoi file reali
-   img.srcset   =
-     `${src.replace(/(\.\w+)$/, '_300$1')}  300w,` +
-    `${src.replace(/(\.\w+)$/, '_600$1')}  600w,` +
-     `${src.replace(/(\.\w+)$/, '_1200$1')} 1200w`;
-   img.sizes    = '300px';
+    img.src = src;
+    // --- Aggiunta per il srcset: sostituisci i percorsi con i tuoi file reali
+    img.srcset =
+      `${src.replace(/(\.\w+)$/, '_300$1')} 300w, ` +
+      `${src.replace(/(\.\w+)$/, '_600$1')} 600w, ` +
+      `${src.replace(/(\.\w+)$/, '_1200$1')} 1200w`;
+    img.sizes = '300px';
     img.loading  = 'lazy';
     img.decoding = 'async';
     img.onload = () => {
@@ -65,7 +63,9 @@ function buildGallery(images) {
       const tile = document.createElement('div');
       tile.className = 'tile';
       tile.appendChild(img);
-      const shortest = cols.reduce((a,b)=> a.offsetHeight < b.offsetHeight ? a : b);
+      const shortest = cols.reduce((a, b) =>
+        a.offsetHeight < b.offsetHeight ? a : b
+      );
       shortest.appendChild(tile);
       if (loaded === total) centerGallery();
     };
@@ -140,7 +140,7 @@ document.getElementById('toggle-theme')
     document.body.classList.toggle('light-mode')
   );
 
-// — GESTURE NATIVE iOS / Safari MOBILE —  
+// — GESTURE NATIVE iOS / Safari MOBILE —
 wrapper.addEventListener('gesturestart', e => {
   lastScale = scale;
   gestureStartOriginX = originX;
@@ -149,14 +149,11 @@ wrapper.addEventListener('gesturestart', e => {
 
 wrapper.addEventListener('gesturechange', e => {
   e.preventDefault();
-  // nuovo scale
-  const unclamped = lastScale * e.scale;
-  const newScale = Math.max(0.1, Math.min(5, unclamped));
-  // punto di focalizzazione
+  const newScaleUnclamped = lastScale * e.scale;
+  const newScale = Math.max(0.1, Math.min(5, newScaleUnclamped));
   const rect = wrapper.getBoundingClientRect();
   const cx = e.clientX - rect.left;
   const cy = e.clientY - rect.top;
-  // calcola origine rispetto allo scale iniziale
   originX = cx - (cx - gestureStartOriginX) * (newScale / lastScale);
   originY = cy - (cy - gestureStartOriginY) * (newScale / lastScale);
   scale = newScale;
@@ -167,24 +164,22 @@ wrapper.addEventListener('gestureend', () => {
   lastScale = scale;
 });
 
-// — HAMMER.JS PINCH (fallback mobile)
-const hammer = new Hammer(wrapper);
-hammer.get('pinch').set({ enable: true });
+// — HAMMER.JS PINCH (fallback solo su touch devices)
+if ('ontouchstart' in window) {
+  const hammer = new Hammer(wrapper);
+  hammer.get('pinch').set({ enable: true });
 
-let hammerStartScale;
-hammer.on('pinchstart', () => {
-  hammerStartScale = scale;
-});
+  let hammerStartScale;
+  hammer.on('pinchstart', () => { hammerStartScale = scale; });
 
-hammer.on('pinchmove', ev => {
-  // calcola nuovo scale e mantieni il focus
-  const newScale = Math.max(0.1, Math.min(5, hammerStartScale * ev.scale));
-  const rect = wrapper.getBoundingClientRect();
-  const cx = ev.center.x - rect.left;
-  const cy = ev.center.y - rect.top;
-
-  originX = cx - (cx - originX) * (newScale / scale);
-  originY = cy - (cy - originY) * (newScale / scale);
-  scale = newScale;
-  updateTransform();
-});
+  hammer.on('pinchmove', ev => {
+    const newScale = Math.max(0.1, Math.min(5, hammerStartScale * ev.scale));
+    const rect = wrapper.getBoundingClientRect();
+    const cx = ev.center.x - rect.left;
+    const cy = ev.center.y - rect.top;
+    originX = cx - (cx - originX) * (newScale / scale);
+    originY = cy - (cy - originY) * (newScale / scale);
+    scale = newScale;
+    updateTransform();
+  });
+}
