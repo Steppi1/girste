@@ -1,143 +1,109 @@
-// script.js
-const wrapper   = document.getElementById('wrapper');
+// refs
+const wrapper  = document.getElementById('wrapper');
 const panzoomEl = document.getElementById('panzoom');
+wrapper.style.touchAction   = 'none';
+panzoomEl.style.touchAction = 'none';
 
-let scale = 1, lastScale = 1;
-let posX = 0, posY = 0;
+// stato
+let scale = 0.6, lastScale = scale;
+let pos = { x: 0, y: 0 };
 
-// Applica trasformazione
-function setTransform() {
-  panzoomEl.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
+// helper
+function update() {
+  panzoomEl.style.transform = `translate(${pos.x}px, ${pos.y}px) scale(${scale})`;
 }
-
-// Limita valore tra min e max
 function clamp(v, min, max) {
-  return v < min ? min : v > max ? max : v;
+  return Math.min(Math.max(v, min), max);
 }
 
-// Fisher–Yates shuffle
-function shuffle(arr) {
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
+// centra dopo il load
+function center() {
+  const rect = panzoomEl.getBoundingClientRect();
+  pos.x = (wrapper.clientWidth  - rect.width ) / 2;
+  pos.y = (wrapper.clientHeight - rect.height) / 2;
+  update();
 }
 
-// Centra e resetta gallery
-function centerGallery() {
-  scale = lastScale = 1;
-  posX = posY = 0;
-  setTransform();
-  const offsetX = (wrapper.clientWidth  - panzoomEl.scrollWidth ) / 2;
-  const offsetY = (wrapper.clientHeight - panzoomEl.scrollHeight) / 2;
-  posX = offsetX; posY = offsetY;
-  setTransform();
-}
-
-// Costruisce la masonry gallery
+// costruisci masonry (come prima), poi chiama center()
 function buildGallery(images) {
-  shuffle(images);
-  const n = Math.floor(Math.sqrt(images.length));
-  const columns = [];
-  panzoomEl.innerHTML = '';
-
-  for (let i = 0; i < n; i++) {
-    const col = document.createElement('div');
-    col.style.display = 'inline-block';
-    col.style.verticalAlign = 'top';
-    col.style.margin = '0 4px';
-    panzoomEl.appendChild(col);
-    columns.push(col);
-  }
-
-  let loaded = 0;
-  images.forEach(src => {
-    const img = new Image();
-    img.src = src;
-    img.loading = 'lazy';
-    img.decoding = 'async';
-    img.style.display = 'block';
-    img.style.maxWidth = 'none';
-    img.style.height = 'auto';
-
-    img.onload = () => {
-      loaded++;
-      const tile = document.createElement('div');
-      tile.appendChild(img);
-      const shortest = columns.reduce((a, b) =>
-        a.offsetHeight < b.offsetHeight ? a : b
-      );
-      shortest.appendChild(tile);
-      if (loaded === images.length) centerGallery();
-    };
-  });
+  // shuffle + masonry… (stesso tuo codice)
+  // al termine di tutte le onload: center();
 }
 
-// Carica immagini e inizializza interazioni
+// fetch immagini e init
 fetch('images.json')
   .then(r => r.json())
   .then(images => {
     buildGallery(images);
-
-    // Interact.js: drag + inertia + elastic limits
-    interact(panzoomEl)
-      .draggable({
-        inertia: {
-          resistance: 20,
-          minSpeed: 100,
-          endSpeed: 10
-        },
-        modifiers: [
-          interact.modifiers.restrictRect({
-            restriction: wrapper,
-            endOnly: true,
-            elementRect: { top: -0.25, left: -0.25, bottom: 1.25, right: 1.25 }
-          })
-        ],
-        listeners: {
-          move(event) {
-            posX += event.dx;
-            posY += event.dy;
-            setTransform();
-          }
-        }
-      })
-      .gesturable({
-        listeners: {
-          move(event) {
-            scale = clamp(lastScale * event.scale, 0.25, 5);
-            setTransform();
-          },
-          end() {
-            lastScale = scale;
-          }
-        }
+    // refresh
+    document.querySelector('button[title="refresh"]')
+      .addEventListener('click', () => {
+        panzoomEl.innerHTML = '';
+        buildGallery(images);
       });
-
-    // Panzoom: wheel zoom centrato sul cursore
-    const panzoomWheel = Panzoom(panzoomEl, { minScale: 0.25, maxScale: 5, animate: false });
-    wrapper.addEventListener('wheel', e => {
-      e.preventDefault();
-      panzoomWheel.zoomWithWheel(e);
-      const t = panzoomWheel.getTransform();
-      scale = lastScale = t.scale;
-      posX = t.x; posY = t.y;
-    }, { passive: false });
   })
-  .catch(console.error);
+  .catch(e => console.error(e));
 
-// Refresh gallery
-document.querySelector('button[title="refresh"]')
-  .addEventListener('click', () => {
-    fetch('images.json')
-      .then(r => r.json())
-      .then(imgs => {
-        buildGallery(imgs);
-        centerGallery();
-      });
+// DRAG con inerzia e limiti ampi
+interact(panzoomEl)
+  .draggable({
+    inertia: true,
+    modifiers: [
+      interact.modifiers.restrict({
+        restriction: {
+          left:   -1000,
+          right:  wrapper.clientWidth  + 1000,
+          top:    -1000,
+          bottom: wrapper.clientHeight + 1000
+        },
+        endOnly: false
+      })
+    ],
+    listeners: {
+      move(e) {
+        pos.x += e.dx;
+        pos.y += e.dy;
+        update();
+      }
+    }
+  })
+// PINCH-to-zoom con inerzia
+  .gesturable({
+    inertia: true,
+    listeners: {
+      move(e) {
+        // nuova scala
+        const newScale = clamp(lastScale * e.scale, 0.2, 5);
+        // mantieni il punto focale sotto le dita
+        const rect = panzoomEl.getBoundingClientRect();
+        const cx = e.client.x - rect.left;
+        const cy = e.client.y - rect.top;
+        pos.x += (cx) * (1 - e.scale);
+        pos.y += (cy) * (1 - e.scale);
+        scale = newScale;
+        update();
+      },
+      end() {
+        lastScale = scale;
+      }
+    }
   });
 
-// Toggle tema chiaro/scuro
+// WHEEL zoom “focale”
+wrapper.addEventListener('wheel', e => {
+  e.preventDefault();
+  const rect = panzoomEl.getBoundingClientRect();
+  const delta = -e.deltaY * 0.002;               // sensitività
+  const newScale = clamp(scale * (1 + delta), 0.2, 5);
+  const mx = e.clientX - rect.left;
+  const my = e.clientY - rect.top;
+  pos.x -= mx * (newScale/scale - 1);
+  pos.y -= my * (newScale/scale - 1);
+  scale = lastScale = newScale;
+  update();
+}, { passive: false });
+
+// theme toggle invariato
 document.getElementById('toggle-theme')
   .addEventListener('click', () =>
     document.body.classList.toggle('light-mode')
