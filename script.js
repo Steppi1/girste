@@ -2,7 +2,7 @@
 const wrapper   = document.getElementById('wrapper');
 const panzoomEl = document.getElementById('panzoom');
 
-// — helper: apply centro e reset
+// — helper: centra e resetta la gallery
 function centerGallery(panzoomInstance) {
   panzoomInstance.reset();
   const offsetX = (wrapper.clientWidth  - panzoomEl.clientWidth ) / 2;
@@ -10,7 +10,7 @@ function centerGallery(panzoomInstance) {
   panzoomInstance.pan(offsetX, offsetY, { animate: true });
 }
 
-// — helper: shuffle array
+// — helper: mescola l’array (Fisher-Yates)
 function shuffle(arr) {
   for (let i = arr.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -59,24 +59,23 @@ function buildGallery(images, panzoomInstance) {
 fetch('images.json')
   .then(r => r.json())
   .then(images => {
-    // 1) Inizializza Panzoom
+    // 1) Inizializza Panzoom SENZA contain → panning/zoom liberi
     const panzoom = Panzoom(panzoomEl, {
       maxScale: 5,
       minScale: 0.1,
-      contain: 'outside',
       animate: true,
       step: 0.3
     });
 
-    // 2) Abilita zoom con mouse wheel
+    // 2) Zoom via rotellina
     wrapper.addEventListener('wheel', panzoom.zoomWithWheel, { passive: false });
-    // 3) Abilita pan su pointerdown
+    // 3) Pan su pointerdown
     wrapper.addEventListener('pointerdown', panzoom.handlePointerDown);
 
-    // 4) Build e centra la gallery
+    // 4) Build + centra
     buildGallery(images, panzoom);
 
-    // 5) Refresh button
+    // 5) Refresh gallery
     document.querySelector('button[title="refresh"]')
       .addEventListener('click', () => {
         panzoom.reset();
@@ -88,7 +87,7 @@ fetch('images.json')
   })
   .catch(e => console.error('Errore:', e));
 
-// — theme toggle
+// — toggle tema
 document.getElementById('toggle-theme')
   .addEventListener('click', () =>
     document.body.classList.toggle('light-mode')
