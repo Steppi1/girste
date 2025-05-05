@@ -8,7 +8,7 @@
   <link rel="icon" href="girstefav.png" type="image/png">
   <link rel="stylesheet" href="style.css">
   <style>
-    /* wrapper e panzoom: visibili e touch-free */
+    /* manteniamo wrapper e panzoom “liberi” e react-touch-friendly */
     #wrapper { overflow: visible; touch-action: none; }
     #panzoom { overflow: visible; touch-action: none; transform-origin: 0 0; }
   </style>
@@ -32,8 +32,9 @@
     </div>
   </div>
 
-  <!-- pan-zoom: pan, pinch, wheel, inertia su qualsiasi elemento -->
-  <script src="https://unpkg.com/pan-zoom@3.5.2/index.js"></script> :contentReference[oaicite:0]{index=0}
+  <!-- Interact.js per pan, pinch, inertia -->
+  <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
+  <!-- Il tuo script -->
   <script src="script.js"></script>
 </body>
 </html>

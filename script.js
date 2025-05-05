@@ -1,22 +1,26 @@
-// script.js
-
+// — DOM refs
 const wrapper   = document.getElementById('wrapper');
 const panzoomEl = document.getElementById('panzoom');
 
-let scale = 0.6;            // partenza dezoomata al 60%
-let pos   = { x: 0, y: 0 }; 
+// — stato iniziale
+let scale      = 0.6;    // dezoomato al 60%
+let lastScale  = scale;
+let posX        = 0;
+let posY        = 0;
+const minScale = 0.2;
+const maxScale = 5;
 
-// applica translate+scale
-function update() {
-  panzoomEl.style.transform = `translate(${pos.x}px, ${pos.y}px) scale(${scale})`;
+// — helper: applica trasformazione
+function updateTransform() {
+  panzoomEl.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
 }
 
-// clamp tra min e max
+// — helper: clamp
 function clamp(v, min, max) {
   return v < min ? min : v > max ? max : v;
 }
 
-// shuffle array
+// — Fisher–Yates shuffle
 function shuffle(arr) {
   for (let i = arr.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -24,15 +28,15 @@ function shuffle(arr) {
   }
 }
 
-// centra e dezooma
-function center() {
+// — centra e applica dezoom
+function centerGallery() {
   const rect = panzoomEl.getBoundingClientRect();
-  pos.x = (wrapper.clientWidth  - rect.width ) / 2;
-  pos.y = (wrapper.clientHeight - rect.height) / 2;
-  update();
+  posX = (wrapper.clientWidth  - rect.width ) / 2;
+  posY = (wrapper.clientHeight - rect.height) / 2;
+  updateTransform();
 }
 
-// costruisci masonry (come avevi tu)
+// — build Masonry-style gallery
 function buildGallery(images, onComplete) {
   shuffle(images);
   const n = Math.floor(Math.sqrt(images.length));
@@ -42,16 +46,13 @@ function buildGallery(images, onComplete) {
   for (let i = 0; i < n; i++) {
     const col = document.createElement('div');
     col.className = 'column';
-    col.style.display = 'inline-block';
-    col.style.verticalAlign = 'top';
-    col.style.margin = '0 4px';
     panzoomEl.appendChild(col);
     columns.push(col);
   }
 
   let loaded = 0;
   images.forEach(src => {
-    const img = new Image();
+    const img = document.createElement('img');
     img.src      = src;
     img.loading  = 'lazy';
     img.decoding = 'async';
@@ -65,61 +66,100 @@ function buildGallery(images, onComplete) {
       tile.className = 'tile';
       tile.appendChild(img);
 
+      // append to shortest column
       const shortest = columns.reduce((a, b) =>
         a.offsetHeight < b.offsetHeight ? a : b
       );
       shortest.appendChild(tile);
 
-      if (loaded === images.length && onComplete) onComplete();
+      if (loaded === images.length) onComplete();
     };
   });
 }
 
-// inizializza galleria e pan-zoom
+// — fetch images, init gallery + interactions
 fetch('images.json')
   .then(r => r.json())
   .then(images => {
     buildGallery(images, () => {
-      center();
+      // dopo il load, centro + trasformo
+      scale = lastScale = 0.6;
+      centerGallery();
 
-      // attiva pan & zoom
-      panzoom(panzoomEl, e => {
-        // pan
-        pos.x += e.dx;
-        pos.y += e.dy;
+      // — Interact.js: drag con inertia + limiti ampi
+      interact(panzoomEl)
+        .draggable({
+          inertia: true,
+          modifiers: [
+            interact.modifiers.restrictRect({
+              restriction: {
+                // estendi i limiti di ± wrapper size
+                left:   -wrapper.clientWidth,
+                right:  wrapper.clientWidth * 2,
+                top:    -wrapper.clientHeight,
+                bottom: wrapper.clientHeight * 2
+              },
+              endOnly: false
+            })
+          ],
+          listeners: {
+            move(event) {
+              posX += event.dx;
+              posY += event.dy;
+              updateTransform();
+            }
+          }
+        })
+        .gesturable({
+          inertia: true,
+          listeners: {
+            move(event) {
+              // calcolo nuova scala
+              const newScale = clamp(lastScale * event.scale, minScale, maxScale);
+              // punto focale relativo all'elemento
+              const rect = panzoomEl.getBoundingClientRect();
+              const fx = event.clientX - rect.left;
+              const fy = event.clientY - rect.top;
+              // aggiusto pos per mantenere fuoco
+              posX -= fx * (newScale / scale - 1);
+              posY -= fy * (newScale / scale - 1);
+              scale = newScale;
+              updateTransform();
+            },
+            end() {
+              lastScale = scale;
+            }
+          }
+        });
 
-        // zoom
-        if (e.dz) {
-          const old = scale;
-          scale = clamp(old * (1 + e.dz), 0.2, 5);
-          const rect = panzoomEl.getBoundingClientRect();
-          const cx = e.x - rect.left;
-          const cy = e.y - rect.top;
-          pos.x -= cx * (scale/old - 1);
-          pos.y -= cy * (scale/old - 1);
-        }
-
-        // limiti ampi fuori dal canvas (±wrapper size)
-        const bx = wrapper.clientWidth;
-        const by = wrapper.clientHeight;
-        pos.x = clamp(pos.x, -bx, bx);
-        pos.y = clamp(pos.y, -by, by);
-
-        update();
-      });
+      // — wheel zoom centrato sul cursore
+      wrapper.addEventListener('wheel', e => {
+        e.preventDefault();
+        const rect = panzoomEl.getBoundingClientRect();
+        const delta = -e.deltaY * 0.002; // sensibilità
+        const newScale = clamp(scale * (1 + delta), minScale, maxScale);
+        const mx = e.clientX - rect.left;
+        const my = e.clientY - rect.top;
+        posX -= mx * (newScale / scale - 1);
+        posY -= my * (newScale / scale - 1);
+        scale = lastScale = newScale;
+        updateTransform();
+      }, { passive: false });
     });
 
-    // refresh gallery
+    // — refresh button
     document.querySelector('button[title="refresh"]')
       .addEventListener('click', () => {
         panzoomEl.innerHTML = '';
-        scale = 0.6; pos = { x: 0, y: 0 };
-        buildGallery(images, center);
+        buildGallery(images, () => {
+          scale = lastScale = 0.6;
+          centerGallery();
+        });
       });
   })
   .catch(console.error);
 
-// toggle tema
+// — theme toggle
 document.getElementById('toggle-theme')
   .addEventListener('click', () =>
     document.body.classList.toggle('light-mode')
