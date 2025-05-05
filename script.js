@@ -50,7 +50,7 @@ function buildGallery(images) {
   images.forEach(src => {
     const img = document.createElement('img');
     img.src = src;
-    // --- Aggiunta per il srcset: sostituisci i percorsi con i tuoi file reali
+    // srcset per quality su zoom
     img.srcset =
       `${src.replace(/(\.\w+)$/, '_300$1')} 300w, ` +
       `${src.replace(/(\.\w+)$/, '_600$1')} 600w, ` +
@@ -58,6 +58,7 @@ function buildGallery(images) {
     img.sizes = '300px';
     img.loading  = 'lazy';
     img.decoding = 'async';
+
     img.onload = () => {
       loaded++;
       const tile = document.createElement('div');
@@ -79,37 +80,35 @@ fetch('images.json')
   .catch(e => console.error(e));
 
 // — drag con Interact.js
-interact(wrapper)
-  .draggable({
-    inertia: true,
-    listeners: {
-      move(event) {
-        originX += event.dx;
-        originY += event.dy;
-        updateTransform();
-      }
+interact(wrapper).draggable({
+  inertia: true,
+  listeners: {
+    move(event) {
+      originX += event.dx;
+      originY += event.dy;
+      updateTransform();
     }
-  });
+  }
+});
 
 // — pinch con Interact.js
-interact(wrapper)
-  .gesturable({
-    listeners: {
-      start(event) {
-        lastScale = scale;
-      },
-      move(event) {
-        const newScale = Math.max(0.1, Math.min(5, lastScale * event.scale));
-        const rect = wrapper.getBoundingClientRect();
-        const cx = event.clientX - rect.left;
-        const cy = event.clientY - rect.top;
-        originX = cx - (cx - originX) * (newScale / scale);
-        originY = cy - (cy - originY) * (newScale / scale);
-        scale = newScale;
-        updateTransform();
-      }
+interact(wrapper).gesturable({
+  listeners: {
+    start(event) {
+      lastScale = scale;
+    },
+    move(event) {
+      const newScale = Math.max(0.1, Math.min(5, lastScale * event.scale));
+      const rect = wrapper.getBoundingClientRect();
+      const cx = event.clientX - rect.left;
+      const cy = event.clientY - rect.top;
+      originX = cx - (cx - originX) * (newScale / scale);
+      originY = cy - (cy - originY) * (newScale / scale);
+      scale = newScale;
+      updateTransform();
     }
-  });
+  }
+});
 
 // — zoom con wheel (desktop)
 wrapper.addEventListener('wheel', e => {
@@ -149,8 +148,8 @@ wrapper.addEventListener('gesturestart', e => {
 
 wrapper.addEventListener('gesturechange', e => {
   e.preventDefault();
-  const newScaleUnclamped = lastScale * e.scale;
-  const newScale = Math.max(0.1, Math.min(5, newScaleUnclamped));
+  const unclamped = lastScale * e.scale;
+  const newScale = Math.max(0.1, Math.min(5, unclamped));
   const rect = wrapper.getBoundingClientRect();
   const cx = e.clientX - rect.left;
   const cy = e.clientY - rect.top;
@@ -164,13 +163,15 @@ wrapper.addEventListener('gestureend', () => {
   lastScale = scale;
 });
 
-// — HAMMER.JS PINCH (fallback solo su touch devices)
+// — HAMMER.JS PINCH (fallback solo su touch devices) —
 if ('ontouchstart' in window) {
   const hammer = new Hammer(wrapper);
   hammer.get('pinch').set({ enable: true });
+  let hammerStartScale = scale;
 
-  let hammerStartScale;
-  hammer.on('pinchstart', () => { hammerStartScale = scale; });
+  hammer.on('pinchstart', () => {
+    hammerStartScale = scale;
+  });
 
   hammer.on('pinchmove', ev => {
     const newScale = Math.max(0.1, Math.min(5, hammerStartScale * ev.scale));
