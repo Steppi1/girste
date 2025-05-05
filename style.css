@@ -12,32 +12,30 @@ body.light-mode {
   background: #fff;
 }
 
-/* Contenitore pan/zoom */
+/* Wrapper pan/zoom */
 #wrapper {
   position: relative;
   width: 100%;
   height: 100%;
   overflow: hidden;
   cursor: grab;
-  touch-action: none;            /* Blocca pinch-to-page su Safari */
-  -webkit-user-select: none;     /* Safari */
+  touch-action: none;         /* blocca pinch-to-page su iOS */
+  -webkit-user-select: none;  /* Safari */
 }
 
+/* Contenitore immagini */
 #panzoom {
   position: absolute;
-  top: 0;
-  left: 0;
+  top: 0; left: 0;
   display: flex;
   align-items: flex-start;
   user-select: none;
   pointer-events: auto;
-
-  /* GPU-hit: non toccare da JS, lo dichiariamo qui */
   will-change: transform;
   transform-origin: 0 0;
 }
 
-/* Colonne e tiles senza gap, con margini */
+/* Colonne e tile senza gap (margini usati al loro posto) */
 .column {
   display: flex;
   flex-direction: column;
@@ -77,15 +75,13 @@ body.light-mode {
   z-index: 9999 !important;
   box-shadow: 0 0 20px rgba(0,0,0,0.2);
 }
-
 .icon-group {
   display: flex;
   gap: 32px;
   align-items: center;
   justify-content: center;
 }
-#sticky-bar a,
-#sticky-bar button {
+#sticky-bar a, #sticky-bar button {
   all: unset;
   cursor: pointer;
 }
@@ -97,7 +93,6 @@ body.light-mode {
 #sticky-bar img:hover {
   transform: scale(1.2);
 }
-
 .icon-footer {
   margin-top: 2px;
   display: flex;
@@ -120,8 +115,5 @@ body.light-mode {
   #sticky-bar img {
     width: 26px;
     height: 26px;
-  }
-  .icon-footer {
-    margin-top: 2px;
   }
 }
