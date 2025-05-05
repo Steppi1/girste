@@ -1,4 +1,4 @@
-const wrapper   = document.getElementById('wrapper');
+const wrapper = document.getElementById('wrapper');
 const panzoomEl = document.getElementById('panzoom');
 
 wrapper.style.touchAction = 'none';
@@ -14,7 +14,7 @@ function shuffle(arr) {
 function centerGallery(panzoom) {
   requestAnimationFrame(() => {
     panzoom.reset();
-    const offsetX = (wrapper.clientWidth  - panzoomEl.scrollWidth ) / 2;
+    const offsetX = (wrapper.clientWidth - panzoomEl.scrollWidth) / 2;
     const offsetY = (wrapper.clientHeight - panzoomEl.scrollHeight) / 2;
     panzoom.pan(offsetX, offsetY, { animate: true });
   });
@@ -65,34 +65,51 @@ fetch('images.json')
   .then(images => {
     const panzoom = Panzoom(panzoomEl, {
       maxScale: 5,
-      minScale: 0.3,
-      step: 0.3,
+      minScale: 0.25,
+      contain: 'outside',
       animate: true,
-      contain: 'outside', // consente di spostare oltre i bordi
-      startScale: 1.0,
-      smoothScroll: true, // attiva scroll morbido
-      setTransform: (el, transform) => {
-        el.style.transform = transform;
-        el.style.transition = 'transform 0.1s ease-out';
-      }
+      step: 0.2,
+      duration: 200,
+      easing: (t) => 1 - Math.pow(1 - t, 3) // ease-out cubic
     });
 
-    const controller = panzoom;
+    const pointerDown = panzoom.handlePointerDown;
+    wrapper.addEventListener('pointerdown', e => pointerDown(e));
+    wrapper.addEventListener('wheel', panzoom.zoomWithWheel, { passive: false });
 
-    // abilita zoom con gesture touch (pinch)
-    wrapper.addEventListener('wheel', controller.zoomWithWheel, { passive: false });
-    wrapper.addEventListener('pointerdown', controller.handlePointerDown);
+    // inertia simulation on drag release
+    let last = { x: 0, y: 0, t: 0 };
+    let vx = 0, vy = 0;
 
-    buildGallery(images, controller);
+    wrapper.addEventListener('pointermove', e => {
+      const now = performance.now();
+      vx = (e.clientX - last.x) / (now - last.t);
+      vy = (e.clientY - last.y) / (now - last.t);
+      last = { x: e.clientX, y: e.clientY, t: now };
+    });
+
+    wrapper.addEventListener('pointerup', () => {
+      let decay = 0.92;
+      function step() {
+        if (Math.abs(vx) < 0.01 && Math.abs(vy) < 0.01) return;
+        panzoom.pan(vx * 40, vy * 40, { animate: false });
+        vx *= decay;
+        vy *= decay;
+        requestAnimationFrame(step);
+      }
+      step();
+    });
 
     document.querySelector('button[title="refresh"]')
       .addEventListener('click', () => {
-        controller.reset();
+        panzoom.reset();
         panzoomEl.innerHTML = '';
         fetch('images.json')
           .then(r => r.json())
-          .then(imgs => buildGallery(imgs, controller));
+          .then(imgs => buildGallery(imgs, panzoom));
       });
+
+    buildGallery(images, panzoom);
   })
   .catch(e => console.error('Errore:', e));
 
