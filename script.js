@@ -1,4 +1,5 @@
 // script.js
+
 // — DOM refs
 const wrapper   = document.getElementById('wrapper');
 const panzoomEl = document.getElementById('panzoom');
@@ -27,7 +28,7 @@ const isIOSSafari =
   /Safari/.test(navigator.userAgent) &&
   !/Chrome/.test(navigator.userAgent);
 
-// — se siamo su iOS Safari, riabilitiamo touch-action e usiamo gesture events
+// — se siamo su iOS Safari, abilitiamo gesture events ma blocchiamo lo scroll nativo
 if (isIOSSafari) {
   wrapper.style.touchAction = 'auto';
 
@@ -45,6 +46,13 @@ if (isIOSSafari) {
     scale = newScale;
     updateTransform();
   });
+
+  // blocco lo scroll su pointermove per permettere il pan custom
+  wrapper.addEventListener('pointermove', e => {
+    if (pointers.has(e.pointerId) && pointers.size === 1) {
+      e.preventDefault();
+    }
+  }, { passive: false });
 }
 
 // — build gallery
@@ -61,12 +69,20 @@ function buildGallery(images) {
     columns.push(col);
   }
 
+  let loadedCount = 0;
+  const total = images.length;
+
   images.forEach(src => {
     const img = document.createElement('img');
     img.src = src;
+    // supporto retina (serve che esista src@2x.ext)
+    img.srcset = `${src} 1x, ${src.replace(/\.(\w+)$/, '@2x.$1')} 2x`;
+    img.sizes = '(min-width: 768px) 300px, 100vw';
     img.loading = 'lazy';
     img.decoding = 'async';
+
     img.onload = () => {
+      loadedCount++;
       const tile = document.createElement('div');
       tile.className = 'tile';
       tile.appendChild(img);
@@ -74,16 +90,22 @@ function buildGallery(images) {
         a.offsetHeight < b.offsetHeight ? a : b
       );
       short.appendChild(tile);
+
+      // quando è l’ultima immagine, centro
+      if (loadedCount === total) {
+        centerGallery();
+      }
     };
   });
+}
 
-  requestAnimationFrame(() => {
-    const isDesktop = window.innerWidth >= 768;
-    scale = isDesktop ? 1 : 0.3;
-    originX = (wrapper.clientWidth  - panzoomEl.clientWidth  * scale) / 2;
-    originY = (wrapper.clientHeight - panzoomEl.clientHeight * scale) / 2;
-    updateTransform();
-  });
+// — centra gallery dopo caricamento completo
+function centerGallery() {
+  const isDesktop = window.innerWidth >= 768;
+  scale = isDesktop ? 1 : 0.3;
+  originX = (wrapper.clientWidth  - panzoomEl.clientWidth  * scale) / 2;
+  originY = (wrapper.clientHeight - panzoomEl.clientHeight * scale) / 2;
+  updateTransform();
 }
 
 // — fetch & build
@@ -92,7 +114,7 @@ fetch('images.json')
   .then(buildGallery)
   .catch(e => console.error('Errore:', e));
 
-// — wheel zoom
+// — wheel zoom (unchanged)
 wrapper.addEventListener('wheel', e => {
   e.preventDefault();
   const r = wrapper.getBoundingClientRect();
@@ -105,11 +127,12 @@ wrapper.addEventListener('wheel', e => {
   updateTransform();
 }, { passive: false });
 
-// — pointer pan & pinch
+// — pointer pan & pinch (preserva smooth su desktop)
 const pointers = new Map();
 
 wrapper.addEventListener('pointerdown', e => {
   wrapper.setPointerCapture(e.pointerId);
+  if (isIOSSafari) e.preventDefault();
   pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
   if (pointers.size === 2 && !isIOSSafari) {
     const [p1, p2] = Array.from(pointers.values());
@@ -158,7 +181,7 @@ wrapper.addEventListener('pointerup', e => {
   if (pointers.size < 2) initialPinch = null;
 });
 
-// — theme toggle & refresh
+// — theme toggle & refresh (unchanged)
 document.getElementById('toggle-theme')
   .addEventListener('click', () =>
     document.body.classList.toggle('light-mode')
@@ -172,7 +195,7 @@ document.querySelector('button[title="refresh"]')
       .then(buildGallery);
   });
 
-// — Chrome-only: ridimensiona footer icons text
+// — Chrome-only: ridimensiona footer icons text (unchanged)
 document.addEventListener('DOMContentLoaded', () => {
   const isChrome =
     /Chrome/.test(navigator.userAgent) &&
