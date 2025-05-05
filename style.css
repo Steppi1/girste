@@ -1,4 +1,4 @@
-/* Reset base */
+/* reset base */
 html, body {
   margin: 0;
   padding: 0;
@@ -12,7 +12,7 @@ body.light-mode {
   background: #fff;
 }
 
-/* Wrapper pan/zoom */
+/* wrapper pan/zoom */
 #wrapper {
   position: relative;
   width: 100%;
@@ -23,7 +23,7 @@ body.light-mode {
   -webkit-user-select: none;  /* Safari */
 }
 
-/* Contenitore immagini */
+/* contenitore immagini */
 #panzoom {
   position: absolute;
   top: 0; left: 0;
@@ -35,7 +35,7 @@ body.light-mode {
   transform-origin: 0 0;
 }
 
-/* Colonne e tile senza gap (margini usati al loro posto) */
+/* colonne e tile senza gap (margini usati al loro posto) */
 .column {
   display: flex;
   flex-direction: column;
@@ -60,7 +60,7 @@ body.light-mode {
   pointer-events: none;
 }
 
-/* Sticky Yellow Bar */
+/* sticky yellow bar */
 #sticky-bar {
   position: fixed;
   bottom: 20px;
@@ -104,7 +104,7 @@ body.light-mode {
   display: block;
 }
 
-/* Responsive */
+/* responsive */
 @media (max-width: 768px) {
   #sticky-bar {
     padding: 10px 32px 6px;
