@@ -1,192 +1,132 @@
-const wrapper = document.getElementById('wrapper');
-const panzoomEl = document.getElementById('panzoom');
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  background: #000;
+  user-select: none;
+  touch-action: none;
+  transition: background 0.3s ease;
+}
 
-let scale = 1;
-let originX = 0;
-let originY = 0;
-let isPanning = false;
-let startX = 0;
-let startY = 0;
-let lastTouchDist = null;
-let lastTouchCenter = null;
-let rafScheduled = false;
+body.light-mode {
+  background: #fff;
+}
 
-function shuffle(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
+#wrapper {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  cursor: grab;
+}
+
+#panzoom {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: flex-start;
+  user-select: none;
+  pointer-events: auto;
+
+  will-change: transform;
+  transform: translateZ(0);
+  transform-origin: 0 0;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  contain: layout style;
+}
+
+.column:not(:last-child) {
+  margin-right: 10px;
+}
+
+.tile {
+  width: 300px;
+  user-select: none;
+  pointer-events: none;
+}
+
+.tile img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  display: block;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* Sticky Yellow Bar */
+#sticky-bar {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #ffe100;
+  border-radius: 100px;
+  padding: 12px 40px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 9999 !important;
+  box-shadow: 0 0 20px rgba(0,0,0,0.2);
+}
+
+.icon-group {
+  display: flex;
+  gap: 32px;
+  align-items: center;
+  justify-content: center;
+}
+
+#sticky-bar a,
+#sticky-bar button {
+  all: unset;
+  cursor: pointer;
+}
+
+#sticky-bar img {
+  width: 32px;
+  height: 32px;
+  transition: transform 0.2s ease;
+}
+
+#sticky-bar img:hover {
+  transform: scale(1.2);
+}
+
+.icon-footer {
+  margin-top: 2px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.icon-footer img {
+  height: auto;
+  display: block;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  #sticky-bar {
+    padding: 10px 32px 6px;
+  }
+
+  .icon-group {
+    gap: 24px;
+  }
+
+  #sticky-bar img {
+    width: 26px;
+    height: 26px;
+  }
+
+  .icon-footer {
+    margin-top: 2px;
   }
 }
-
-function updateTransform() {
-  panzoomEl.style.transform = `translate(${originX}px, ${originY}px) scale(${scale})`;
-  panzoomEl.style.transformOrigin = "0 0";
-  panzoomEl.style.willChange = 'auto';
-  requestAnimationFrame(() => {
-    panzoomEl.style.willChange = 'transform';
-  });
-}
-
-function buildGallery(images) {
-  shuffle(images);
-
-  const totalImages = images.length;
-  const numColumns = Math.floor(Math.sqrt(totalImages));
-
-  const columns = Array.from({ length: numColumns }, () => {
-    const col = document.createElement('div');
-    col.className = 'column';
-    panzoomEl.appendChild(col);
-    return col;
-  });
-
-  const imagePromises = [];
-
-  for (let i = 0; i < totalImages; i++) {
-    const imgEl = document.createElement('img');
-    imgEl.src = images[i];
-    imgEl.loading = 'lazy';
-    imgEl.decoding = 'async';
-
-    const tile = document.createElement('div');
-    tile.className = 'tile';
-    tile.appendChild(imgEl);
-
-    const promise = new Promise(resolve => {
-      imgEl.onload = resolve;
-      imgEl.onerror = resolve;
-    });
-    imagePromises.push(promise);
-
-    columns[i % columns.length].appendChild(tile);
-  }
-
-  Promise.all(imagePromises).then(() => {
-    const allTiles = Array.from(panzoomEl.querySelectorAll('.tile'));
-    panzoomEl.innerHTML = '';
-    const sortedCols = Array.from({ length: numColumns }, () => {
-      const col = document.createElement('div');
-      col.className = 'column';
-      panzoomEl.appendChild(col);
-      return col;
-    });
-
-    allTiles.forEach(tile => {
-      const shortest = sortedCols.reduce((prev, curr) =>
-        prev.offsetHeight < curr.offsetHeight ? prev : curr
-      );
-      shortest.appendChild(tile);
-    });
-
-    const isDesktop = window.innerWidth >= 768;
-    scale = isDesktop ? 1.0 : 0.3;
-    originX = (wrapper.clientWidth / 2) - (panzoomEl.clientWidth * scale / 2);
-    originY = (wrapper.clientHeight / 2) - (panzoomEl.clientHeight * scale / 2);
-    updateTransform();
-
-    const group = document.querySelector('.icon-group');
-    const footerIcon = document.querySelector('.icon-footer img');
-    if (group && footerIcon) {
-      footerIcon.style.width = `${group.offsetWidth}px`;
-    }
-  });
-}
-
-function fetchImages() {
-  panzoomEl.innerHTML = '';
-  fetch('images.json')
-    .then(res => res.json())
-    .then(images => buildGallery(images))
-    .catch(err => console.error("Errore nel caricamento delle immagini:", err));
-}
-
-// Avvio
-fetchImages();
-
-// Zoom con rotella
-wrapper.addEventListener('wheel', (e) => {
-  e.preventDefault();
-  const rect = wrapper.getBoundingClientRect();
-  const mouseX = e.clientX - rect.left;
-  const mouseY = e.clientY - rect.top;
-  const delta = -e.deltaY * 0.001;
-  const newScale = Math.min(Math.max(0.1, scale * (1 + delta)), 5);
-  originX -= (mouseX - originX) * (newScale / scale - 1);
-  originY -= (mouseY - originY) * (newScale / scale - 1);
-  scale = newScale;
-  updateTransform();
-}, { passive: false });
-
-// Drag
-wrapper.addEventListener('pointerdown', (e) => {
-  if (e.pointerType === 'touch' && !e.isPrimary) return;
-  isPanning = true;
-  startX = e.clientX - originX;
-  startY = e.clientY - originY;
-  wrapper.style.cursor = 'grabbing';
-  wrapper.setPointerCapture(e.pointerId);
-});
-
-wrapper.addEventListener('pointermove', (e) => {
-  if (!isPanning || rafScheduled) return;
-  rafScheduled = true;
-  requestAnimationFrame(() => {
-    originX = e.clientX - startX;
-    originY = e.clientY - startY;
-    updateTransform();
-    rafScheduled = false;
-  });
-});
-
-wrapper.addEventListener('pointerup', () => {
-  isPanning = false;
-  wrapper.style.cursor = 'grab';
-});
-
-// Zoom su mobile (pinch)
-wrapper.addEventListener('touchmove', (e) => {
-  if (e.touches.length === 2) {
-    e.preventDefault();
-    isPanning = false;
-    const rect = wrapper.getBoundingClientRect();
-    const [t1, t2] = e.touches;
-    const dx = t1.clientX - t2.clientX;
-    const dy = t1.clientY - t2.clientY;
-    const dist = Math.hypot(dx, dy);
-    const centerX = (t1.clientX + t2.clientX) / 2 - rect.left;
-    const centerY = (t1.clientY + t2.clientY) / 2 - rect.top;
-    wrapper.addEventListener('touchmove', (e) => {
-      if (e.touches.length === 2) {
-        e.preventDefault();
-        isPanning = false;
-        const rect = wrapper.getBoundingClientRect();
-        const [t1, t2] = e.touches;
-        const dx = t1.clientX - t2.clientX;
-        const dy = t1.clientY - t2.clientY;
-        const dist = Math.hypot(dx, dy);
-        const centerX = (t1.clientX + t2.clientX) / 2 - rect.left;
-        const centerY = (t1.clientY + t2.clientY) / 2 - rect.top;
-    
-        if (lastTouchDist !== null && lastTouchCenter !== null) {
-          const scaleFactor = dist / lastTouchDist;
-          const newScale = Math.min(Math.max(0.1, scale * scaleFactor), 5);
-          originX += centerX - lastTouchCenter.x;
-          originY += centerY - lastTouchCenter.y;
-          originX -= (centerX - originX) * (newScale / scale - 1);
-          originY -= (centerY - originY) * (newScale / scale - 1);
-          scale = newScale;
-          updateTransform();
-        }
-    
-        lastTouchDist = dist;
-        lastTouchCenter = { x: centerX, y: centerY };
-      }
-    }, { passive: false });
-    
-    wrapper.addEventListener('touchend', (e) => {
-      if (e.touches.length < 2) {
-        lastTouchDist = null;
-        lastTouchCenter = null;
-      }
-    });
-    

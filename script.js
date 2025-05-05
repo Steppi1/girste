@@ -1,6 +1,11 @@
 const wrapper = document.getElementById('wrapper');
 const panzoomEl = document.getElementById('panzoom');
 
+let scale = 1, originX = 0, originY = 0;
+let isPanning = false, startX = 0, startY = 0;
+let lastTouchDist = null, lastTouchCenter = null;
+let rafScheduled = false;
+
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -8,11 +13,21 @@ function shuffle(array) {
   }
 }
 
+function updateTransform() {
+  panzoomEl.style.transform = `translate(${originX}px, ${originY}px) scale(${scale})`;
+  panzoomEl.style.transformOrigin = "0 0";
+
+  // Ottimizzazione mobile: reset e reimposta will-change
+  panzoomEl.style.willChange = 'auto';
+  requestAnimationFrame(() => {
+    panzoomEl.style.willChange = 'transform';
+  });
+}
+
 function buildGallery(images) {
   shuffle(images);
+  const numColumns = Math.floor(Math.sqrt(images.length));
 
-  const totalImages = images.length;
-  const numColumns = Math.floor(Math.sqrt(totalImages));
   const columns = Array.from({ length: numColumns }, () => {
     const col = document.createElement('div');
     col.className = 'column';
@@ -20,50 +35,43 @@ function buildGallery(images) {
     return col;
   });
 
-  const imagePromises = [];
-
-  for (let i = 0; i < totalImages; i++) {
-    const imgEl = document.createElement('img');
-    imgEl.src = images[i];
-    imgEl.loading = 'lazy'; // Lazy loading
-    imgEl.decoding = 'async';
+  const promises = images.map((src, i) => {
+    const img = document.createElement('img');
+    img.src = src;
+    img.loading = 'lazy';
+    img.decoding = 'async';
 
     const tile = document.createElement('div');
     tile.className = 'tile';
-    tile.appendChild(imgEl);
+    tile.appendChild(img);
+    columns[i % numColumns].appendChild(tile);
 
-    const promise = new Promise(resolve => {
-      imgEl.onload = resolve;
-      imgEl.onerror = resolve;
+    return new Promise(resolve => {
+      img.onload = resolve;
+      img.onerror = resolve;
     });
-    imagePromises.push(promise);
+  });
 
-    // Append temporarily, we'll sort after all images are loaded
-    columns[i % columns.length].appendChild(tile);
-  }
-
-  Promise.all(imagePromises).then(() => {
-    // Re-sort into shortest columns after load (once heights are valid)
-    const allTiles = Array.from(panzoomEl.querySelectorAll('.tile'));
+  Promise.all(promises).then(() => {
+    const tiles = [...panzoomEl.querySelectorAll('.tile')];
     panzoomEl.innerHTML = '';
-    const sortedCols = Array.from({ length: numColumns }, () => {
+    const newCols = Array.from({ length: numColumns }, () => {
       const col = document.createElement('div');
       col.className = 'column';
       panzoomEl.appendChild(col);
       return col;
     });
 
-    allTiles.forEach(tile => {
-      const shortest = sortedCols.reduce((prev, curr) =>
-        prev.offsetHeight < curr.offsetHeight ? prev : curr
+    tiles.forEach(tile => {
+      const shortest = newCols.reduce((a, b) =>
+        a.offsetHeight < b.offsetHeight ? a : b
       );
       shortest.appendChild(tile);
     });
 
-    const isDesktop = window.innerWidth >= 768;
-    scale = isDesktop ? 1.0 : 0.3;
-    originX = (wrapper.clientWidth / 2) - (panzoomEl.clientWidth * scale / 2);
-    originY = (wrapper.clientHeight / 2) - (panzoomEl.clientHeight * scale / 2);
+    scale = window.innerWidth >= 768 ? 1.0 : 0.3;
+    originX = (wrapper.clientWidth - panzoomEl.clientWidth * scale) / 2;
+    originY = (wrapper.clientHeight - panzoomEl.clientHeight * scale) / 2;
     updateTransform();
 
     const group = document.querySelector('.icon-group');
@@ -74,42 +82,40 @@ function buildGallery(images) {
   });
 }
 
-fetch('images.json')
-  .then(res => res.json())
-  .then(images => buildGallery(images))
-  .catch(err => console.error("Errore nel caricamento delle immagini:", err));
-
-let scale = 1, originX = 0, originY = 0, isPanning = false;
-let startX = 0, startY = 0;
-
-function updateTransform() {
-  panzoomEl.style.transform = `translate(${originX}px, ${originY}px) scale(${scale})`;
-  panzoomEl.style.transformOrigin = "0 0";
+function fetchImages() {
+  panzoomEl.innerHTML = '';
+  fetch('images.json')
+    .then(res => res.json())
+    .then(buildGallery)
+    .catch(err => console.error("Errore nel caricamento:", err));
 }
 
+fetchImages();
+
+// Zoom con rotella
 wrapper.addEventListener('wheel', (e) => {
   e.preventDefault();
   const rect = wrapper.getBoundingClientRect();
-  const mouseX = e.clientX - rect.left;
-  const mouseY = e.clientY - rect.top;
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
   const delta = -e.deltaY * 0.001;
   const newScale = Math.min(Math.max(0.1, scale * (1 + delta)), 5);
-  originX -= (mouseX - originX) * (newScale / scale - 1);
-  originY -= (mouseY - originY) * (newScale / scale - 1);
+  originX -= (x - originX) * (newScale / scale - 1);
+  originY -= (y - originY) * (newScale / scale - 1);
   scale = newScale;
   updateTransform();
 }, { passive: false });
 
+// Drag
 wrapper.addEventListener('pointerdown', (e) => {
   if (e.pointerType === 'touch' && !e.isPrimary) return;
   isPanning = true;
   startX = e.clientX - originX;
   startY = e.clientY - originY;
-  wrapper.style.cursor = 'grabbing';
   wrapper.setPointerCapture(e.pointerId);
+  wrapper.style.cursor = 'grabbing';
 });
 
-let rafScheduled = false;
 wrapper.addEventListener('pointermove', (e) => {
   if (!isPanning || rafScheduled) return;
   rafScheduled = true;
@@ -126,22 +132,19 @@ wrapper.addEventListener('pointerup', () => {
   wrapper.style.cursor = 'grab';
 });
 
-let lastTouchDist = null;
-let lastTouchCenter = null;
-
+// Pinch zoom su mobile
 wrapper.addEventListener('touchmove', (e) => {
   if (e.touches.length === 2) {
     e.preventDefault();
-    isPanning = false;
-    const rect = wrapper.getBoundingClientRect();
     const [t1, t2] = e.touches;
+    const rect = wrapper.getBoundingClientRect();
     const dx = t1.clientX - t2.clientX;
     const dy = t1.clientY - t2.clientY;
     const dist = Math.hypot(dx, dy);
     const centerX = (t1.clientX + t2.clientX) / 2 - rect.left;
     const centerY = (t1.clientY + t2.clientY) / 2 - rect.top;
 
-    if (lastTouchDist && lastTouchCenter) {
+    if (lastTouchDist !== null && lastTouchCenter !== null) {
       const scaleFactor = dist / lastTouchDist;
       const newScale = Math.min(Math.max(0.1, scale * scaleFactor), 5);
       originX += centerX - lastTouchCenter.x;
@@ -164,20 +167,17 @@ wrapper.addEventListener('touchend', (e) => {
   }
 });
 
+// Tema chiaro/scuro
 const toggleThemeBtn = document.getElementById("toggle-theme");
-toggleThemeBtn?.addEventListener("click", () => {
-  document.body.classList.toggle("light-mode");
-});
+if (toggleThemeBtn) {
+  toggleThemeBtn.addEventListener("click", () => {
+    document.body.classList.toggle("light-mode");
+  });
+}
 
-// Refresh solo della gallery
+// Refresh
 const refreshBtn = document.querySelector('button[title="refresh"]');
 if (refreshBtn) {
   refreshBtn.removeAttribute('onclick');
-  refreshBtn.addEventListener('click', () => {
-    panzoomEl.innerHTML = '';
-    fetch('images.json')
-      .then(res => res.json())
-      .then(images => buildGallery(images))
-      .catch(err => console.error("Errore nel ricaricare le immagini:", err));
-  });
+  refreshBtn.addEventListener('click', fetchImages);
 }
