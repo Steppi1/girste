@@ -31,7 +31,12 @@ body.light-mode {
   align-items: flex-start;
   user-select: none;
   pointer-events: auto;
+
+  will-change: transform;
+  transform: translateZ(0);
+  transform-origin: 0 0;
 }
+
 
 .column {
   display: flex;

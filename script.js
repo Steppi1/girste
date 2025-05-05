@@ -25,23 +25,41 @@ function buildGallery(images) {
   for (let i = 0; i < totalImages; i++) {
     const imgEl = document.createElement('img');
     imgEl.src = images[i];
-
-    const imgPromise = new Promise(resolve => {
-      imgEl.onload = resolve;
-      imgEl.onerror = resolve;
-    });
-    imagePromises.push(imgPromise);
+    imgEl.loading = 'lazy'; // Lazy loading
+    imgEl.decoding = 'async';
 
     const tile = document.createElement('div');
     tile.className = 'tile';
     tile.appendChild(imgEl);
-    const shortestCol = columns.reduce((prev, curr) =>
-      prev.offsetHeight < curr.offsetHeight ? prev : curr
-    );
-    shortestCol.appendChild(tile);
+
+    const promise = new Promise(resolve => {
+      imgEl.onload = resolve;
+      imgEl.onerror = resolve;
+    });
+    imagePromises.push(promise);
+
+    // Append temporarily, we'll sort after all images are loaded
+    columns[i % columns.length].appendChild(tile);
   }
 
   Promise.all(imagePromises).then(() => {
+    // Re-sort into shortest columns after load (once heights are valid)
+    const allTiles = Array.from(panzoomEl.querySelectorAll('.tile'));
+    panzoomEl.innerHTML = '';
+    const sortedCols = Array.from({ length: numColumns }, () => {
+      const col = document.createElement('div');
+      col.className = 'column';
+      panzoomEl.appendChild(col);
+      return col;
+    });
+
+    allTiles.forEach(tile => {
+      const shortest = sortedCols.reduce((prev, curr) =>
+        prev.offsetHeight < curr.offsetHeight ? prev : curr
+      );
+      shortest.appendChild(tile);
+    });
+
     const isDesktop = window.innerWidth >= 768;
     scale = isDesktop ? 1.0 : 0.3;
     originX = (wrapper.clientWidth / 2) - (panzoomEl.clientWidth * scale / 2);
@@ -51,8 +69,7 @@ function buildGallery(images) {
     const group = document.querySelector('.icon-group');
     const footerIcon = document.querySelector('.icon-footer img');
     if (group && footerIcon) {
-      const groupWidth = group.offsetWidth;
-      footerIcon.style.width = `${groupWidth}px`;
+      footerIcon.style.width = `${group.offsetWidth}px`;
     }
   });
 }
@@ -92,11 +109,16 @@ wrapper.addEventListener('pointerdown', (e) => {
   wrapper.setPointerCapture(e.pointerId);
 });
 
+let rafScheduled = false;
 wrapper.addEventListener('pointermove', (e) => {
-  if (!isPanning) return;
-  originX = e.clientX - startX;
-  originY = e.clientY - startY;
-  updateTransform();
+  if (!isPanning || rafScheduled) return;
+  rafScheduled = true;
+  requestAnimationFrame(() => {
+    originX = e.clientX - startX;
+    originY = e.clientY - startY;
+    updateTransform();
+    rafScheduled = false;
+  });
 });
 
 wrapper.addEventListener('pointerup', () => {
@@ -119,7 +141,7 @@ wrapper.addEventListener('touchmove', (e) => {
     const centerX = (t1.clientX + t2.clientX) / 2 - rect.left;
     const centerY = (t1.clientY + t2.clientY) / 2 - rect.top;
 
-    if (lastTouchDist !== null && lastTouchCenter) {
+    if (lastTouchDist && lastTouchCenter) {
       const scaleFactor = dist / lastTouchDist;
       const newScale = Math.min(Math.max(0.1, scale * scaleFactor), 5);
       originX += centerX - lastTouchCenter.x;
@@ -147,7 +169,7 @@ toggleThemeBtn?.addEventListener("click", () => {
   document.body.classList.toggle("light-mode");
 });
 
-// --- OVERRIDE del pulsante "refresh" per ricaricare solo la gallery ---
+// Refresh solo della gallery
 const refreshBtn = document.querySelector('button[title="refresh"]');
 if (refreshBtn) {
   refreshBtn.removeAttribute('onclick');
