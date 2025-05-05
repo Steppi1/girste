@@ -8,8 +8,27 @@
   <link rel="icon" href="girstefav.png" type="image/png">
   <link rel="stylesheet" href="style.css">
   <style>
-    #wrapper { position: relative; overflow: visible; touch-action: none; }
-    #panzoom { position: absolute; top:0; left:0; overflow: visible; touch-action: none; transform-origin: 0 0; }
+    #wrapper {
+      position: relative;
+      overflow: visible;
+      touch-action: none;
+    }
+    #panzoom {
+      position: absolute;
+      top: 0;
+      left: 0;
+      overflow: visible;
+      touch-action: none;
+      transform-origin: 50% 50%;
+    }
+    /* Evita selezione/drag immagine mentre fai pan con mouse */
+    #panzoom img {
+      user-select: none;
+      -webkit-user-drag: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      pointer-events: none;
+    }
   </style>
 </head>
 <body>
@@ -31,9 +50,9 @@
     </div>
   </div>
 
-  <!-- libra­ria pan-zoom -->
-  <script src="https://unpkg.com/pan-zoom@3.6.2/dist/pan-zoom.min.js"></script>
-  <!-- tuo script esterno -->
+  <!-- Panzoom (anvaka) -->
+  <script src="https://unpkg.com/panzoom@9.4.3/dist/panzoom.min.js"></script> :contentReference[oaicite:0]{index=0}
+  <!-- Il tuo script -->
   <script src="script.js"></script>
 </body>
 </html>

@@ -2,24 +2,17 @@
 const wrapper   = document.getElementById('wrapper');
 const panzoomEl = document.getElementById('panzoom');
 
-// — stato
-let scale      = 0.4;    // dezoom iniziale (40%)
-let posX        = 0;
-let posY        = 0;
-const minScale = 0.1;
-const maxScale = 5;
+// — parametri
+const initialScale = 0.4;  // dezoom iniziale
+const minScale     = 0.1;
+const maxScale     = 5;
 
-// — helper: applica trasform
-function updateTransform() {
-  panzoomEl.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
-}
-
-// — clamp
+// — helper: clamp
 function clamp(v, min, max) {
   return v < min ? min : v > max ? max : v;
 }
 
-// — shuffle array
+// — Fisher–Yates shuffle
 function shuffle(arr) {
   for (let i = arr.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -27,21 +20,14 @@ function shuffle(arr) {
   }
 }
 
-// — centra inizialmente
-function centerInitial() {
-  const rect = panzoomEl.getBoundingClientRect();
-  posX = (wrapper.clientWidth  - rect.width ) / 2;
-  posY = (wrapper.clientHeight - rect.height) / 2;
-  updateTransform();
-}
-
-// — build gallery
+// — build Masonry-style gallery
 function buildGallery(images, onComplete) {
   shuffle(images);
-  const n = Math.floor(Math.sqrt(images.length));
-  const cols = [];
+  const n      = Math.floor(Math.sqrt(images.length));
+  const cols   = [];
   panzoomEl.innerHTML = '';
 
+  // crea colonne
   for (let i = 0; i < n; i++) {
     const c = document.createElement('div');
     c.className = 'column';
@@ -55,69 +41,67 @@ function buildGallery(images, onComplete) {
     img.src      = src;
     img.loading  = 'lazy';
     img.decoding = 'async';
-    img.style.display  = 'block';
-    img.style.maxWidth = 'none';
-    img.style.height   = 'auto';
-
     img.onload = () => {
-      loaded++;
       const tile = document.createElement('div');
       tile.className = 'tile';
       tile.appendChild(img);
 
+      // append to shortest column
       const shortest = cols.reduce((a, b) =>
         a.offsetHeight < b.offsetHeight ? a : b
       );
       shortest.appendChild(tile);
 
+      loaded++;
       if (loaded === images.length && onComplete) onComplete();
     };
   });
 }
 
-// — inizializza
+// — inizializzazione
 fetch('images.json')
-  .then(r => r.json())
+  .then(res => res.json())
   .then(images => {
-    // costruisci e poi centra
+    // 1) costruisci gallery, poi:
     buildGallery(images, () => {
-      centerInitial();
+      // 2) prima di inizializzare panzoom, applica lo scale iniziale
+      panzoomEl.style.transform = `scale(${initialScale})`;
 
-      // attiva pan-zoom
-      panzoom(panzoomEl, e => {
-        posX += e.dx;
-        posY += e.dy;
-
-        if (e.dz) {
-          const old = scale;
-          scale = clamp(old * (1 + e.dz), minScale, maxScale);
-          const rect = panzoomEl.getBoundingClientRect();
-          const fx = e.x - rect.left;
-          const fy = e.y - rect.top;
-          posX -= fx * (scale/old - 1);
-          posY -= fy * (scale/old - 1);
-        }
-
-        const limitX = wrapper.clientWidth  * 2;
-        const limitY = wrapper.clientHeight * 2;
-        posX = clamp(posX, -limitX, limitX);
-        posY = clamp(posY, -limitY, limitY);
-
-        updateTransform();
+      // 3) istanzia panzoom
+      const instance = panzoom(panzoomEl, {
+        minZoom: minScale,
+        maxZoom: maxScale,
+        zoomSpeed: 0.065,     // 6.5% per wheel
+        filterKey: () => true,        // nessun filtro su tasti
+        beforeWheel: () => false,     // gestisce wheel sempre
+        beforeMouseDown: () => true   // pan sempre abilitato
       });
+
+      // 4) centra elemento nel wrapper
+      const rect = panzoomEl.getBoundingClientRect();
+      const centerX = (wrapper.clientWidth  - rect.width ) / 2;
+      const centerY = (wrapper.clientHeight - rect.height) / 2;
+      instance.pan(centerX, centerY);
+
+      // 5) refresh button
+      document.querySelector('button[title="refresh"]')
+        .addEventListener('click', () => {
+          panzoomEl.innerHTML = '';
+          buildGallery(images, () => {
+            panzoomEl.style.transform = `scale(${initialScale})`;
+            instance.reset();
+            const r = panzoomEl.getBoundingClientRect();
+            instance.pan(
+              (wrapper.clientWidth - r.width) / 2,
+              (wrapper.clientHeight - r.height) / 2
+            );
+          });
+        });
     });
-
-    // refresh
-    document.querySelector('button[title="refresh"]')
-      .addEventListener('click', () => {
-        panzoomEl.innerHTML = '';
-        scale = 0.4; posX = posY = 0;
-        buildGallery(images, centerInitial);
-      });
   })
   .catch(console.error);
 
-// — tema toggle
+// — theme toggle
 document.getElementById('toggle-theme')
   .addEventListener('click', () =>
     document.body.classList.toggle('light-mode')
