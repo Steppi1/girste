@@ -3,7 +3,6 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <!-- lasciamo il pinch-to-page nativo disabilitato, ma gestiamo tutto via JS -->
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
   <meta name="description" content="Creative Designer Based in Turin">
   <title>girste's</title>
@@ -12,19 +11,22 @@
 </head>
 <body>
   <div id="wrapper">
-    <div id="panzoom"></div>
-  </div>
-
-  <div id="sticky-bar">
-    <div class="icon-group">
-      <a href="mailto:me@girste.com" title="email"><img src="assets/mail-icon.svg" alt="email"></a>
-      <a href="tel:+393405445704" title="call"><img src="assets/tel-icon.svg" alt="call"></a>
-      <button title="refresh"><img src="assets/ric-icon.svg" alt="refresh"></button>
-      <button id="toggle-theme" title="bright/dark"><img src="assets/dark-icon.svg" alt="dark/bright"></button>
-      <a href="/pages/sandbox.html" title="surprise"><img src="assets/box-icon.svg" alt="sandbox"></a>
-    </div>
-    <div class="icon-footer">
-      <img src="assets/text-icon.svg" alt="Footer Icon">
+    <div id="panzoom">
+      <!-- Sticky Yellow Bar incluso nel canvas, si muove col pan -->
+      <div id="sticky-bar">
+        <div class="icon-group">
+          <a href="mailto:me@girste.com" title="email"><img src="assets/mail-icon.svg" alt="email"></a>
+          <a href="tel:+393405445704" title="call"><img src="assets/tel-icon.svg" alt="call"></a>
+          <button title="refresh"><img src="assets/ric-icon.svg" alt="refresh"></button>
+          <button id="toggle-theme" title="bright/dark"><img src="assets/dark-icon.svg" alt="dark/bright"></button>
+          <a href="/pages/sandbox.html" title="surprise"><img src="assets/box-icon.svg" alt="sandbox"></a>
+        </div>
+        <div class="icon-footer">
+          <strong>GIRSTE'S</strong>
+          <small>© S.Girard 2025, design by Creative Unit</small>
+        </div>
+      </div>
+      <!-- la gallery verrà inserita dinamicamente qui dal JS -->
     </div>
   </div>
 

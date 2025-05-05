@@ -4,7 +4,7 @@
 const wrapper   = document.getElementById('wrapper');
 const panzoomEl = document.getElementById('panzoom');
 
-// — stato pan/zoom
+// — pan/zoom state
 let scale = 1, originX = 0, originY = 0, initialPinch = null;
 const pointers = new Map();
 
@@ -16,20 +16,20 @@ function shuffle(arr) {
   }
 }
 
-// — applica transform
+// — apply CSS transform
 function updateTransform() {
   panzoomEl.style.transform =
     `translate3d(${originX}px, ${originY}px, 0) scale(${scale})`;
 }
 
-// — costruisci la gallery
+// — build the Masonry-style gallery
 function buildGallery(images) {
   shuffle(images);
   const n = Math.floor(Math.sqrt(images.length));
   const columns = [];
-  panzoomEl.innerHTML = '';
+  // clear any existing tiles (but keep sticky-bar in DOM)
+  panzoomEl.querySelectorAll('.column').forEach(c => c.remove());
 
-  // crea colonne
   for (let i = 0; i < n; i++) {
     const col = document.createElement('div');
     col.className = 'column';
@@ -37,14 +37,10 @@ function buildGallery(images) {
     columns.push(col);
   }
 
-  // aggiungi immagini
   let loaded = 0, total = images.length;
   images.forEach(src => {
     const img = document.createElement('img');
-    img.src = src;
-    // retina support
-    img.srcset = `${src} 1x, ${src.replace(/\.(\w+)$/, '@2x.$1')} 2x`;
-    img.sizes = '(min-width:768px) 300px, 100vw';
+    img.src = src;                   // carica esattamente il file originale
     img.loading = 'lazy';
     img.decoding = 'async';
 
@@ -54,8 +50,10 @@ function buildGallery(images) {
       tile.className = 'tile';
       tile.appendChild(img);
       // append alla colonna più corta
-      const short = columns.reduce((a,b) => a.offsetHeight < b.offsetHeight ? a : b);
-      short.appendChild(tile);
+      const shortest = columns.reduce((a,b) =>
+        a.offsetHeight < b.offsetHeight ? a : b
+      );
+      shortest.appendChild(tile);
 
       // quando tutte caricate, centro
       if (loaded === total) centerGallery();
@@ -63,7 +61,7 @@ function buildGallery(images) {
   });
 }
 
-// — centra la gallery all'inizio
+// — center the gallery
 function centerGallery() {
   scale = 1;
   originX = (wrapper.clientWidth  - panzoomEl.clientWidth  * scale) / 2;
@@ -71,13 +69,15 @@ function centerGallery() {
   updateTransform();
 }
 
-// — fetch & build
+// — fetch & initialize
 fetch('images.json')
   .then(r => r.json())
   .then(buildGallery)
   .catch(e => console.error('Errore:', e));
 
-// — wheel zoom (desktop) — il mobile non genera wheel
+// — custom pan & pinch (tutti i device)
+
+// wheel zoom (desktop)
 wrapper.addEventListener('wheel', e => {
   e.preventDefault();
   const r = wrapper.getBoundingClientRect();
@@ -90,11 +90,10 @@ wrapper.addEventListener('wheel', e => {
   updateTransform();
 }, { passive: false });
 
-// — pan & pinch via pointer events (TUTTI i device)
-wrapper.addEventListener('pointerdown', e => {
+// pointer pan & pinch
+panzoomEl.addEventListener('pointerdown', e => {
   wrapper.setPointerCapture(e.pointerId);
   pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
-
   if (pointers.size === 2) {
     const [p1,p2] = Array.from(pointers.values());
     initialPinch = {
@@ -105,61 +104,45 @@ wrapper.addEventListener('pointerdown', e => {
   }
 });
 
-wrapper.addEventListener('pointermove', e => {
+panzoomEl.addEventListener('pointermove', e => {
   if (!pointers.has(e.pointerId)) return;
   const prev = pointers.get(e.pointerId);
   pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
 
   if (pointers.size === 1) {
-    // pan
     originX += e.clientX - prev.x;
     originY += e.clientY - prev.y;
     updateTransform();
   } else if (pointers.size === 2 && initialPinch) {
-    // pinch-to-zoom
     const [a,b] = Array.from(pointers.values());
-    const dist   = Math.hypot(a.x - b.x, a.y - b.y);
+    const dist = Math.hypot(a.x - b.x, a.y - b.y);
     const center = { x:(a.x+b.x)/2, y:(a.y+b.y)/2 };
     const factor = dist / initialPinch.distance;
     const newScale = Math.min(Math.max(0.1, initialPinch.scale * factor), 5);
 
     originX = initialPinch.originX
             + (center.x - initialPinch.center.x)
-            - (center.x - initialPinch.center.x) * (newScale/initialPinch.scale);
+            - (center.x - initialPinch.center.x)*(newScale/initialPinch.scale);
     originY = initialPinch.originY
             + (center.y - initialPinch.center.y)
-            - (center.y - initialPinch.center.y) * (newScale/initialPinch.scale);
+            - (center.y - initialPinch.center.y)*(newScale/initialPinch.scale);
     scale = newScale;
     updateTransform();
   }
 });
 
-wrapper.addEventListener('pointerup', e => {
+panzoomEl.addEventListener('pointerup', e => {
   pointers.delete(e.pointerId);
   wrapper.releasePointerCapture(e.pointerId);
   if (pointers.size < 2) initialPinch = null;
 });
 
-// — tema e refresh
+// — theme toggle & refresh
 document.getElementById('toggle-theme')
   .addEventListener('click', () => document.body.classList.toggle('light-mode'));
 
 document.querySelector('button[title="refresh"]')
   .addEventListener('click', () => {
-    panzoomEl.innerHTML = '';
+    panzoomEl.querySelectorAll('.tile').forEach(t => t.remove());
     fetch('images.json').then(r => r.json()).then(buildGallery);
   });
-
-// — Chrome-only: footer-icon larga quanto il gruppo
-window.addEventListener('load', () => {
-  const isChrome = /Chrome/.test(navigator.userAgent)
-                && /Google Inc/.test(navigator.vendor);
-  if (!isChrome) return;
-
-  const icons    = document.querySelectorAll('#sticky-bar .icon-group img');
-  const footer   = document.querySelector('#sticky-bar .icon-footer img');
-  let widthSum = 0;
-  icons.forEach(img => widthSum += img.getBoundingClientRect().width);
-  footer.style.width  = `${widthSum}px`;
-  footer.style.height = 'auto';
-});
