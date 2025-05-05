@@ -6,10 +6,15 @@ const panzoomEl = document.getElementById('panzoom');
 let scale = 1;
 let originX = 0, originY = 0;
 
+// — variabili per pinch nativo
+let lastScale = 1;
+let gestureStartOriginX = 0;
+let gestureStartOriginY = 0;
+
 // — applica trasformazione
 function updateTransform() {
   panzoomEl.style.transform =
-    `translate3d(${originX}px, ${originY}px,0) scale(${scale})`;
+    `translate3d(${originX}px, ${originY}px, 0) scale(${scale})`;
 }
 
 // — centra la gallery (solo al caricamento)
@@ -52,7 +57,7 @@ function buildGallery(images) {
       const tile = document.createElement('div');
       tile.className = 'tile';
       tile.appendChild(img);
-      const shortest = cols.reduce((a,b)=> a.offsetHeight<b.offsetHeight?a:b);
+      const shortest = cols.reduce((a,b)=> a.offsetHeight < b.offsetHeight ? a : b);
       shortest.appendChild(tile);
       if (loaded === total) centerGallery();
     };
@@ -79,20 +84,20 @@ interact(wrapper)
   });
 
 // — pinch con Interact.js
-let lastScale = 1;
 interact(wrapper)
   .gesturable({
     listeners: {
-      start() {
+      start(event) {
         lastScale = scale;
       },
       move(event) {
-        scale = Math.max(0.1, Math.min(5, lastScale * event.scale));
+        const newScale = Math.max(0.1, Math.min(5, lastScale * event.scale));
         const rect = wrapper.getBoundingClientRect();
         const cx = event.clientX - rect.left;
         const cy = event.clientY - rect.top;
-        originX = cx - (cx - originX) * (scale / lastScale);
-        originY = cy - (cy - originY) * (scale / lastScale);
+        originX = cx - (cx - originX) * (newScale / scale);
+        originY = cy - (cy - originY) * (newScale / scale);
+        scale = newScale;
         updateTransform();
       }
     }
@@ -105,7 +110,7 @@ wrapper.addEventListener('wheel', e => {
   const cx = e.clientX - rect.left;
   const cy = e.clientY - rect.top;
   const delta = -e.deltaY * 0.001;
-  let newScale = Math.min(5, Math.max(0.1, scale * (1 + delta)));
+  const newScale = Math.min(5, Math.max(0.1, scale * (1 + delta)));
   originX = cx - (cx - originX) * (newScale / scale);
   originY = cy - (cy - originY) * (newScale / scale);
   scale = newScale;
@@ -127,23 +132,29 @@ document.getElementById('toggle-theme')
     document.body.classList.toggle('light-mode')
   );
 
-
-// — NATIVE GESTURE EVENTS PER iOS PINCH FIX — 
+// — GESTURE NATIVE iOS / Safari MOBILE —  
 wrapper.addEventListener('gesturestart', e => {
   lastScale = scale;
+  gestureStartOriginX = originX;
+  gestureStartOriginY = originY;
 });
+
 wrapper.addEventListener('gesturechange', e => {
   e.preventDefault();
-  let newScale = lastScale * e.scale;
-  newScale = Math.max(0.1, Math.min(5, newScale));
+  // nuovo scale
+  const unclamped = lastScale * e.scale;
+  const newScale = Math.max(0.1, Math.min(5, unclamped));
+  // punto di focalizzazione
   const rect = wrapper.getBoundingClientRect();
   const cx = e.clientX - rect.left;
   const cy = e.clientY - rect.top;
-  originX = cx - (cx - originX) * (newScale / scale);
-  originY = cy - (cy - originY) * (newScale / scale);
+  // calcola origine rispetto allo scale iniziale
+  originX = cx - (cx - gestureStartOriginX) * (newScale / lastScale);
+  originY = cy - (cy - gestureStartOriginY) * (newScale / lastScale);
   scale = newScale;
   updateTransform();
 });
-wrapper.addEventListener('gestureend', e => {
+
+wrapper.addEventListener('gestureend', () => {
   lastScale = scale;
 });
