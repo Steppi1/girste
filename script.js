@@ -158,3 +158,25 @@ wrapper.addEventListener('gesturechange', e => {
 wrapper.addEventListener('gestureend', () => {
   lastScale = scale;
 });
+
+// — HAMMER.JS PINCH (fallback mobile)
+const hammer = new Hammer(wrapper);
+hammer.get('pinch').set({ enable: true });
+
+let hammerStartScale;
+hammer.on('pinchstart', () => {
+  hammerStartScale = scale;
+});
+
+hammer.on('pinchmove', ev => {
+  // calcola nuovo scale e mantieni il focus
+  const newScale = Math.max(0.1, Math.min(5, hammerStartScale * ev.scale));
+  const rect = wrapper.getBoundingClientRect();
+  const cx = ev.center.x - rect.left;
+  const cy = ev.center.y - rect.top;
+
+  originX = cx - (cx - originX) * (newScale / scale);
+  originY = cy - (cy - originY) * (newScale / scale);
+  scale = newScale;
+  updateTransform();
+});
