@@ -1,40 +1,133 @@
-<!DOCTYPE html>
-<html lang="it">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
-  <meta name="description" content="Creative Designer Based in Turin">
-  <title>girste's</title>
-  <link rel="icon" href="girstefav.png" type="image/png">
-  <link rel="stylesheet" href="style.css">
-  <style>
-    /* manteniamo wrapper e panzoom “liberi” e react-touch-friendly */
-    #wrapper { overflow: visible; touch-action: none; }
-    #panzoom { overflow: visible; touch-action: none; transform-origin: 0 0; }
-  </style>
-</head>
-<body>
-  <div id="wrapper">
-    <div id="panzoom"></div>
-  </div>
+// script.js
 
-  <div id="sticky-bar">
-    <div class="icon-group">
-      <a href="mailto:me@girste.com" title="email"><img src="assets/mail-icon.svg" alt="email"></a>
-      <a href="tel:+393405445704" title="call"><img src="assets/tel-icon.svg" alt="call"></a>
-      <button title="refresh"><img src="assets/ric-icon.svg" alt="refresh"></button>
-      <button id="toggle-theme" title="bright/dark"><img src="assets/dark-icon.svg" alt="dark/bright"></button>
-      <a href="/pages/sandbox.html" title="surprise"><img src="assets/box-icon.svg" alt="sandbox"></a>
-    </div>
-    <div class="icon-footer">
-      <strong>GIRSTE'S</strong>
-      <small>© S.Girard 2025, design by Creative Unit</small>
-    </div>
-  </div>
+// — DOM refs
+const wrapper   = document.getElementById('wrapper');
+const panzoomEl = document.getElementById('panzoom');
 
-  <!-- Interact.js per pan, pinch, inertia -->
-  <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
-  <!-- Il tuo script -->
-  <script src="script.js"></script>
-</body>
-</html>
+// — stato
+let scale      = 0.4;    // dezoom iniziale (40%)
+let posX        = 0;
+let posY        = 0;
+const minScale = 0.1;
+const maxScale = 5;
+
+// — helper: applica trasform
+function updateTransform() {
+  panzoomEl.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
+}
+
+// — helper: clamp
+function clamp(v, min, max) {
+  return v < min ? min : v > max ? max : v;
+}
+
+// — shuffle array (Fisher–Yates)
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+}
+
+// — centra elemento nel wrapper
+function centerInitial() {
+  const rect = panzoomEl.getBoundingClientRect();
+  posX = (wrapper.clientWidth  - rect.width ) / 2;
+  posY = (wrapper.clientHeight - rect.height) / 2;
+  updateTransform();
+}
+
+// — build Masonry-style gallery
+function buildGallery(images, onComplete) {
+  shuffle(images);
+  const n = Math.floor(Math.sqrt(images.length));
+  const cols = [];
+  panzoomEl.innerHTML = '';
+
+  // crea colonne
+  for (let i = 0; i < n; i++) {
+    const c = document.createElement('div');
+    c.className = 'column';
+    panzoomEl.appendChild(c);
+    cols.push(c);
+  }
+
+  let loaded = 0;
+  images.forEach(src => {
+    const img = new Image();
+    img.src      = src;
+    img.loading  = 'lazy';
+    img.decoding = 'async';
+    img.style.display  = 'block';
+    img.style.maxWidth = 'none';
+    img.style.height   = 'auto';
+
+    img.onload = () => {
+      loaded++;
+      const tile = document.createElement('div');
+      tile.className = 'tile';
+      tile.appendChild(img);
+
+      // trova colonna più corta
+      const shortest = cols.reduce((a, b) =>
+        a.offsetHeight < b.offsetHeight ? a : b
+      );
+      shortest.appendChild(tile);
+
+      if (loaded === images.length && onComplete) onComplete();
+    };
+  });
+}
+
+// — inizializza gallery e pan-zoom
+fetch('images.json')
+  .then(r => r.json())
+  .then(images => {
+    // crea gallery, poi centro + init panzoom
+    buildGallery(images, () => {
+      centerInitial();
+
+      // init pan-zoom lib
+      panzoom(panzoomEl, e => {
+        // pan
+        posX += e.dx;
+        posY += e.dy;
+
+        // zoom (e.dz = percentuale di zoom, es. 0.1 = +10%)
+        if (e.dz) {
+          const old = scale;
+          scale = clamp(old * (1 + e.dz), minScale, maxScale);
+
+          // mantieni punto focale
+          const rect = panzoomEl.getBoundingClientRect();
+          const fx = e.x - rect.left;
+          const fy = e.y - rect.top;
+          posX -= fx * (scale/old - 1);
+          posY -= fy * (scale/old - 1);
+        }
+
+        // limiti ampi: ±2× wrapper size
+        const limitX = wrapper.clientWidth  * 2;
+        const limitY = wrapper.clientHeight * 2;
+        posX = clamp(posX, -limitX, limitX);
+        posY = clamp(posY, -limitY, limitY);
+
+        updateTransform();
+      });
+    });
+
+    // refresh
+    document.querySelector('button[title="refresh"]')
+      .addEventListener('click', () => {
+        panzoomEl.innerHTML = '';
+        scale = 0.4; posX = posY = 0;
+        buildGallery(images, centerInitial);
+      });
+  })
+  .catch(console.error);
+
+// — theme toggle rimane invariato
+document.getElementById('toggle-theme')
+  .addEventListener('click', () =>
+    document.body.classList.toggle('light-mode')
+  );
