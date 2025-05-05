@@ -4,11 +4,11 @@ const panzoomEl = document.getElementById('panzoom');
 
 // — stato pan/zoom
 let scale = 1, originX = 0, originY = 0;
-let isPanning = false, startX = 0, startY = 0;
-let lastTouchDist = null, lastTouchCenter = null;
-let rafScheduled = false;
 
-// — shuffle in-place
+// — pinch-touch vars
+let lastTouchDist = null, lastTouchCenter = null;
+
+// — shuffle array
 function shuffle(arr) {
   for (let i = arr.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -16,169 +16,127 @@ function shuffle(arr) {
   }
 }
 
-// — applica transform
+// — update transform
 function updateTransform() {
   panzoomEl.style.transform =
-    `translate(${originX}px, ${originY}px) scale(${scale})`;
-  panzoomEl.style.transformOrigin = '0 0';
+    `translate3d(${originX}px, ${originY}px, 0) scale(${scale})`;
 }
 
-// — costruisci gallery (append a “shortest column” on load)
+// — build gallery
 function buildGallery(images) {
   shuffle(images);
-  const nCols = Math.floor(Math.sqrt(images.length));
+  const n = Math.floor(Math.sqrt(images.length));
   const columns = [];
 
-  // crea colonne
   panzoomEl.innerHTML = '';
-  for (let i = 0; i < nCols; i++) {
+  for (let i = 0; i < n; i++) {
     const col = document.createElement('div');
     col.className = 'column';
     panzoomEl.appendChild(col);
     columns.push(col);
   }
 
-  // per ogni URL, crea <img> e tile, append solo su load
-  const loadPromises = images.map(src => {
-    return new Promise(resolve => {
-      const img = document.createElement('img');
-      img.src = src;
-      img.loading = 'lazy';
-      img.decoding = 'async';
-
+  images.forEach(src => {
+    const img = document.createElement('img');
+    img.src = src;
+    img.loading = 'lazy';
+    img.decoding = 'async';
+    img.onload = () => {
       const tile = document.createElement('div');
       tile.className = 'tile';
       tile.appendChild(img);
-
-      img.onload = img.onerror = () => {
-        // appendi al column più corta
-        const short = columns.reduce((a, b) =>
-          a.offsetHeight < b.offsetHeight ? a : b
-        );
-        short.appendChild(tile);
-        resolve();
-      };
-    });
+      // append alla column più corta
+      const short = columns.reduce((a, b) =>
+        a.offsetHeight < b.offsetHeight ? a : b
+      );
+      short.appendChild(tile);
+    };
   });
 
-  // dopo che tutte le immagini sono state append
-  Promise.all(loadPromises).then(() => {
-    // centro e zoom iniziale
+  // centratura iniziale
+  requestAnimationFrame(() => {
     const isDesktop = window.innerWidth >= 768;
     scale = isDesktop ? 1 : 0.3;
-    originX = (wrapper.clientWidth - panzoomEl.clientWidth * scale) / 2;
+    originX = (wrapper.clientWidth  - panzoomEl.clientWidth  * scale) / 2;
     originY = (wrapper.clientHeight - panzoomEl.clientHeight * scale) / 2;
     updateTransform();
-
-    // allinea icona footer
-    const group = document.querySelector('.icon-group');
-    const footerIcon = document.querySelector('.icon-footer img');
-    if (group && footerIcon) {
-      footerIcon.style.width = `${group.offsetWidth}px`;
-    }
   });
 }
 
-// — fetch JSON e buildGallery
+// — fetch & build
 fetch('images.json')
   .then(r => r.json())
   .then(buildGallery)
-  .catch(e => console.error('Errore nel caricamento:', e));
+  .catch(e => console.error('Errore:', e));
 
 // — wheel zoom
 wrapper.addEventListener('wheel', e => {
   e.preventDefault();
-  const rect = wrapper.getBoundingClientRect();
-  const x = e.clientX - rect.left, y = e.clientY - rect.top;
-  const delta = -e.deltaY * 0.001;
-  const newScale = Math.min(Math.max(0.1, scale * (1 + delta)), 5);
+  const r = wrapper.getBoundingClientRect();
+  const x = e.clientX - r.left, y = e.clientY - r.top;
+  const d = -e.deltaY * 0.001;
+  const newScale = Math.min(Math.max(0.1, scale * (1 + d)), 5);
   originX -= (x - originX) * (newScale/scale - 1);
   originY -= (y - originY) * (newScale/scale - 1);
   scale = newScale;
   updateTransform();
 }, { passive: false });
 
-// — pointerdown / pointermove / pointerup (mouse & touchpad)
+// — pointer pan & pinch
+const pointers = new Map();
+let initialPinch = null;
+
 wrapper.addEventListener('pointerdown', e => {
-  if (e.pointerType === 'touch' && !e.isPrimary) return;
-  isPanning = true;
-  startX = e.clientX - originX;
-  startY = e.clientY - originY;
   wrapper.setPointerCapture(e.pointerId);
-  wrapper.style.cursor = 'grabbing';
+  pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  if (pointers.size === 2) {
+    const [p1, p2] = Array.from(pointers.values());
+    initialPinch = {
+      distance: Math.hypot(p1.x - p2.x, p1.y - p2.y),
+      center: { x:(p1.x+p2.x)/2, y:(p1.y+p2.y)/2 },
+      originX, originY, scale
+    };
+  }
 });
 
 wrapper.addEventListener('pointermove', e => {
-  if (!isPanning || rafScheduled) return;
-  rafScheduled = true;
-  requestAnimationFrame(() => {
-    originX = e.clientX - startX;
-    originY = e.clientY - startY;
+  if (!pointers.has(e.pointerId)) return;
+  const prev = pointers.get(e.pointerId);
+  pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+  if (pointers.size === 1) {
+    originX += e.clientX - prev.x;
+    originY += e.clientY - prev.y;
     updateTransform();
-    rafScheduled = false;
-  });
-});
-
-wrapper.addEventListener('pointerup', () => {
-  isPanning = false;
-  wrapper.style.cursor = 'grab';
-});
-
-// — touchstart per pinch init
-wrapper.addEventListener('touchstart', e => {
-  if (e.touches.length === 2) {
-    const [a, b] = e.touches;
-    const dx = a.clientX - b.clientX, dy = a.clientY - b.clientY;
-    lastTouchDist = Math.hypot(dx, dy);
-    const rect = wrapper.getBoundingClientRect();
-    lastTouchCenter = {
-      x: (a.clientX + b.clientX)/2 - rect.left,
-      y: (a.clientY + b.clientY)/2 - rect.top
-    };
   }
-}, { passive: false });
+  else if (pointers.size === 2 && initialPinch) {
+    const [a,b] = Array.from(pointers.values());
+    const dist = Math.hypot(a.x - b.x, a.y - b.y);
+    const center = { x:(a.x+b.x)/2, y:(a.y+b.y)/2 };
+    const factor = dist / initialPinch.distance;
+    const newScale = Math.min(Math.max(0.1, initialPinch.scale * factor), 5);
 
-// — touchmove per pinch (due dita)
-wrapper.addEventListener('touchmove', e => {
-  if (e.touches.length === 2) {
-    e.preventDefault();
-    const [a, b] = e.touches;
-    const dx = a.clientX - b.clientX, dy = a.clientY - b.clientY;
-    const dist = Math.hypot(dx, dy);
-    const rect = wrapper.getBoundingClientRect();
-    const cx = (a.clientX + b.clientX)/2 - rect.left;
-    const cy = (a.clientY + b.clientY)/2 - rect.top;
-
-    if (lastTouchDist !== null && lastTouchCenter !== null) {
-      const factor = dist / lastTouchDist;
-      const newScale = Math.min(Math.max(0.1, scale * factor), 5);
-      originX += cx - lastTouchCenter.x;
-      originY += cy - lastTouchCenter.y;
-      originX -= (cx - originX) * (newScale/scale - 1);
-      originY -= (cy - originY) * (newScale/scale - 1);
-      scale = newScale;
-      updateTransform();
-    }
-
-    lastTouchDist = dist;
-    lastTouchCenter = { x: cx, y: cy };
-  }
-}, { passive: false });
-
-wrapper.addEventListener('touchend', e => {
-  if (e.touches.length < 2) {
-    lastTouchDist = null;
-    lastTouchCenter = null;
+    originX = initialPinch.originX
+            + (center.x - initialPinch.center.x)
+            - (center.x - initialPinch.center.x)*(newScale/initialPinch.scale);
+    originY = initialPinch.originY
+            + (center.y - initialPinch.center.y)
+            - (center.y - initialPinch.center.y)*(newScale/initialPinch.scale);
+    scale = newScale;
+    updateTransform();
   }
 });
 
-// — tema chiaro/scuro
+wrapper.addEventListener('pointerup', e => {
+  pointers.delete(e.pointerId);
+  wrapper.releasePointerCapture(e.pointerId);
+  if (pointers.size < 2) initialPinch = null;
+});
+
+// — theme toggle & refresh
 document.getElementById('toggle-theme')
-  .addEventListener('click', () =>
-    document.body.classList.toggle('light-mode')
-  );
+  .addEventListener('click', () => document.body.classList.toggle('light-mode'));
 
-// — refresh gallery
 document.querySelector('button[title="refresh"]')
   .addEventListener('click', () => {
     panzoomEl.innerHTML = '';
