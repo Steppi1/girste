@@ -50,6 +50,14 @@ function buildGallery(images) {
   images.forEach(src => {
     const img = document.createElement('img');
     img.src      = src;
+       const img = document.createElement('img');
+    img.src      = src;
+   // --- Aggiunta per il srcset: sostituisci i percorsi con i tuoi file reali
+   img.srcset   =
+     `${src.replace(/(\.\w+)$/, '_300$1')}  300w,` +
+    `${src.replace(/(\.\w+)$/, '_600$1')}  600w,` +
+     `${src.replace(/(\.\w+)$/, '_1200$1')} 1200w`;
+   img.sizes    = '300px';
     img.loading  = 'lazy';
     img.decoding = 'async';
     img.onload = () => {
