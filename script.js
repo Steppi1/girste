@@ -80,37 +80,17 @@ fetch('images.json')
         const centerY = (wrapperBounds.height - scaledH) / 2;
 
         instance.moveTo(centerX, centerY);
-
-        // — Bottone refresh
-        document.querySelector('button[title="refresh"]')
-          .addEventListener('click', () => {
-            panzoomEl.innerHTML = '';
-            buildGallery(images, () => {
-              requestAnimationFrame(() => {
-                const newBounds = panzoomEl.getBoundingClientRect();
-                const scaleX = wrapper.clientWidth  / newBounds.width;
-                const scaleY = wrapper.clientHeight / newBounds.height;
-                const newScale = Math.min(scaleX, scaleY) * 0.95;
-
-                instance.zoomAbs(0, 0, newScale);
-
-                const scaledW = newBounds.width * newScale;
-                const scaledH = newBounds.height * newScale;
-
-                instance.moveTo(
-                  (wrapper.clientWidth  - scaledW) / 2,
-                  (wrapper.clientHeight - scaledH) / 2
-                );
-              });
-            });
-          });
       });
     });
   })
   .catch(console.error);
 
-// — Toggle tema chiaro/scuro
+// — Tema chiaro/scuro
 document.getElementById('toggle-theme')
   .addEventListener('click', () =>
     document.body.classList.toggle('light-mode')
   );
+
+// — Bottone "ricarica" (reload normale)
+document.querySelector('button[title="refresh"]')
+  .addEventListener('click', () => location.reload());
