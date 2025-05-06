@@ -17,10 +17,11 @@ function shuffle(arr) {
 // — Crea la galleria in stile masonry
 function buildGallery(images, onComplete) {
   shuffle(images);
-  const n    = Math.floor(Math.sqrt(images.length));
+  const n = Math.floor(Math.sqrt(images.length));
   const cols = [];
   panzoomEl.innerHTML = '';
 
+  // crea n colonne
   for (let i = 0; i < n; i++) {
     const c = document.createElement('div');
     c.className = 'column';
@@ -34,12 +35,12 @@ function buildGallery(images, onComplete) {
     img.src = src;
     img.loading = 'lazy';
     img.decoding = 'async';
-
     img.onload = () => {
       const tile = document.createElement('div');
       tile.className = 'tile';
       tile.appendChild(img);
 
+      // append alla colonna più corta
       const shortest = cols.reduce((a, b) =>
         a.offsetHeight < b.offsetHeight ? a : b
       );
@@ -51,46 +52,56 @@ function buildGallery(images, onComplete) {
   });
 }
 
-// — Inizializza tutto
+// — Inizializzazione principale
 fetch('images.json')
   .then(res => res.json())
   .then(images => {
     buildGallery(images, () => {
+      // aspetta il prossimo frame per lettura dimensioni
       requestAnimationFrame(() => {
         const galleryBounds = panzoomEl.getBoundingClientRect();
         const wrapperBounds = wrapper.getBoundingClientRect();
 
+        // calcola scale X/Y
         const scaleX = wrapperBounds.width  / galleryBounds.width;
         const scaleY = wrapperBounds.height / galleryBounds.height;
-        const initialScale = Math.min(scaleX, scaleY) * 0.95;
+        // margine extra: più basso su mobile per partire più indietro
+        const isMobile = window.matchMedia('(pointer: coarse)').matches;
+        const marginFactor = isMobile ? 0.8 : 0.95;
+        const initialScale = Math.min(scaleX, scaleY) * marginFactor;
 
+        // istanzia panzoom con limiti di pan (bounds) al 120%
         const instance = panzoom(panzoomEl, {
           minZoom: minScale,
           maxZoom: maxScale,
           zoomSpeed: 0.065,
-          beforeWheel: () => false,
-          beforeMouseDown: () => true
+          filterKey: () => true,       // zoom anche senza ctrl
+          beforeWheel: () => false,    // gestisce wheel sempre
+          beforeMouseDown: () => true, // pan sempre abilitato
+          bounds: true,                // vincola il pan
+          boundsPadding: 0.2           // 20% padding intorno
         });
 
+        // applica lo zoom iniziale
         instance.zoomAbs(0, 0, initialScale);
 
+        // centra il canvas nel wrapper
         const scaledW = galleryBounds.width  * initialScale;
         const scaledH = galleryBounds.height * initialScale;
         const centerX = (wrapperBounds.width  - scaledW) / 2;
         const centerY = (wrapperBounds.height - scaledH) / 2;
-
         instance.moveTo(centerX, centerY);
       });
     });
   })
   .catch(console.error);
 
-// — Tema chiaro/scuro
+// — Toggle tema chiaro/scuro
 document.getElementById('toggle-theme')
   .addEventListener('click', () =>
     document.body.classList.toggle('light-mode')
   );
 
-// — Bottone "ricarica" (reload normale)
+// — Bottone "refresh" identico al browser (reload full page)
 document.querySelector('button[title="refresh"]')
-  .addEventListener('click', () => location.reload());
+  .addEventListener('click', () => window.location.reload());
