@@ -1,45 +1,52 @@
-/* style.css */
-/* reset */
 html, body {
-  margin: 0; padding: 0;
-  width: 100%; height: 100%;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
   background: #000;
   user-select: none;
   transition: background 0.3s ease;
 }
-body.light-mode { background: #fff; }
 
-/* pan/zoom container */
+body.light-mode {
+  background: #fff;
+}
+
 #wrapper {
   position: relative;
-  width: 100%; height: 100%;
+  width: 100%;
+  height: 100%;
   overflow: hidden;
   touch-action: none;
   cursor: grab;
 }
+
 #panzoom {
   position: absolute;
-  top: 0; left: 0;
+  top: 0;
+  left: 0;
   display: flex;
   align-items: flex-start;
   will-change: transform;
   transform-origin: 0 0;
 }
 
-/* masonry tiles */
 .column {
   display: flex;
   flex-direction: column;
   contain: layout style;
 }
+
 .column + .column {
   margin-left: 10px;
 }
+
 .tile {
   width: 300px;
   margin-bottom: 10px;
   pointer-events: none;
 }
+
 .tile img {
   width: 100%;
   height: auto;
@@ -61,32 +68,39 @@ body.light-mode { background: #fff; }
   align-items: center;
   font-family: monospace;
   z-index: 9999;
-  box-shadow: 0 0 20px rgba(0,0,0,0.2);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
 }
+
 .icon-group {
   display: flex;
   gap: 16px;
 }
+
 #sticky-bar a,
 #sticky-bar button {
   all: unset;
   cursor: pointer;
 }
+
 #sticky-bar img {
   width: 24px;
   height: 24px;
   transition: transform 0.2s ease;
 }
+
 #sticky-bar img:hover {
   transform: scale(1.2);
 }
+
 .icon-footer {
   margin-top: 8px;
   text-align: center;
 }
+
 .icon-footer strong {
   font-size: 0.9rem;
 }
+
 .icon-footer small {
   font-size: 0.6rem;
   margin-top: 2px;

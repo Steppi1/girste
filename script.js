@@ -1,18 +1,14 @@
-// — DOM refs
 const wrapper   = document.getElementById('wrapper');
 const panzoomEl = document.getElementById('panzoom');
 
-// — parametri
-const initialScale = 0.4;  // dezoom iniziale
+const initialScale = 0.4;
 const minScale     = 0.1;
 const maxScale     = 5;
 
-// — helper: clamp
 function clamp(v, min, max) {
   return v < min ? min : v > max ? max : v;
 }
 
-// — Fisher–Yates shuffle
 function shuffle(arr) {
   for (let i = arr.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -20,14 +16,12 @@ function shuffle(arr) {
   }
 }
 
-// — build Masonry-style gallery
 function buildGallery(images, onComplete) {
   shuffle(images);
-  const n      = Math.floor(Math.sqrt(images.length));
-  const cols   = [];
+  const n    = Math.floor(Math.sqrt(images.length));
+  const cols = [];
   panzoomEl.innerHTML = '';
 
-  // crea colonne
   for (let i = 0; i < n; i++) {
     const c = document.createElement('div');
     c.className = 'column';
@@ -38,15 +32,14 @@ function buildGallery(images, onComplete) {
   let loaded = 0;
   images.forEach(src => {
     const img = new Image();
-    img.src      = src;
-    img.loading  = 'lazy';
+    img.src = src;
+    img.loading = 'lazy';
     img.decoding = 'async';
     img.onload = () => {
       const tile = document.createElement('div');
       tile.className = 'tile';
       tile.appendChild(img);
 
-      // append to shortest column
       const shortest = cols.reduce((a, b) =>
         a.offsetHeight < b.offsetHeight ? a : b
       );
@@ -58,32 +51,26 @@ function buildGallery(images, onComplete) {
   });
 }
 
-// — inizializzazione
 fetch('images.json')
   .then(res => res.json())
   .then(images => {
-    // 1) costruisci gallery, poi:
     buildGallery(images, () => {
-      // 2) prima di inizializzare panzoom, applica lo scale iniziale
       panzoomEl.style.transform = `scale(${initialScale})`;
 
-      // 3) istanzia panzoom
       const instance = panzoom(panzoomEl, {
         minZoom: minScale,
         maxZoom: maxScale,
-        zoomSpeed: 0.065,     // 6.5% per wheel
-        filterKey: () => true,        // nessun filtro su tasti
-        beforeWheel: () => false,     // gestisce wheel sempre
-        beforeMouseDown: () => true   // pan sempre abilitato
+        zoomSpeed: 0.065,
+        filterKey: () => true,
+        beforeWheel: () => false,
+        beforeMouseDown: () => true
       });
 
-      // 4) centra elemento nel wrapper
       const rect = panzoomEl.getBoundingClientRect();
-      const centerX = (wrapper.clientWidth  - rect.width ) / 2;
+      const centerX = (wrapper.clientWidth  - rect.width) / 2;
       const centerY = (wrapper.clientHeight - rect.height) / 2;
       instance.pan(centerX, centerY);
 
-      // 5) refresh button
       document.querySelector('button[title="refresh"]')
         .addEventListener('click', () => {
           panzoomEl.innerHTML = '';
@@ -101,7 +88,6 @@ fetch('images.json')
   })
   .catch(console.error);
 
-// — theme toggle
 document.getElementById('toggle-theme')
   .addEventListener('click', () =>
     document.body.classList.toggle('light-mode')
