@@ -21,7 +21,6 @@ function buildGallery(images, onComplete) {
   const cols = [];
   panzoomEl.innerHTML = '';
 
-  // crea n colonne
   for (let i = 0; i < n; i++) {
     const c = document.createElement('div');
     c.className = 'column';
@@ -40,7 +39,6 @@ function buildGallery(images, onComplete) {
       tile.className = 'tile';
       tile.appendChild(img);
 
-      // append alla colonna più corta
       const shortest = cols.reduce((a, b) =>
         a.offsetHeight < b.offsetHeight ? a : b
       );
@@ -57,36 +55,29 @@ fetch('images.json')
   .then(res => res.json())
   .then(images => {
     buildGallery(images, () => {
-      // aspetta il prossimo frame per lettura dimensioni
       requestAnimationFrame(() => {
         const galleryBounds = panzoomEl.getBoundingClientRect();
         const wrapperBounds = wrapper.getBoundingClientRect();
 
-        // calcola scale X/Y
         const scaleX = wrapperBounds.width  / galleryBounds.width;
         const scaleY = wrapperBounds.height / galleryBounds.height;
-        // margine extra: più basso su mobile per partire più indietro
         const isMobile = window.matchMedia('(pointer: coarse)').matches;
         const marginFactor = isMobile ? 0.8 : 0.95;
         const initialScale = Math.min(scaleX, scaleY) * marginFactor;
 
-        // istanzia panzoom con limiti di pan (bounds) al 120%
         const instance = panzoom(panzoomEl, {
           minZoom: minScale,
           maxZoom: maxScale,
           zoomSpeed: 0.065,
-          filterKey: () => true,        // zoom/pan senza tasti
-          beforeWheel: () => false,     // gestisce sempre lo scroll
-          beforeMouseDown: () => true,  // pan sempre abilitato
-          panMouseButton: 0,            // 0 = click sinistro abilita pan su desktop
-          bounds: true,                 // vincola il pan
-          boundsPadding: 0.2            // 20% di margine intorno
+          filterKey:   () => true,   // lascia gestire ogni tasto
+          beforeWheel: () => false,  // non ignorare mai lo scroll
+          beforeMouseDown: () => false, // permette il drag con mouse (pan) :contentReference[oaicite:0]{index=0}
+          bounds: true,
+          boundsPadding: 0.2
         });
 
-        // applica lo zoom iniziale
         instance.zoomAbs(0, 0, initialScale);
 
-        // centra il canvas nel wrapper
         const scaledW = galleryBounds.width  * initialScale;
         const scaledH = galleryBounds.height * initialScale;
         const centerX = (wrapperBounds.width  - scaledW) / 2;
@@ -103,6 +94,6 @@ document.getElementById('toggle-theme')
     document.body.classList.toggle('light-mode')
   );
 
-// — Bottone "refresh" identico al browser (reload full page)
+// — Bottone "refresh" identico al browser
 document.querySelector('button[title="refresh"]')
   .addEventListener('click', () => window.location.reload());
