@@ -75,11 +75,12 @@ fetch('images.json')
           minZoom: minScale,
           maxZoom: maxScale,
           zoomSpeed: 0.065,
-          filterKey: () => true,       // zoom anche senza ctrl
-          beforeWheel: () => false,    // gestisce wheel sempre
-          beforeMouseDown: () => true, // pan sempre abilitato
-          bounds: true,                // vincola il pan
-          boundsPadding: 0.2           // 20% padding intorno
+          filterKey: () => true,        // zoom/pan senza tasti
+          beforeWheel: () => false,     // gestisce sempre lo scroll
+          beforeMouseDown: () => true,  // pan sempre abilitato
+          panMouseButton: 0,            // 0 = click sinistro abilita pan su desktop
+          bounds: true,                 // vincola il pan
+          boundsPadding: 0.2            // 20% di margine intorno
         });
 
         // applica lo zoom iniziale
