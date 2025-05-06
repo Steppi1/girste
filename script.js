@@ -56,20 +56,14 @@ fetch('images.json')
   .then(res => res.json())
   .then(images => {
     buildGallery(images, () => {
-      // Dopo aver popolato la gallery, calcola lo scale iniziale necessario per farla rientrare tutta
       requestAnimationFrame(() => {
         const galleryBounds = panzoomEl.getBoundingClientRect();
         const wrapperBounds = wrapper.getBoundingClientRect();
 
-        // Calcola lo scale che fa entrare tutto (larghezza o altezza, il più piccolo dei due)
         const scaleX = wrapperBounds.width  / galleryBounds.width;
         const scaleY = wrapperBounds.height / galleryBounds.height;
-        const initialScale = Math.min(scaleX, scaleY) * 0.95; // leggera distanza extra
+        const initialScale = Math.min(scaleX, scaleY) * 0.95;
 
-        // Applica scala iniziale
-        panzoomEl.style.transform = `scale(${initialScale})`;
-
-        // Istanzia Panzoom
         const instance = panzoom(panzoomEl, {
           minZoom: minScale,
           maxZoom: maxScale,
@@ -78,15 +72,16 @@ fetch('images.json')
           beforeMouseDown: () => true
         });
 
-        // Centra il contenuto nel wrapper
-        const scaledWidth  = galleryBounds.width  * initialScale;
-        const scaledHeight = galleryBounds.height * initialScale;
-        const centerX = (wrapperBounds.width  - scaledWidth)  / 2;
-        const centerY = (wrapperBounds.height - scaledHeight) / 2;
+        instance.zoomAbs(0, 0, initialScale);
+
+        const scaledW = galleryBounds.width  * initialScale;
+        const scaledH = galleryBounds.height * initialScale;
+        const centerX = (wrapperBounds.width  - scaledW) / 2;
+        const centerY = (wrapperBounds.height - scaledH) / 2;
 
         instance.moveTo(centerX, centerY);
 
-        // Bottone refresh
+        // — Bottone refresh
         document.querySelector('button[title="refresh"]')
           .addEventListener('click', () => {
             panzoomEl.innerHTML = '';
@@ -97,11 +92,15 @@ fetch('images.json')
                 const scaleY = wrapper.clientHeight / newBounds.height;
                 const newScale = Math.min(scaleX, scaleY) * 0.95;
 
-                panzoomEl.style.transform = `scale(${newScale})`;
-                instance.reset();
+                instance.zoomAbs(0, 0, newScale);
+
                 const scaledW = newBounds.width * newScale;
                 const scaledH = newBounds.height * newScale;
-                instance.moveTo((wrapper.clientWidth - scaledW) / 2, (wrapper.clientHeight - scaledH) / 2);
+
+                instance.moveTo(
+                  (wrapper.clientWidth  - scaledW) / 2,
+                  (wrapper.clientHeight - scaledH) / 2
+                );
               });
             });
           });
