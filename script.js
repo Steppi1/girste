@@ -93,6 +93,7 @@ document.getElementById('toggle-theme')
   .addEventListener('click', () =>
     document.body.classList.toggle('light-mode')
   );
+  
 
 // — Bottone "refresh" identico al browser
 document.querySelector('button[title="refresh"]')
