@@ -2,6 +2,7 @@
 const wrapper   = document.getElementById('wrapper');
 const panzoomEl = document.getElementById('panzoom');
 
+
 // — Costanti per limiti di zoom
 const minScale = 0.1;
 const maxScale = 5;
