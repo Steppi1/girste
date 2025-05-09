@@ -92,23 +92,18 @@ body.light-mode {
   transform: scale(1.2);
 }
 
-/* Limita la larghezza del footer sotto le icone */
+/* Footer in linea e testo molto piccolo */
 #sticky-bar .icon-footer {
   margin-top: 8px;
-  text-align: center;
-  max-width: 144px;      /* 4 icone da 24px + 3 gap da 16px = 144px */
-  width: fit-content;
-  margin-left: auto;
-  margin-right: auto;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 #sticky-bar .icon-footer strong {
-  font-size: 0.9rem;
+  font-size: 0.5rem;
 }
 
 #sticky-bar .icon-footer small {
-  font-size: 0.6rem;
-  display: block;        /* permette il wrap su più righe */
-  line-height: 1.2;      /* testo più “compresso” */
-  word-break: break-word;
+  font-size: 0.4rem;
 }
