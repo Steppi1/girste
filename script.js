@@ -71,7 +71,7 @@ fetch('images.json')
           zoomSpeed: 0.065,
           filterKey:   () => true,   // lascia gestire ogni tasto
           beforeWheel: () => false,  // non ignorare mai lo scroll
-          beforeMouseDown: () => false, // permette il drag con mouse (pan) :contentReference[oaicite:0]{index=0}
+          beforeMouseDown: () => false, // permette il drag con mouse (pan)
           bounds: true,
           boundsPadding: 0.2
         });
@@ -93,7 +93,6 @@ document.getElementById('toggle-theme')
   .addEventListener('click', () =>
     document.body.classList.toggle('light-mode')
   );
-  
 
 // — Bottone "refresh" identico al browser
 document.querySelector('button[title="refresh"]')
