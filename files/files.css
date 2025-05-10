@@ -141,41 +141,39 @@ html, body {
   color: #333;
 }
 
+/* ==== Mobile: pan-orizzontale + sizing ==== */
 @media (max-width: 600px) {
-  /* 1) Il container prende SOLO i pan orizzontali */
+  /* container prende solo pan orizzontali */
   .container {
     display: flex;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior-x: contain;
-    touch-action: pan-x;          /* solo pan orizzontale qui */
+    touch-action: pan-x;
   }
 
-  /* 2) Sidebar + main non si comprimon o, snap se vuoi */
+  /* sidebar e main non si comprimono */
   .sidebar,
   .main-content {
     flex-shrink: 0;
   }
 
+  /* main-content largo esattamente un viewport */
   .main-content {
     min-width: 100vw;
-    touch-action: pan-y;          /* solo pan verticale dentro l’articolo */
-    overscroll-behavior-x: none;  /* evita bounce orizzontale bloccante */
+    touch-action: pan-y;
+    overscroll-behavior-x: none;
   }
 
-  /* 3) Riduci immagini all’interno dello spazio reale */
+  /* riduci le immagini nello spazio reale */
   .article-content img {
     max-width: calc(100vw - 220px);
     height: auto;
   }
 
-  /* 4) Piccolo font sul mobile */
+  /* testo un po’ più piccolo */
   .article-content {
     font-size: 0.85rem;
     line-height: 1.4;
   }
 }
-
-
-
-
