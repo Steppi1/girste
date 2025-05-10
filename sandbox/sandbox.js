@@ -2,32 +2,47 @@ const pills = document.querySelectorAll('.filter-pill');
 const items = document.querySelectorAll('.article');
 const contentBox = document.querySelector('.article-content');
 
-// filtro di default
+// inizializza primo filtro
 pills[0].classList.add('active');
 filterArticles(pills[0].dataset.filter);
 
-// click sui filtri
 pills.forEach(pill => {
   pill.addEventListener('click', () => {
-    pills.forEach(p => p.classList.remove('active'));
+    pills.forEach(x => x.classList.remove('active'));
     pill.classList.add('active');
     filterArticles(pill.dataset.filter);
-    contentBox.textContent = '';
   });
 });
 
 function filterArticles(type) {
+  let first = null;
   items.forEach(i => {
-    i.style.display = i.dataset.type === type ? '' : 'none';
-    i.classList.remove('selected');
+    if (i.dataset.type === type) {
+      i.style.display = '';
+      if (!first) first = i;
+    } else {
+      i.style.display = 'none';
+      i.classList.remove('selected');
+    }
   });
+  if (first) selectArticle(first);
+  else contentBox.innerHTML = '';
 }
 
-// click sugli articoli
 items.forEach(item => {
-  item.addEventListener('click', () => {
-    items.forEach(i => i.classList.remove('selected'));
-    item.classList.add('selected');
-    contentBox.textContent = item.dataset.content;
-  });
+  item.addEventListener('click', () => selectArticle(item));
 });
+
+function selectArticle(item) {
+  items.forEach(x => x.classList.remove('selected'));
+  item.classList.add('selected');
+  const title   = item.textContent;
+  const imgSrc  = item.dataset.image;
+  const content = item.dataset.content;
+  contentBox.innerHTML = `
+    <h2>${title}</h2>
+    <hr />
+    <img src="${imgSrc}" alt="${title}" />
+    <p>${content}</p>
+  `;
+}

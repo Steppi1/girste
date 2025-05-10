@@ -5,9 +5,11 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <title>GIRSTE’S files</title>
 
-  <!-- Monospaced Google Font -->
+  <!-- Google Fonts -->
   <link
-    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&display=swap"
+    href="https://fonts.googleapis.com/css2?
+      family=IBM+Plex+Mono:wght@400;700&
+      family=Inter:wght@400;500&display=swap"
     rel="stylesheet"
   />
 
@@ -18,45 +20,78 @@
     <!-- SIDEBAR -->
     <nav class="sidebar">
       <h1 class="site-title">
-        <a href="https://girste.com">GIRSTE’S files</a>
+        <a href="https://girste.com">GIRSTE’S<br>files</a>
       </h1>
-      <hr class="separator" />
+
+      <hr class="separator"/>
+
       <p class="header-phrase">
         Qui va una frase semplice che deciderò in seguito
       </p>
+
       <div class="filters">
         <button class="filter-pill" data-filter="stories">stories</button>
         <button class="filter-pill" data-filter="tools">tools</button>
         <button class="filter-pill" data-filter="blog">blog</button>
       </div>
+
+      <ul class="articles">
+        <!-- STORIES -->
+        <li class="article" data-type="stories"
+            data-image="https://via.placeholder.com/600x400?text=Story+1"
+            data-content="Contenuto dettagliato per Story #1...">
+          Example – story #1
+        </li>
+        <li class="article" data-type="stories"
+            data-image="https://via.placeholder.com/600x400?text=Story+2"
+            data-content="Contenuto dettagliato per Story #2...">
+          Example – story #2
+        </li>
+        <li class="article" data-type="stories"
+            data-image="https://via.placeholder.com/600x400?text=Story+3"
+            data-content="Contenuto dettagliato per Story #3...">
+          Example – story #3
+        </li>
+
+        <!-- TOOLS -->
+        <li class="article" data-type="tools"
+            data-image="https://via.placeholder.com/600x400?text=Tool+1"
+            data-content="Descrizione e dettagli per Tool #1...">
+          Example – tool #1
+        </li>
+        <li class="article" data-type="tools"
+            data-image="https://via.placeholder.com/600x400?text=Tool+2"
+            data-content="Descrizione e dettagli per Tool #2...">
+          Example – tool #2
+        </li>
+        <li class="article" data-type="tools"
+            data-image="https://via.placeholder.com/600x400?text=Tool+3"
+            data-content="Descrizione e dettagli per Tool #3...">
+          Example – tool #3
+        </li>
+
+        <!-- BLOG -->
+        <li class="article" data-type="blog"
+            data-image="https://via.placeholder.com/600x400?text=Blog+1"
+            data-content="Testo del blog post #1: Lorem ipsum...">
+          Example – blog post #1
+        </li>
+        <li class="article" data-type="blog"
+            data-image="https://via.placeholder.com/600x400?text=Blog+2"
+            data-content="Testo del blog post #2: Consectetur adipiscing...">
+          Example – blog post #2
+        </li>
+        <li class="article" data-type="blog"
+            data-image="https://via.placeholder.com/600x400?text=Blog+3"
+            data-content="Testo del blog post #3: Sed do eiusmod...">
+          Example – blog post #3
+        </li>
+      </ul>
     </nav>
 
     <!-- MAIN CONTENT -->
     <main class="main-content">
-      <ul class="articles">
-        <li
-          class="article"
-          data-type="stories"
-          data-content="Contenuto dettagliato per Story #1..."
-        >
-          Example – story #1
-        </li>
-        <li
-          class="article"
-          data-type="tools"
-          data-content="Descrizione e dettagli per Tool #1..."
-        >
-          Example – tool #1
-        </li>
-        <li
-          class="article"
-          data-type="blog"
-          data-content="Testo del blog post #1: Lorem ipsum dolor sit…"
-        >
-          Example – blog post #1
-        </li>
-      </ul>
-      <div class="article-content"><!-- qui compare il contenuto --></div>
+      <div class="article-content"></div>
     </main>
   </div>
 
