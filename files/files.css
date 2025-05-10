@@ -143,18 +143,26 @@ html, body {
   color: #333;
 }
 
-/* in fondo a files/files.css */
+/* mobile (≤600px): sidebar sempre visibile, swipe per portare in vista l’articolo */
 @media (max-width: 600px) {
   .container {
-    overflow-x: auto;                 /* abilita lo swipe orizzontale */
-    -webkit-overflow-scrolling: touch; /* scroll fluido su iOS */
+    overflow-x: auto;                
+    -webkit-overflow-scrolling: touch;
   }
+
   .sidebar,
   .main-content {
-    flex-shrink: 0;                   /* non si riducono mai */
+    flex-shrink: 0;       /* niente shrink di entrambi i pannelli */
   }
+
   .main-content {
-    min-width: 600px;                 /* forza la larghezza desktop */
+    /* largo quanto il viewport meno i 220px di sidebar */
+    min-width: calc(100vw - 220px);
+  }
+
+  /* testo un pelo più piccolo sul mobile */
+  .article-content {
+    font-size: 0.85rem;
+    line-height: 1.4;
   }
 }
-
