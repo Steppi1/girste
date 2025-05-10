@@ -1,19 +1,18 @@
-// FILTRI
 const pills = document.querySelectorAll('.filter-pill');
 const items = document.querySelectorAll('.article');
 const contentBox = document.querySelector('.article-content');
 
-// Imposta il filtro di default (es. stories)
+// filtro di default
 pills[0].classList.add('active');
 filterArticles(pills[0].dataset.filter);
 
-// Click sui filtri
+// click sui filtri
 pills.forEach(pill => {
   pill.addEventListener('click', () => {
     pills.forEach(p => p.classList.remove('active'));
     pill.classList.add('active');
     filterArticles(pill.dataset.filter);
-    contentBox.textContent = ''; // reset contenuto
+    contentBox.textContent = '';
   });
 });
 
@@ -24,13 +23,11 @@ function filterArticles(type) {
   });
 }
 
-// Click sugli articoli
+// click sugli articoli
 items.forEach(item => {
   item.addEventListener('click', () => {
-    // evidenzia selezione
     items.forEach(i => i.classList.remove('selected'));
     item.classList.add('selected');
-    // mostra contenuto
     contentBox.textContent = item.dataset.content;
   });
 });
