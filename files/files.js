@@ -60,3 +60,30 @@ function selectArticle(item) {
     <p>${item.dataset.content}</p>
   `;
 }
+
+/* breathing effect sulla header-phrase */
+.header-phrase {
+  /* applica l’animazione */
+  animation: breathe 3s ease-in-out infinite alternate;
+  /* per evitare che la trasformazione scali il layout */
+  display: inline-block;
+}
+
+@keyframes breathe {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.05);
+  }
+}
+
+
+fetch('/files/phrases.json')
+  .then(res => res.json())
+  .then(arr => {
+    phrases = arr;
+    changePhrase();
+    setInterval(changePhrase, 7000);
+  });
+
