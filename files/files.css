@@ -143,33 +143,25 @@ html, body {
 
 @media (max-width: 600px) {
   .container {
-    display: flex;                  /* mantiene il flex orizzontale */
-    overflow-x: auto;               /* swipe orizzontale */
+    overflow-x: auto;                /* swipe orizzontale */
     -webkit-overflow-scrolling: touch;
-    scroll-snap-type: x mandatory;  /* attiva lo snap */
+    overscroll-behavior-x: contain;  /* contenimento scroll */
   }
 
   .sidebar,
   .main-content {
-    flex-shrink: 0;                 /* non si riducono mai */
-    scroll-snap-align: start;       /* snap all’inizio di ciascun pannello */
+    flex-shrink: 0;                  /* non si restringono mai */
   }
 
-  /* il main-content ora è esattamente largo come il viewport */
+  /* l’articolo rimane largo come l’intera viewport:
+     per vederlo tutto swipi di 220px, poi torni con uno swipe indietro */
   .main-content {
-    width: 100vw;
+    min-width: 100vw;
   }
 
-  /* font leggermente più piccolo */
-  .article-content {
-    font-size: 0.85rem;
-    line-height: 1.4;
-  }
-
-  /* immagini mai più più larghe dello spazio articolo */
+  /* ridimensiona le immagini in base allo spazio reale a disposizione */
   .article-content img {
     max-width: calc(100vw - 220px);
     height: auto;
   }
 }
-
