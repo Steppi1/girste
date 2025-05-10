@@ -142,53 +142,36 @@ html, body {
 }
 
 @media (max-width: 600px) {
-  /* 1) container orizzontale per lo swipe, ma non scrolla verticalmente */
+  /* swipe orizzontale senza bounce */
   .container {
-    display: flex;
-    overflow-x: auto;                 /* swipe orizzontale */
-    overflow-y: hidden;               /* niente scroll verticale qui */
+    overflow-x: auto;
     -webkit-overflow-scrolling: touch;
-    overscroll-behavior-x: contain;   /* no bounce orizzontale */
-    scroll-snap-type: x mandatory;
-    -webkit-scroll-snap-type: x mandatory;
+    overscroll-behavior-x: contain;
   }
 
-  /* 2) sidebar e main-content non si comprimono e “snappano” */
+  /* sidebar e main-content non si comprimono */
   .sidebar,
   .main-content {
     flex-shrink: 0;
-    scroll-snap-align: start;
-    -webkit-scroll-snap-align: start;
   }
 
-  /* 3) sidebar fissa 160px, full-height, scroll interno se serve */
-  .sidebar {
-    width: 160px;
-    height: 100vh;
-    overflow-y: auto;
-  }
-
-  /* 4) main largo (viewport – sidebar), full-height, scroll verticale interno */
+  /* l’articolo sarà più largo: proviamo 120vw anziché 100vw */
   .main-content {
-    width: calc(100vw - 160px);
-    height: 100vh;
-    overflow-y: auto;
+    min-width: 120vw;
   }
 
-  /* 5) testo più compatto */
+  /* font un po' più piccolo */
   .article-content {
     font-size: 0.85rem;
     line-height: 1.4;
   }
 
-  /* 6) immagini e iframe dentro lo spazio articolo */
-  .article-content img,
-  .article-content iframe {
-    max-width: 100%;
+  /* immagini scalano in base allo spazio reale (120vw meno 220px) */
+  .article-content img {
+    max-width: calc(120vw - 220px);
     height: auto;
-    display: block;
-    margin: 0 auto 1rem;
   }
 }
+
 
 
