@@ -129,43 +129,46 @@ html, body {
   margin: 0.5rem 0 1rem;
 }
 .article-content img {
-  /* invece di width:100%; */
   width: auto;           /* lascia che il browser adatti */
-  max-width: 600px;      /* o la larghezza massima che preferisci */
+  max-width: 600px;      /* larghezza massima desiderata */
   height: auto;
   display: block;
   margin: 0 auto 1rem;
 }
-
 .article-content p {
   font-size: 0.95rem;
   line-height: 1.5;
   color: #333;
 }
 
+/* ==== Mobile adjustments ==== */
 @media (max-width: 600px) {
   /* abilita lo swipe orizzontale sull’intero container */
   .container {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
   }
 
-  /* impedisci a sidebar e main di restringersi sotto la loro larghezza minima */
+  /* impedisci a sidebar e main di restringersi */
   .sidebar,
   .main-content {
     flex-shrink: 0;
   }
 
-  /* il main-content sarà largo quanto tutta la viewport:
-     vedrai la sidebar + la prima porzione di articolo, 
-     poi swipando a destra inquadrerai tutto l’articolo in un colpo solo */
+  /* il main-content sarà largo quanto tutta la viewport */
   .main-content {
     min-width: 100vw;
   }
 
-  /* testo un pelo più piccolo su mobile per non risultare “gigante” */
+  /* testo un po' più piccolo su mobile */
   .article-content {
     font-size: 0.85rem;
     line-height: 1.4;
+  }
+
+  /* riduci le immagini in base allo spazio articolo visibile */
+  .article-content img {
+    max-width: calc(100vw - 220px);
   }
 }
