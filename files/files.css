@@ -160,10 +160,10 @@ html, body {
   .main-content {
     /* full viewport width per caricare l’articolo a schermo pieno */
     min-width: 100vw;
-    /* vertical pan solo qui, orizzontale lascialo al container */
+    /* vertical pan solo qui, orizzontale passa al container */
     touch-action: pan-y;
-    /* permetti overscroll orizzontale di ripassare al container */
-    overscroll-behavior-x: auto;
+    /* non gestire l’overscroll orizzontale per lasciare il container libero */
+    overscroll-behavior-x: none;
   }
 
   /* 3) Riduci immagini all’interno dello spazio reale */
