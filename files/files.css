@@ -141,34 +141,23 @@ html, body {
   color: #333;
 }
 
-/* ==== Mobile adjustments ==== */
 @media (max-width: 600px) {
-  /* abilita lo swipe orizzontale sull’intero container */
   .container {
+    /* già presente:
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
-    overscroll-behavior-x: contain;
+    min-width ecc.
+    */
+
+    /* 1) attiva lo scroll‐snap orizzontale */
+    scroll-snap-type: x mandatory;
+    /* 2) disabilita il bounce/overscroll extra */
+    overscroll-behavior-x: none;
   }
 
-  /* impedisci a sidebar e main di restringersi */
+  /* 3) fai “snap” su ciascun pannello (sidebar + main) */
   .sidebar,
   .main-content {
-    flex-shrink: 0;
-  }
-
-  /* il main-content sarà largo quanto tutta la viewport */
-  .main-content {
-    min-width: 100vw;
-  }
-
-  /* testo un po' più piccolo su mobile */
-  .article-content {
-    font-size: 0.85rem;
-    line-height: 1.4;
-  }
-
-  /* riduci le immagini in base allo spazio articolo visibile */
-  .article-content img {
-    max-width: calc(100vw - 220px);
+    scroll-snap-align: start;
   }
 }
