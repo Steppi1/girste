@@ -1,0 +1,58 @@
+---
+layout: none
+permalink: /files.html
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>GIRSTE’S files</title>
+
+  <!-- Font monospace -->
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- IL TUO CSS di sandbox -->
+  <link rel="stylesheet" href="files.css">
+</head>
+<body>
+  <div class="container">
+    <nav class="sidebar">
+      <h1 class="site-title"><a href="https://girste.com">GIRSTE’S<br>files</a></h1>
+      <hr class="separator">
+      <p class="header-phrase">Qui va una frase semplice che deciderò in seguito</p>
+
+      <div class="filters">
+        <button class="filter-pill" data-filter="stories">stories</button>
+        <button class="filter-pill" data-filter="tools">tools</button>
+        <button class="filter-pill" data-filter="blog">blog</button>
+        <button class="filter-pill" data-filter="all">all</button>
+      </div>
+
+      <hr class="separator">
+
+      <ul class="articles">
+        {% assign sorted = site.articles | sort: 'date' | reverse %}
+        {% for art in sorted %}
+          <li
+            class="article"
+            data-type="{{ art.type }}"
+            data-date="{{ art.date | date: '%Y-%m-%d' }}"
+            data-image="{{ art.image | relative_url }}"
+            data-content="{{ art.content | markdownify | strip }}"
+          >
+            {{ art.title }}
+          </li>
+        {% endfor %}
+      </ul>
+    </nav>
+
+    <main class="main-content">
+      <div class="article-content"></div>
+    </main>
+  </div>
+
+  <!-- IL TUO JS di sandbox -->
+  <script src="files.js"></script>
+</body>
+</html>
