@@ -58,7 +58,7 @@ html, body {
   margin-bottom: 1.2rem;
   color: #555;
   /* breathing effect */
-  animation: breathe 3s ease-in-out infinite alternate;
+  animation: breathe 1.5s ease-in-out infinite alternate;
   display: inline-block;
 }
 
@@ -68,7 +68,7 @@ html, body {
     transform: scale(1);
   }
   to {
-    transform: scale(1.05);
+    transform: scale(1.5);
   }
 }
 
