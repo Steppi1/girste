@@ -16,12 +16,17 @@ html, body {
   font-family: 'IBM Plex Mono', monospace;
   color: #000;
   font-size: 15px;
+  /* permetti overflow orizzontale globale */
+  overflow-x: auto;
 }
 
 /* ==== Layout ==== */
 .container {
   display: flex;
   height: 100%;
+  /* swipe orizzontale qui sempre attivo */
+  touch-action: pan-x pan-y;
+  overscroll-behavior-x: contain;
 }
 
 /* ==== Sidebar ==== */
@@ -117,6 +122,12 @@ html, body {
   flex: 1;
   padding: 1.8rem;
   overflow-y: auto;
+  /* carica l’articolo a tutta larghezza schermo */
+  min-width: 100vw;
+  /* permetti swipe sia verticale che orizzontale */
+  touch-action: pan-x pan-y;
+  /* lascia che lo swipe orizzontale ricada sul container */
+  overscroll-behavior-x: contain;
 }
 .article-content h2 {
   font-size: 1.2rem;
@@ -142,13 +153,13 @@ html, body {
 }
 
 @media (max-width: 600px) {
-  /* 1) Il container prende SOLO i pan orizzontali */
+  /* 1) Il container prende SOLO i pan orizzontali ma può ricevere vertical */
   .container {
     display: flex;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
+    touch-action: pan-x pan-y;
     overscroll-behavior-x: contain;
-    touch-action: pan-x;          /* pan orizzontale a livello di container */
   }
 
   /* 2) Sidebar + main non si comprimono */
@@ -160,10 +171,10 @@ html, body {
   .main-content {
     /* full viewport width per caricare l’articolo a schermo pieno */
     min-width: 100vw;
-    /* vertical pan solo qui, orizzontale passa al container */
-    touch-action: pan-y;
-    /* non gestire l’overscroll orizzontale per lasciare il container libero */
-    overscroll-behavior-x: none;
+    /* swipe sia asse x che y dentro l’articolo */
+    touch-action: pan-x pan-y;
+    /* orizzontale ricade sul container */
+    overscroll-behavior-x: contain;
   }
 
   /* 3) Riduci immagini all’interno dello spazio reale */
