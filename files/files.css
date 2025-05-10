@@ -151,7 +151,7 @@ html, body {
     touch-action: pan-x;          /* solo pan orizzontale qui */
   }
 
-  /* 2) Sidebar + main non si comprimon o, snap se vuoi */
+  /* 2) Sidebar + main non si comprimono, snap se vuoi */
   .sidebar,
   .main-content {
     flex-shrink: 0;
@@ -159,8 +159,8 @@ html, body {
 
   .main-content {
     min-width: 100vw;
-    touch-action: pan-y;          /* solo pan verticale dentro l’articolo */
-    overscroll-behavior-x: none;  /* evita bounce orizzontale bloccante */
+    touch-action: pan-x pan-y;       /* abilita pan sia orizzontale che verticale */
+    overscroll-behavior-x: contain;  /* evita che lo scroll orizzontale esca dal container, ma lo lascia disponibile */
   }
 
   /* 3) Riduci immagini all’interno dello spazio reale */
@@ -175,7 +175,3 @@ html, body {
     line-height: 1.4;
   }
 }
-
-
-
-
