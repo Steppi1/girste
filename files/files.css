@@ -145,30 +145,35 @@ html, body {
   /* 1) Container gestisce TUTTO lo scroll */
   .container {
     display: flex;
-    height: 100vh;                   /* tutta l’altezza del viewport */
-    overflow-x: auto;                /* scroll orizzontale */
-    overflow-y: auto;                /* scroll verticale */
+    width: 100vw;
+    height: 100vh;
+    overflow-x: auto;
+    overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-    overscroll-behavior-x: contain;  /* niente bounce in x */
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    -webkit-scroll-snap-type: x mandatory;
   }
 
-  /* 2) I due pannelli non si riducono mai */
+  /* 2) Sidebar e main-content non si comprimono e “snappano” */
   .sidebar,
   .main-content {
     flex-shrink: 0;
+    scroll-snap-align: start;
+    -webkit-scroll-snap-align: start;
   }
 
-  /* 3) Sidebar rimane 220px, full‐height */
+  /* 3) Sidebar fissa 220px su tutta l’altezza */
   .sidebar {
     width: 220px;
     height: 100vh;
-    overflow-y: auto; /* se serve scroll nella sidebar */
+    overflow-y: auto;
   }
 
-  /* 4) Main-content è largo un viewport intero */
+  /* 4) Articolo largo esattamente un viewport */
   .main-content {
     width: 100vw;
-    overflow-y: visible;  /* togliamo lo scroll verticale interno */
+    overflow-y: visible;
   }
 
   /* 5) Testo un po’ più piccolo */
@@ -182,4 +187,14 @@ html, body {
     max-width: calc(100vw - 220px);
     height: auto;
   }
+
+  /* 7) Rendiamo l’iframe responsive */
+  .article-content iframe {
+    width: 100%;
+    max-width: calc(100vw - 220px);
+    height: auto;
+    display: block;
+    margin: 1rem auto;
+  }
 }
+
