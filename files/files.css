@@ -142,20 +142,18 @@ html, body {
 }
 
 @media (max-width: 600px) {
-  /* 1) Container gestisce TUTTO lo scroll */
+  /* 1) container orizzontale per lo swipe, ma non scrolla verticalmente */
   .container {
     display: flex;
-    width: 100vw;
-    height: 100vh;
-    overflow-x: auto;
-    overflow-y: auto;
+    overflow-x: auto;                 /* swipe orizzontale */
+    overflow-y: hidden;               /* niente scroll verticale qui */
     -webkit-overflow-scrolling: touch;
-    overscroll-behavior-x: contain;
+    overscroll-behavior-x: contain;   /* no bounce orizzontale */
     scroll-snap-type: x mandatory;
     -webkit-scroll-snap-type: x mandatory;
   }
 
-  /* 2) Sidebar e main-content non si comprimono e “snappano” */
+  /* 2) sidebar e main-content non si comprimono e “snappano” */
   .sidebar,
   .main-content {
     flex-shrink: 0;
@@ -163,38 +161,34 @@ html, body {
     -webkit-scroll-snap-align: start;
   }
 
-  /* 3) Sidebar fissa 220px su tutta l’altezza */
+  /* 3) sidebar fissa 160px, full-height, scroll interno se serve */
   .sidebar {
-    width: 220px;
+    width: 160px;
     height: 100vh;
     overflow-y: auto;
   }
 
-  /* 4) Articolo largo esattamente un viewport */
+  /* 4) main largo (viewport – sidebar), full-height, scroll verticale interno */
   .main-content {
-    width: 100vw;
-    overflow-y: visible;
+    width: calc(100vw - 160px);
+    height: 100vh;
+    overflow-y: auto;
   }
 
-  /* 5) Testo un po’ più piccolo */
+  /* 5) testo più compatto */
   .article-content {
     font-size: 0.85rem;
     line-height: 1.4;
   }
 
-  /* 6) Immagini non traboccano */
-  .article-content img {
-    max-width: calc(100vw - 220px);
-    height: auto;
-  }
-
-  /* 7) Rendiamo l’iframe responsive */
+  /* 6) immagini e iframe dentro lo spazio articolo */
+  .article-content img,
   .article-content iframe {
-    width: 100%;
-    max-width: calc(100vw - 220px);
+    max-width: 100%;
     height: auto;
     display: block;
-    margin: 1rem auto;
+    margin: 0 auto 1rem;
   }
 }
+
 
