@@ -143,24 +143,27 @@ html, body {
   color: #333;
 }
 
-/* mobile (≤600px): sidebar sempre visibile, swipe per portare in vista l’articolo */
 @media (max-width: 600px) {
+  /* abilita lo swipe orizzontale sull’intero container */
   .container {
-    overflow-x: auto;                
+    overflow-x: auto;
     -webkit-overflow-scrolling: touch;
   }
 
+  /* impedisci a sidebar e main di restringersi sotto la loro larghezza minima */
   .sidebar,
   .main-content {
-    flex-shrink: 0;       /* niente shrink di entrambi i pannelli */
+    flex-shrink: 0;
   }
 
+  /* il main-content sarà largo quanto tutta la viewport:
+     vedrai la sidebar + la prima porzione di articolo, 
+     poi swipando a destra inquadrerai tutto l’articolo in un colpo solo */
   .main-content {
-    /* largo quanto il viewport meno i 220px di sidebar */
-    min-width: calc(100vw - 220px);
+    min-width: 100vw;
   }
 
-  /* testo un pelo più piccolo sul mobile */
+  /* testo un pelo più piccolo su mobile per non risultare “gigante” */
   .article-content {
     font-size: 0.85rem;
     line-height: 1.4;
