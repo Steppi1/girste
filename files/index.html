@@ -15,8 +15,8 @@ permalink: /files/
     rel="stylesheet"
   />
 
-  <!-- IL TUO CSS di sandbox -->
-  <link rel="stylesheet" href="/files/files.css">
+  <!-- IL TUO CSS -->
+  <link rel="stylesheet" href="files.css">
 </head>
 <body>
   <div class="container">
@@ -47,10 +47,12 @@ permalink: /files/
             class="article"
             data-type="{{ art.type }}"
             data-date="{{ art.date | date: '%Y-%m-%d' }}"
-            data-image="{{ art.image | relative_url }}"
-            data-content="{{ art.content | markdownify | strip }}"
           >
             {{ art.title }}
+            <!-- TUTTO il contenuto (testo + immagini inline) -->
+            <template class="article-body">
+              {{ art.content | markdownify }}
+            </template>
           </li>
         {% endfor %}
       </ul>
@@ -61,7 +63,7 @@ permalink: /files/
     </main>
   </div>
 
-  <!-- IL TUO JS di sandbox -->
-  <script src="/files/files.js"></script>
+  <!-- IL TUO JS -->
+  <script src="files.js"></script>
 </body>
 </html>

@@ -33,12 +33,14 @@ function activateFilter(type) {
   } else {
     items = initialOrder.slice();
   }
+
   list.innerHTML = '';
   items.forEach(item => {
     list.appendChild(item);
     item.style.display = (type === 'all' || item.dataset.type === type) ? '' : 'none';
     item.classList.remove('selected');
   });
+
   const firstVisible = items.find(i => i.style.display === '');
   if (firstVisible) selectArticle(firstVisible);
   else contentBox.innerHTML = '';
@@ -52,16 +54,20 @@ list.addEventListener('click', e => {
 function selectArticle(item) {
   items.forEach(i => i.classList.remove('selected'));
   item.classList.add('selected');
+
+  // prendo l'HTML completo dal <template>
+  const tpl = item.querySelector('template.article-body');
+  const bodyHTML = tpl ? tpl.innerHTML : '';
+
   contentBox.innerHTML = `
     <h2>${item.textContent}</h2>
     <hr />
-    <img src="${item.dataset.image}" alt="" />
-    <p>${item.dataset.content}</p>
+    ${bodyHTML}
   `;
 }
 
-// ——— carica e ruota le frasi ———
-fetch('/files/phrases.json')
+// ——— carica e ruota le frasi dal file phrases.json ———
+fetch('phrases.json')
   .then(res => {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return res.json();
