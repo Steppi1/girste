@@ -148,20 +148,22 @@ html, body {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior-x: contain;
-    touch-action: pan-x;          /* solo pan orizzontale qui */
+    touch-action: pan-x;          /* pan orizzontale a livello di container */
   }
 
-  /* 2) Sidebar + main non si comprimono, snap se vuoi */
+  /* 2) Sidebar + main non si comprimono */
   .sidebar,
   .main-content {
     flex-shrink: 0;
   }
 
   .main-content {
-    /* riduci la larghezza al viewport meno la sidebar */
-    min-width: calc(100vw - 220px);
-    touch-action: pan-x pan-y;       /* abilita pan sia orizzontale che verticale */
-    overscroll-behavior-x: contain;  /* evita che lo scroll orizzontale esca dal container, ma lo lascia disponibile */
+    /* full viewport width per caricare l’articolo a schermo pieno */
+    min-width: 100vw;
+    /* vertical pan solo qui, orizzontale lascialo al container */
+    touch-action: pan-y;
+    /* permetti overscroll orizzontale di ripassare al container */
+    overscroll-behavior-x: auto;
   }
 
   /* 3) Riduci immagini all’interno dello spazio reale */
