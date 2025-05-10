@@ -143,21 +143,31 @@ html, body {
 
 @media (max-width: 600px) {
   .container {
-    /* già presente:
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
-    min-width ecc.
-    */
-
-    /* 1) attiva lo scroll‐snap orizzontale */
-    scroll-snap-type: x mandatory;
-    /* 2) disabilita il bounce/overscroll extra */
+    /* impedisce rimbalzi fuori dal container */
     overscroll-behavior-x: none;
+    /* attiva lo scroll-snap orizzontale */
+    scroll-snap-type: x mandatory;
   }
 
-  /* 3) fai “snap” su ciascun pannello (sidebar + main) */
   .sidebar,
   .main-content {
+    flex-shrink: 0;
+    /* ognuno “snappa” all’inizio del viewport */
     scroll-snap-align: start;
+  }
+
+  .main-content {
+    min-width: 100vw;
+  }
+
+  .article-content {
+    font-size: 0.85rem;
+    line-height: 1.4;
+  }
+
+  .article-content img {
+    max-width: calc(100vw - 220px);
   }
 }
