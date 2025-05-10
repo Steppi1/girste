@@ -158,7 +158,8 @@ html, body {
   }
 
   .main-content {
-    min-width: 100vw;
+    /* riduci la larghezza al viewport meno la sidebar */
+    min-width: calc(100vw - 220px);
     touch-action: pan-x pan-y;       /* abilita pan sia orizzontale che verticale */
     overscroll-behavior-x: contain;  /* evita che lo scroll orizzontale esca dal container, ma lo lascia disponibile */
   }
