@@ -129,11 +129,14 @@ html, body {
   margin: 0.5rem 0 1rem;
 }
 .article-content img {
-  width: 100%;
+  /* invece di width:100%; */
+  width: auto;           /* lascia che il browser adatti */
+  max-width: 600px;      /* o la larghezza massima che preferisci */
   height: auto;
   display: block;
-  margin-bottom: 1rem;
+  margin: 0 auto 1rem;
 }
+
 .article-content p {
   font-size: 0.95rem;
   line-height: 1.5;
