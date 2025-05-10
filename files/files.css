@@ -143,19 +143,18 @@ html, body {
   color: #333;
 }
 
-/* mobile (<600px): sidebar fissa a sinistra, main-content non si riduce e richiede swipe */
+/* in fondo a files/files.css */
 @media (max-width: 600px) {
   .container {
-    overflow-x: auto;                 /* abilita lo scroll orizzontale */
+    overflow-x: auto;                 /* abilita lo swipe orizzontale */
     -webkit-overflow-scrolling: touch; /* scroll fluido su iOS */
   }
-  /* nessuno dei due pannelli si restringe sotto la larghezza minima */
   .sidebar,
   .main-content {
-    flex-shrink: 0;
+    flex-shrink: 0;                   /* non si riducono mai */
   }
-  /* il contenuto principale occupa almeno l’intera larghezza del viewport */
   .main-content {
-    min-width: 100vw;
+    min-width: 600px;                 /* forza la larghezza desktop */
   }
 }
+
