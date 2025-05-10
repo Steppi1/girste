@@ -1,11 +1,9 @@
-/* ==== Google Font ==== */
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&display=swap');
 
-/* ==== Reset & Base ==== */
+/* Reset & Base */
 * {
   margin: 0; padding: 0;
   box-sizing: border-box;
-  /* wrap di qualunque testo troppo lungo */
   white-space: normal;
   word-wrap: break-word;
 }
@@ -14,28 +12,26 @@ html, body {
   background: #fff;
   font-family: 'IBM Plex Mono', monospace;
   color: #000;
-  /* font leggermente più piccolo */
   font-size: 15px;
 }
 
-/* ==== Layout ==== */
+/* Layout */
 .container {
   display: flex; height: 100%;
 }
 
-/* ==== Sidebar ==== */
+/* Sidebar */
 .sidebar {
   width: 220px;
   border-right: 1px solid #ddd;
   padding: 1.8rem 0.8rem;
   display: flex; flex-direction: column;
-  /* niente scrollbar interne */
   overflow: visible;
 }
 
 .site-title {
   font-weight: 700;
-  font-size: 1.4rem;  /* ridotto di 0.2 */
+  font-size: 1.4rem;
   text-align: center;
   line-height: 1.2;
   margin-bottom: 0.8rem;
@@ -51,26 +47,26 @@ html, body {
 }
 
 .header-phrase {
-  font-size: 0.85rem; /* ridotto di 0.05 */
+  font-size: 0.85rem;
   text-align: center;
   margin-bottom: 1.2rem;
   color: #555;
 }
 
-/* ==== Filter pills ==== */
+/* Filter pills in colonna */
 .filters {
   display: flex;
+  flex-direction: column;    /* ← qui */
   gap: 0.3rem;
-  justify-content: center;
+  margin-bottom: 1rem;
 }
 .filter-pill {
-  flex: 1;
-  padding: 0.3rem 0.6rem; /* più piccoli */
+  padding: 0.3rem 0.6rem;
   border-radius: 999px;
   background: transparent;
   border: 1px solid #000;
   color: #000;
-  font-size: 0.85rem;   /* ridotto */
+  font-size: 0.85rem;
   text-align: center;
   cursor: pointer;
   transition: background 0.2s;
@@ -80,40 +76,33 @@ html, body {
   background: rgba(0, 0, 0, 0.05);
 }
 
-/* nuovo separatore già incluso */
-
-/* ==== Article list in sidebar ==== */
+/* Lista articoli */
 .articles {
   list-style: none;
   margin-top: 0.8rem;
-  padding: 0;
 }
 .article {
-  padding: 0.5rem 0;    /* un pelo meno */
+  padding: 0.5rem 0;
   border-bottom: 1px solid #eee;
   cursor: pointer;
-  font-size: 0.9rem;    /* leggermente ridotto */
+  font-size: 0.9rem;
   transition: color 0.2s;
 }
 .article:hover { color: #555; }
 .article.selected { font-weight: 700; }
 
-/* ==== Main content ==== */
+/* Main */
 .main-content {
   flex: 1;
   padding: 1.8rem;
-  /* niente scrollbar interne */
   overflow: visible;
 }
-
 .article-content h2 {
-  font-size: 1.2rem;     /* ridotto da 1.4 */
+  font-size: 1.2rem;
   margin-bottom: 0.5rem;
-  word-wrap: break-word;
 }
 .article-content hr {
-  border: none;
-  border-top: 1px solid #ddd;
+  border: none; border-top: 1px solid #ddd;
   margin: 0.5rem 0 1rem;
 }
 .article-content img {
@@ -121,7 +110,6 @@ html, body {
   display: block; margin-bottom: 1rem;
 }
 .article-content p {
-  font-size: 0.95rem;    /* leggermente ridotto */
-  line-height: 1.5;
+  font-size: 0.95rem; line-height: 1.5;
   color: #333;
 }
