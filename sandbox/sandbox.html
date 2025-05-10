@@ -1,63 +1,45 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>GIRSTE'S files</title>
-  <link rel="stylesheet" href="sandbox.css">
-</head>
-<body>
-  <nav>
-    <!-- titolo che torna alla home -->
-    <h1><a href="https://girste.com">GIRSTE’S files</a></h1>
+.separator {
+  border: none;
+  border-top: 1px solid rgba(255,255,255,0.3);
+  margin: 1rem 0;
+}
 
-    <ul class="menu">
-      <li><a href="#" data-panel="news">home - news</a></li>
-      <li><a href="#" data-panel="about">about</a></li>
-      <li><a href="#" data-panel="cv">cv</a></li>
-      <!-- linea di separazione -->
-      <li class="sep">----------</li>
-    </ul>
+.header-phrase {
+  font-size: 1rem;
+  text-align: center;
+  margin-bottom: 1rem;
+  color: inherit;
+}
 
-    <!-- filtri -->
-    <div class="filters">
-      <button class="filter-btn" data-filter="stories">stories</button>
-      <button class="filter-btn" data-filter="tools">tools</button>
-      <button class="filter-btn" data-filter="blog">blog</button>
-    </div>
-  </nav>
+.filters {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
 
-  <div class="panels">
-    <!-- NEWS (default aperto) -->
-    <div id="news" class="panel active">
-      <img src="Screenshot 2025-05-10 at 18.29.36.png" alt="news image">
-      <p class="photo">(photo by Pheobe riley Law)</p>
+.filter-pill {
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.1);
+  color: inherit;
+  font-size: 0.9rem;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+.filter-pill:hover,
+.filter-pill.active {
+  background: rgba(255,255,255,0.2);
+}
 
-      <!-- lista articoli di prova -->
-      <ul class="articles">
-        <li class="article" data-type="stories">Example – story #1</li>
-        <li class="article" data-type="tools">Example – tool #1</li>
-        <li class="article" data-type="blog">Example – blog post #1</li>
-      </ul>
-
-      <p class="mailing">
-        to sign up for the mailing list please email me at:
-      </p>
-    </div>
-
-    <!-- ABOUT -->
-    <div id="about" class="panel">
-      <h2>about</h2>
-      <p>…contenuto “about”…</p>
-    </div>
-
-    <!-- CV -->
-    <div id="cv" class="panel">
-      <h2>cv</h2>
-      <p>…contenuto “cv”…</p>
-    </div>
-  </div>
-
-  <script src="sandbox.js"></script>
-</body>
-</html>
+/* Lista articoli */
+.articles ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 2rem;
+}
+.article {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+}

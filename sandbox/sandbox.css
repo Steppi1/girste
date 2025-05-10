@@ -1,117 +1,102 @@
-/* reset + box-sizing */
-* {
+/* ==== Reset & Base Styles ==== */
+html, body {
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  background: #000;
+  user-select: none;
+  transition: background 0.3s ease;
+  font-family: 'YourChosenFont', sans-serif; /* imposta qui il font per “GIRSTE” */
+  color: #fff;
 }
 
-/* layout principale */
-body {
-  display: flex;
-  height: 100vh;
-  font-family: Arial, sans-serif;
-  color: #000;
-}
-
-/* sidebar */
-nav {
-  width: 220px;
+body.light-mode {
   background: #fff;
-  border-right: 1px solid #ddd;
-  overflow-y: auto;
-  padding: 2rem 1rem;
-}
-nav h1 {
-  font-size: 1.4rem;
-  font-weight: normal;
-  margin-bottom: 1.5rem;
-  line-height: 1.2;
-}
-nav h1 a {
   color: #000;
-  text-decoration: none;
-}
-nav ul.menu {
-  list-style: none;
-}
-nav ul.menu li {
-  margin-bottom: 0.8rem;
-  line-height: 1.3;
-}
-nav ul.menu li.sep {
-  margin: 1.2rem 0 0.8rem;
-  color: #999;
-  font-family: monospace;
-}
-nav ul.menu a {
-  font-size: 0.95rem;
-  text-decoration: none;
-  color: #000;
-  cursor: pointer;
 }
 
-/* filtri */
-.filters {
+/* ==== Pan & Zoom Layout ==== */
+#wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  touch-action: none;
+  cursor: grab;
+}
+
+#panzoom {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: flex-start;
+  will-change: transform;
+  transform-origin: 0 0;
+}
+
+/* ==== Column & Tile Grid ==== */
+.column {
   display: flex;
   flex-direction: column;
-  margin-bottom: 1.5rem;
-}
-.filter-btn {
-  background: none;
-  border: none;
-  padding: 0.2rem 0;
-  color: #000;
-  font-size: 0.95rem;
-  text-align: left;
-  cursor: pointer;
-}
-.filter-btn.active {
-  text-decoration: underline;
+  contain: layout style;
 }
 
-/* area contenuti */
-.panels {
-  flex: 1;
-  background: #fff;
-  overflow-y: auto;
-  padding: 2rem;
-}
-.panel {
-  display: none;
-}
-.panel.active {
-  display: block;
+.column + .column {
+  margin-left: 10px;
 }
 
-/* immagine e didascalia */
-.panel img {
-  max-width: 100%;
+.tile {
+  width: 300px;
+  margin-bottom: 10px;
+  pointer-events: none;
+}
+
+.tile img {
+  width: 100%;
   height: auto;
+  object-fit: cover;
   display: block;
-  margin-bottom: 1rem;
-}
-.panel .photo {
-  margin-bottom: 1.5rem;
-  font-size: 0.9rem;
-  color: #555;
 }
 
-/* lista articoli */
-.articles {
-  list-style: none;
-  margin: 1rem 0;
-  padding: 0;
-}
-.article {
-  padding: 0.5rem 0;
-  border-bottom: 1px solid #ddd;
-}
-
-/* mailing-list text */
-.panel .mailing {
-  margin-top: 2rem;
-  font-style: italic;
+/* ==== Header & Placeholder Text ==== */
+.site-title {
+  font-family: 'YourChosenFont', serif;  /* font giusto per “GIRSTE” */
+  font-size: 2rem;
+  margin: 1rem;
   text-align: center;
-  font-size: 0.95rem;
-  color: #333;
+}
+
+.header-phrase {
+  font-size: 1rem;
+  padding: 0.5rem 1rem;
+  text-align: center;
+  color: inherit;
+}
+
+/* ==== Filter Pills ==== */
+.filters {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.filter-pill {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: inherit;
+  font-size: 0.9rem;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+  transition: background 0.3s ease;
+}
+
+.filter-pill:hover,
+.filter-pill.active {
+  background-color: rgba(255, 255, 255, 0.2);
 }
