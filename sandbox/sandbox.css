@@ -1,102 +1,114 @@
-/* ==== Reset & Base Styles ==== */
-html, body {
+/* ==== Reset & Base ==== */
+html,
+body {
   margin: 0;
   padding: 0;
   width: 100%;
   height: 100%;
   background: #000;
-  user-select: none;
-  transition: background 0.3s ease;
-  font-family: 'YourChosenFont', sans-serif; /* imposta qui il font per “GIRSTE” */
   color: #fff;
+  font-family: 'Inter', sans-serif;
+  user-select: none;
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
-body.light-mode {
-  background: #fff;
-  color: #000;
-}
-
-/* ==== Pan & Zoom Layout ==== */
-#wrapper {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  touch-action: none;
-  cursor: grab;
-}
-
-#panzoom {
-  position: absolute;
-  top: 0;
-  left: 0;
+/* ==== Layout Container ==== */
+.container {
   display: flex;
-  align-items: flex-start;
-  will-change: transform;
-  transform-origin: 0 0;
+  height: 100%;
 }
 
-/* ==== Column & Tile Grid ==== */
-.column {
+/* ==== Sidebar ==== */
+nav {
+  width: 220px;
+  background: #111;
+  padding: 2rem 1rem;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  contain: layout style;
 }
 
-.column + .column {
-  margin-left: 10px;
-}
-
-.tile {
-  width: 300px;
-  margin-bottom: 10px;
-  pointer-events: none;
-}
-
-.tile img {
-  width: 100%;
-  height: auto;
-  object-fit: cover;
-  display: block;
-}
-
-/* ==== Header & Placeholder Text ==== */
 .site-title {
-  font-family: 'YourChosenFont', serif;  /* font giusto per “GIRSTE” */
-  font-size: 2rem;
-  margin: 1rem;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  line-height: 1.2;
   text-align: center;
+}
+
+.site-title a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.separator {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  margin: 1rem 0;
 }
 
 .header-phrase {
-  font-size: 1rem;
-  padding: 0.5rem 1rem;
+  font-size: 0.95rem;
   text-align: center;
-  color: inherit;
+  margin-bottom: 1rem;
+  color: rgba(255, 255, 255, 0.8);
 }
 
-/* ==== Filter Pills ==== */
 .filters {
   display: flex;
-  gap: 10px;
-  justify-content: center;
-  padding: 1rem;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
 }
 
 .filter-pill {
-  display: inline-block;
   padding: 0.5rem 1rem;
-  border-radius: 50px;
-  background-color: rgba(255, 255, 255, 0.1);
-  color: inherit;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
   font-size: 0.9rem;
-  text-decoration: none;
-  cursor: pointer;
   border: none;
+  cursor: pointer;
   transition: background 0.3s ease;
 }
 
 .filter-pill:hover,
 .filter-pill.active {
-  background-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* ==== Main Content ==== */
+main {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.articles {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 2rem 0;
+}
+
+.article {
+  padding: 0.6rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.article:hover {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.article.selected {
+  font-weight: 500;
+}
+
+.article-content {
+  padding-top: 1rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.9);
 }

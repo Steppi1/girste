@@ -1,38 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <title>GIRSTE'S files</title>
-  <link rel="stylesheet" href="sandbox.css">
+
+  <!-- Google Fonts -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="sandbox.css" />
 </head>
 <body>
-  <nav>
-    <!-- Titolo che torna alla home -->
-    <h1><a href="https://girste.com">GIRSTE’S files</a></h1>
+  <div class="container">
+    <!-- Sidebar -->
+    <nav>
+      <h1 class="site-title">
+        <a href="https://girste.com">GIRSTE’S files</a>
+      </h1>
 
-    <!-- Linea di separazione -->
-    <hr class="separator">
+      <hr class="separator" />
 
-    <!-- Frase placeholder -->
-    <p class="header-phrase">Qui va una frase semplice che deciderò in seguito</p>
+      <p class="header-phrase">
+        Qui va una frase semplice che deciderò in seguito
+      </p>
 
-    <!-- Filtri come pillole -->
-    <div class="filters">
-      <button class="filter-pill" data-filter="stories">stories</button>
-      <button class="filter-pill" data-filter="tools">tools</button>
-      <button class="filter-pill" data-filter="blog">blog</button>
-    </div>
-  </nav>
+      <div class="filters">
+        <button class="filter-pill" data-filter="stories">stories</button>
+        <button class="filter-pill" data-filter="tools">tools</button>
+        <button class="filter-pill" data-filter="blog">blog</button>
+      </div>
+    </nav>
 
-  <!-- Sezione articoli di esempio -->
-  <section class="articles">
-    <ul>
-      <li class="article" data-type="stories">Example – story #1</li>
-      <li class="article" data-type="tools">Example – tool #1</li>
-      <li class="article" data-type="blog">Example – blog post #1</li>
-    </ul>
-  </section>
+    <!-- Main content -->
+    <main>
+      <ul class="articles">
+        <li
+          class="article"
+          data-type="stories"
+          data-content="Contenuto dettagliato per Story #1..."
+        >
+          Example – story #1
+        </li>
+        <li
+          class="article"
+          data-type="tools"
+          data-content="Descrizione e dettagli per Tool #1..."
+        >
+          Example – tool #1
+        </li>
+        <li
+          class="article"
+          data-type="blog"
+          data-content="Testo del blog post #1: Lorem ipsum dolor sit…"
+        >
+          Example – blog post #1
+        </li>
+      </ul>
+
+      <div class="article-content">
+        <!-- Qui apparirà il contenuto dell’articolo selezionato -->
+      </div>
+    </main>
+  </div>
 
   <script src="sandbox.js"></script>
 </body>
