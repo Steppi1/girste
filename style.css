@@ -60,7 +60,7 @@ body.light-mode {
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
-  background: #ffe100;
+  background: #f0cc2c;
   border-radius: 100px;
   padding: 8px 24px;
   display: flex;
@@ -70,6 +70,7 @@ body.light-mode {
   z-index: 9999;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
 }
+
 
 .icon-group {
   display: flex;
