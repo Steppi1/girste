@@ -142,3 +142,20 @@ html, body {
   line-height: 1.5;
   color: #333;
 }
+
+/* mobile (<600px): sidebar fissa a sinistra, main-content non si riduce e richiede swipe */
+@media (max-width: 600px) {
+  .container {
+    overflow-x: auto;                 /* abilita lo scroll orizzontale */
+    -webkit-overflow-scrolling: touch; /* scroll fluido su iOS */
+  }
+  /* nessuno dei due pannelli si restringe sotto la larghezza minima */
+  .sidebar,
+  .main-content {
+    flex-shrink: 0;
+  }
+  /* il contenuto principale occupa almeno l’intera larghezza del viewport */
+  .main-content {
+    min-width: 100vw;
+  }
+}
