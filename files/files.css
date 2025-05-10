@@ -142,24 +142,42 @@ html, body {
 }
 
 @media (max-width: 600px) {
+  /* 1) Container gestisce TUTTO lo scroll */
   .container {
-    overflow-x: auto;                /* swipe orizzontale */
+    display: flex;
+    height: 100vh;                   /* tutta l’altezza del viewport */
+    overflow-x: auto;                /* scroll orizzontale */
+    overflow-y: auto;                /* scroll verticale */
     -webkit-overflow-scrolling: touch;
-    overscroll-behavior-x: contain;  /* contenimento scroll */
+    overscroll-behavior-x: contain;  /* niente bounce in x */
   }
 
+  /* 2) I due pannelli non si riducono mai */
   .sidebar,
   .main-content {
-    flex-shrink: 0;                  /* non si restringono mai */
+    flex-shrink: 0;
   }
 
-  /* l’articolo rimane largo come l’intera viewport:
-     per vederlo tutto swipi di 220px, poi torni con uno swipe indietro */
+  /* 3) Sidebar rimane 220px, full‐height */
+  .sidebar {
+    width: 220px;
+    height: 100vh;
+    overflow-y: auto; /* se serve scroll nella sidebar */
+  }
+
+  /* 4) Main-content è largo un viewport intero */
   .main-content {
-    min-width: 100vw;
+    width: 100vw;
+    overflow-y: visible;  /* togliamo lo scroll verticale interno */
   }
 
-  /* ridimensiona le immagini in base allo spazio reale a disposizione */
+  /* 5) Testo un po’ più piccolo */
+  .article-content {
+    font-size: 0.85rem;
+    line-height: 1.4;
+  }
+
+  /* 6) Immagini non traboccano */
   .article-content img {
     max-width: calc(100vw - 220px);
     height: auto;
