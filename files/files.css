@@ -142,36 +142,40 @@ html, body {
 }
 
 @media (max-width: 600px) {
-  /* swipe orizzontale senza bounce */
+  /* 1) Il container prende SOLO i pan orizzontali */
   .container {
+    display: flex;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior-x: contain;
+    touch-action: pan-x;          /* solo pan orizzontale qui */
   }
 
-  /* sidebar e main-content non si comprimono */
+  /* 2) Sidebar + main non si comprimon o, snap se vuoi */
   .sidebar,
   .main-content {
     flex-shrink: 0;
   }
 
-  /* l’articolo sarà più largo: proviamo 120vw anziché 100vw */
   .main-content {
-    min-width: 120vw;
+    min-width: 100vw;
+    touch-action: pan-y;          /* solo pan verticale dentro l’articolo */
+    overscroll-behavior-x: none;  /* evita bounce orizzontale bloccante */
   }
 
-  /* font un po' più piccolo */
+  /* 3) Riduci immagini all’interno dello spazio reale */
+  .article-content img {
+    max-width: calc(100vw - 220px);
+    height: auto;
+  }
+
+  /* 4) Piccolo font sul mobile */
   .article-content {
     font-size: 0.85rem;
     line-height: 1.4;
   }
-
-  /* immagini scalano in base allo spazio reale (120vw meno 220px) */
-  .article-content img {
-    max-width: calc(120vw - 220px);
-    height: auto;
-  }
 }
+
 
 
 
