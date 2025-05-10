@@ -1,106 +1,119 @@
+/* ==== Google Font ==== */
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&display=swap');
 
-/* Reset */
+/* ==== Reset & Base ==== */
 * {
   margin: 0; padding: 0;
   box-sizing: border-box;
+  /* wrap di qualunque testo troppo lungo */
+  white-space: normal;
+  word-wrap: break-word;
 }
 html, body {
   width: 100%; height: 100%;
   background: #fff;
   font-family: 'IBM Plex Mono', monospace;
   color: #000;
+  /* font leggermente più piccolo */
+  font-size: 15px;
 }
 
-/* Layout */
+/* ==== Layout ==== */
 .container {
   display: flex; height: 100%;
 }
 
-/* Sidebar */
+/* ==== Sidebar ==== */
 .sidebar {
   width: 220px;
   border-right: 1px solid #ddd;
-  padding: 2rem 1rem;
+  padding: 1.8rem 0.8rem;
   display: flex; flex-direction: column;
-  overflow-y: auto;
+  /* niente scrollbar interne */
+  overflow: visible;
 }
+
 .site-title {
   font-weight: 700;
-  font-size: 1.6rem;
+  font-size: 1.4rem;  /* ridotto di 0.2 */
   text-align: center;
   line-height: 1.2;
-  margin-bottom: 1rem;
+  margin-bottom: 0.8rem;
 }
-.site-title a { color: inherit; text-decoration: none; }
+.site-title a {
+  color: inherit; text-decoration: none;
+}
 
 .separator {
   border: none;
   border-top: 1px solid #ddd;
-  margin: 1rem 0;
+  margin: 0.8rem 0;
 }
+
 .header-phrase {
-  font-size: 0.9rem;
+  font-size: 0.85rem; /* ridotto di 0.05 */
   text-align: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.2rem;
   color: #555;
 }
 
-/* Filter pills: row, small, pastel */
+/* ==== Filter pills ==== */
 .filters {
   display: flex;
   gap: 0.3rem;
   justify-content: center;
-  margin-bottom: 1rem;
 }
 .filter-pill {
   flex: 1;
-  padding: 0.3rem 0.8rem;
+  padding: 0.3rem 0.6rem; /* più piccoli */
   border-radius: 999px;
+  background: transparent;
   border: 1px solid #000;
-  font-size: 0.8rem;
+  color: #000;
+  font-size: 0.85rem;   /* ridotto */
   text-align: center;
   cursor: pointer;
-  background: transparent;
   transition: background 0.2s;
 }
-/* pastel fills */
-.filter-pill[data-filter="stories"] { background: #FDE2E4; }
-.filter-pill[data-filter="tools"]   { background: #E2F0CB; }
-.filter-pill[data-filter="blog"]    { background: #D0E8F2; }
-.filter-pill[data-filter="all"]     { background: #F0EAD6; }
 .filter-pill:hover,
 .filter-pill.active {
-  opacity: 0.8;
+  background: rgba(0, 0, 0, 0.05);
 }
 
-/* Article list */
+/* nuovo separatore già incluso */
+
+/* ==== Article list in sidebar ==== */
 .articles {
   list-style: none;
-  margin-top: 0;
+  margin-top: 0.8rem;
   padding: 0;
 }
 .article {
-  padding: 0.5rem 0;
+  padding: 0.5rem 0;    /* un pelo meno */
   border-bottom: 1px solid #eee;
   cursor: pointer;
+  font-size: 0.9rem;    /* leggermente ridotto */
   transition: color 0.2s;
 }
 .article:hover { color: #555; }
 .article.selected { font-weight: 700; }
 
-/* Main content */
+/* ==== Main content ==== */
 .main-content {
   flex: 1;
-  padding: 2rem;
-  overflow-y: auto;
+  padding: 1.8rem;
+  /* niente scrollbar interne */
+  overflow: visible;
 }
+
 .article-content h2 {
-  font-size: 1.4rem;
+  font-size: 1.2rem;     /* ridotto da 1.4 */
   margin-bottom: 0.5rem;
+  word-wrap: break-word;
 }
 .article-content hr {
-  border: none; border-top: 1px solid #ddd;
+  border: none;
+  border-top: 1px solid #ddd;
   margin: 0.5rem 0 1rem;
 }
 .article-content img {
@@ -108,6 +121,7 @@ html, body {
   display: block; margin-bottom: 1rem;
 }
 .article-content p {
-  font-size: 1rem; line-height: 1.5;
+  font-size: 0.95rem;    /* leggermente ridotto */
+  line-height: 1.5;
   color: #333;
 }
