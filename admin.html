@@ -22,6 +22,7 @@
     .ok { color: green; }
     .error { color: red; }
     pre { background: #f3f3f3; padding: 0.5rem; overflow-x: auto; }
+    .img-url button { margin: 0.2rem 0 1rem 0; }
   </style>
 </head>
 <body>
@@ -46,7 +47,7 @@
   <button id="submit">Pubblica</button>
   <div class="feedback" id="feedback"></div>
 
-  <div class="drop-zone" id="drop-zone">📎 Trascina qui un'immagine da caricare</div>
+  <div class="drop-zone" id="drop-zone">📎 Trascina qui una o più immagini da caricare</div>
   <div class="img-url" id="img-url"></div>
 
   <script type="module">
@@ -87,7 +88,7 @@
       }
     })
 
-    // Drag & drop image upload
+    // Drag & drop multi-upload immagini
     dropZone.addEventListener('dragover', (e) => {
       e.preventDefault()
       dropZone.style.borderColor = '#000'
@@ -100,26 +101,30 @@
     dropZone.addEventListener('drop', async (e) => {
       e.preventDefault()
       dropZone.style.borderColor = '#ccc'
-      const file = e.dataTransfer.files[0]
-      if (!file) return
 
-      const filename = `${Date.now()}-${file.name}`
-      const { error } = await supabase.storage
-        .from('images')
-        .upload(filename, file)
+      const files = Array.from(e.dataTransfer.files)
+      if (!files.length) return
 
-      if (error) {
-        imgUrlBox.innerHTML = `<span class="error">❌ Errore upload: ${error.message}</span>`
-        return
-      }
+      imgUrlBox.innerHTML = '⏳ Caricamento immagini...<br>'
 
-      const url = `${supabaseUrl}/storage/v1/object/public/images/${filename}`
-      const tagHtml = `<pre>&lt;img src="${url}" alt="" /&gt;</pre> <button id="copy-btn">📋</button>`
-      imgUrlBox.innerHTML = `✅ Immagine caricata: <br>${tagHtml}`
+      for (const file of files) {
+        const filename = `${Date.now()}-${file.name}`
+        const { error } = await supabase.storage
+          .from('images')
+          .upload(filename, file)
 
-      document.getElementById('copy-btn').onclick = () => {
-        navigator.clipboard.writeText(`<img src="${url}" alt="" />`)
-        imgUrlBox.innerHTML += `<br><span class="ok">✅ Copiato!</span>`
+        if (error) {
+          imgUrlBox.innerHTML += `<span class="error">❌ ${file.name}: ${error.message}</span><br>`
+          continue
+        }
+
+        const url = `${supabaseUrl}/storage/v1/object/public/images/${filename}`
+        imgUrlBox.innerHTML += `
+          ✅ ${file.name}<br>
+          <pre>&lt;img src="${url}" alt="" /&gt;</pre>
+          <button onclick="navigator.clipboard.writeText('<img src=&quot;${url}&quot; alt=&quot;&quot; />')">📋 Copia</button>
+          <br><br>
+        `
       }
     })
   </script>
