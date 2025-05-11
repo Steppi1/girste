@@ -157,13 +157,14 @@ html, body {
     flex-shrink: 0;
   }
 
+
   .main-content {
     /* full viewport width per caricare l’articolo a schermo pieno */
     min-width: 100vw;
     /* vertical pan solo qui, orizzontale passa al container */
     touch-action: pan-y;
     /* non gestire l’overscroll orizzontale per lasciare il container libero */
-    overscroll-behavior-x: none;
+    overscroll-behavior-x: auto;
   }
 
   /* 3) Riduci immagini all’interno dello spazio reale */
