@@ -34,12 +34,15 @@ function activateFilter(type) {
     items = initialOrder.slice();
   }
 
-  list.innerHTML = '';
+  // batch DOM update via DocumentFragment
+  const fragment = document.createDocumentFragment();
   items.forEach(item => {
-    list.appendChild(item);
     item.style.display = (type === 'all' || item.dataset.type === type) ? '' : 'none';
     item.classList.remove('selected');
+    fragment.appendChild(item);
   });
+  list.innerHTML = '';
+  list.appendChild(fragment);
 
   const firstVisible = items.find(i => i.style.display === '');
   if (firstVisible) selectArticle(firstVisible);
@@ -79,10 +82,12 @@ fetch('phrases.json')
   })
   .catch(err => console.error('Errore caricamento frasi:', err));
 
-  // ——— permette di tornare alla sidebar con uno swipe a sinistra/sinistra ———
+// ——— swipe handler fluido per tornare alla sidebar ———
 const container = document.querySelector('.container');
 const main = document.querySelector('.main-content');
 let startX, startY;
+let isTicking = false;
+let lastDx = 0;
 
 main.addEventListener('touchstart', e => {
   startX = e.touches[0].clientX;
@@ -90,16 +95,24 @@ main.addEventListener('touchstart', e => {
 });
 
 main.addEventListener('touchmove', e => {
-  const dx = e.touches[0].clientX - startX;
-  const dy = e.touches[0].clientY - startY;
+  const touch = e.touches[0];
+  const dx = touch.clientX - startX;
+  const dy = touch.clientY - startY;
 
-  // se il movimento è prevalentemente orizzontale e supera una piccola soglia
-  if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 10) {
-    // scrolla il container
-    container.scrollLeft -= dx;
-    // resetta il punto di partenza per uno scrolling continuo e fluido
-    startX = e.touches[0].clientX;
-    // blocca lo scrolling predefinito
+  // se lo spostamento è principalmente orizzontale
+  if (Math.abs(dx) > Math.abs(dy)) {
     e.preventDefault();
+
+    lastDx = dx;
+    // scrolliamo solo una volta per frame, evita gli scatti
+    if (!isTicking) {
+      isTicking = true;
+      requestAnimationFrame(() => {
+        container.scrollLeft -= lastDx;
+        // resettiamo la base per il prossimo calcolo
+        startX = touch.clientX;
+        isTicking = false;
+      });
+    }
   }
 });
