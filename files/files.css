@@ -18,12 +18,11 @@ html, body {
   font-size: 15px;
 }
 
-/* ==== Layout di base ==== */
+/* ==== Layout ==== */
 .container {
   display: flex;
   height: 100%;
-  overflow-x: auto;
-  /* desktop: nessuno scroll-snap, libera visione sidebar all’avvio */
+  /* desktop: sidebar sempre visibile, nessuno scroll-x */
 }
 
 /* ==== Sidebar ==== */
@@ -59,6 +58,7 @@ html, body {
   text-align: center;
   margin-bottom: 1.2rem;
   color: #555;
+  /* breathing effect */
   animation: breathe 3s ease-in-out infinite alternate;
   display: inline-block;
   transform-origin: center center;
@@ -144,16 +144,14 @@ html, body {
 /* ==== Mobile tweaks ==== */
 @media (max-width: 600px) {
   .container {
-    overscroll-behavior-x: auto;
+    overflow-x: auto;
     -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: auto;
     touch-action: pan-x;
-    scroll-snap-type: x proximity;  /* proximity: fermarti a metà, snap se ti avvicini */
-    scroll-behavior: smooth;        /* scroll fluido */
   }
   .sidebar,
   .main-content {
     flex-shrink: 0;
-    scroll-snap-align: start;
   }
   .main-content {
     min-width: 100vw;
