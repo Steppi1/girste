@@ -1,5 +1,14 @@
 // files.js
 
+// ——— reset scroll orizzontale on load ———
+const container = document.querySelector('.container');
+if ('scrollRestoration' in history) {
+  history.scrollRestoration = 'manual';
+}
+window.addEventListener('load', () => {
+  container.scrollLeft = 0;
+});
+
 const pills      = Array.from(document.querySelectorAll('.filter-pill'));
 const list       = document.querySelector('.articles');
 let items        = Array.from(document.querySelectorAll('.article'));
