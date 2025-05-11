@@ -76,7 +76,11 @@
         tag: tag.value,
         image_url: null
       }
-      const { error } = await supabase.from('posts').insert([post])
+     const { error } = await supabase
+  .schema('public')
+  .from('posts')
+  .insert([post])
+
       if (error) {
         feedback.textContent = '❌ ' + error.message
         feedback.className = 'feedback error'
