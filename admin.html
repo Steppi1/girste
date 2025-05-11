@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin - Nuovo Post</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { font-family: sans-serif; max-width: 600px; margin: 2rem auto; padding: 1rem; }
+    label { display: block; margin-top: 1rem; }
+    input, textarea, select, button {
+      width: 100%; padding: 0.6rem; font-size: 1rem;
+      margin-top: 0.3rem;
+    }
+    button { margin-top: 2rem; }
+    .ok { color: green; margin-top: 1rem; }
+    .error { color: red; margin-top: 1rem; }
+  </style>
+</head>
+<body>
+  <h1>Crea un nuovo post</h1>
+
+  <label for="title">Titolo</label>
+  <input type="text" id="title">
+
+  <label for="snippet">Snippet</label>
+  <input type="text" id="snippet">
+
+  <label for="content">Contenuto</label>
+  <textarea id="content" rows="6"></textarea>
+
+  <label for="tag">Tag</label>
+  <select id="tag">
+    <option value="tools">tools</option>
+    <option value="stories">stories</option>
+    <option value="blog">blog</option>
+  </select>
+
+  <label for="image_url">URL immagine (temporaneo)</label>
+  <input type="text" id="image_url">
+
+  <button id="submit">Pubblica</button>
+
+  <div id="feedback"></div>
+
+  <script type="module">
+    import { insertPost } from './supabase.js'
+
+    const title = document.getElementById('title')
+    const snippet = document.getElementById('snippet')
+    const content = document.getElementById('content')
+    const tag = document.getElementById('tag')
+    const image_url = document.getElementById('image_url')
+    const feedback = document.getElementById('feedback')
+    const button = document.getElementById('submit')
+
+    button.addEventListener('click', async () => {
+      feedback.textContent = ''
+      try {
+        await insertPost({
+          title: title.value,
+          snippet: snippet.value,
+          content: content.value,
+          tag: tag.value,
+          image_url: image_url.value || null
+        })
+        feedback.textContent = '✅ Post pubblicato!'
+        feedback.className = 'ok'
+
+        // Reset form (facoltativo)
+        title.value = ''
+        snippet.value = ''
+        content.value = ''
+        image_url.value = ''
+        tag.value = 'tools'
+      } catch (err) {
+        feedback.textContent = '❌ Errore: ' + err.message
+        feedback.className = 'error'
+      }
+    })
+  </script>
+</body>
+</html>
