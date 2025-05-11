@@ -78,3 +78,28 @@ fetch('phrases.json')
     setInterval(changePhrase, 7000);
   })
   .catch(err => console.error('Errore caricamento frasi:', err));
+
+  // ——— permette di tornare alla sidebar con uno swipe a sinistra/sinistra ———
+const container = document.querySelector('.container');
+const main = document.querySelector('.main-content');
+let startX, startY;
+
+main.addEventListener('touchstart', e => {
+  startX = e.touches[0].clientX;
+  startY = e.touches[0].clientY;
+});
+
+main.addEventListener('touchmove', e => {
+  const dx = e.touches[0].clientX - startX;
+  const dy = e.touches[0].clientY - startY;
+
+  // se il movimento è prevalentemente orizzontale e supera una piccola soglia
+  if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 10) {
+    // scrolla il container
+    container.scrollLeft -= dx;
+    // resetta il punto di partenza per uno scrolling continuo e fluido
+    startX = e.touches[0].clientX;
+    // blocca lo scrolling predefinito
+    e.preventDefault();
+  }
+});
