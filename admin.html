@@ -66,7 +66,7 @@
     const dropZone = document.getElementById('drop-zone')
     const imgUrlBox = document.getElementById('img-url')
 
-    // Pubblica post
+    // ✅ Pubblica post su schema 'public'
     submitBtn.addEventListener('click', async () => {
       feedback.textContent = ''
       const post = {
@@ -76,10 +76,11 @@
         tag: tag.value,
         image_url: null
       }
-     const { error } = await supabase
-  .schema('public')
-  .from('posts')
-  .insert([post])
+
+      const { error } = await supabase
+        .schema('public')
+        .from('posts')
+        .insert([post])
 
       if (error) {
         feedback.textContent = '❌ ' + error.message
@@ -92,7 +93,7 @@
       }
     })
 
-    // Drag & drop multi-upload immagini
+    // ✅ Multi-upload immagini
     dropZone.addEventListener('dragover', (e) => {
       e.preventDefault()
       dropZone.style.borderColor = '#000'
