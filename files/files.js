@@ -1,22 +1,19 @@
-// files.js
-
 document.addEventListener('DOMContentLoaded', () => {
-  // ——— reset scroll orizzontale on load ———
+  // ——— reset scroll orizzontale on startup ———
   const container = document.querySelector('.container');
   if ('scrollRestoration' in history) {
     history.scrollRestoration = 'manual';
   }
-  window.addEventListener('load', () => {
-    container.scrollLeft = 0;
-  });
+  // posiziona subito la sidebar in vista
+  container.scrollLeft = 0;
 
-  // ——— elementi per i filtri e l’articolo ———
+  // ——— elementi per filtri e articoli ———
   const pills      = Array.from(document.querySelectorAll('.filter-pill'));
   const list       = document.querySelector('.articles');
   let items        = Array.from(document.querySelectorAll('.article'));
   const contentBox = document.querySelector('.article-content');
 
-  // ——— setup rotazione header-phrase ———
+  // ——— rotazione header-phrase ———
   const phraseEl = document.querySelector('.header-phrase');
   let phrases = [];
   function changePhrase() {
@@ -25,10 +22,10 @@ document.addEventListener('DOMContentLoaded', () => {
     phraseEl.textContent = phrases[i];
   }
 
-  // conserva ordine iniziale
+  // conserva ordine iniziale degli articoli
   const initialOrder = items.slice();
 
-  // default: mostra “all”
+  // mostra di default “all”
   activateFilter('all');
 
   // click sui filtri
@@ -46,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
       items = initialOrder.slice();
     }
 
-    // batch DOM update via DocumentFragment
+    // batch DOM update con DocumentFragment
     const fragment = document.createDocumentFragment();
     items.forEach(item => {
       item.style.display = (type === 'all' || item.dataset.type === type) ? '' : 'none';
