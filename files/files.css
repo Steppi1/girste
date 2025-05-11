@@ -1,3 +1,5 @@
+/* files.css */
+
 /* ==== Google Font ==== */
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&display=swap');
 
@@ -22,6 +24,9 @@ html, body {
 .container {
   display: flex;
   height: 100%;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;  /* proximity lascia fermarti a metà, ma aggancia se ti avvicini */
+  scroll-behavior: smooth;        /* scroll fluido */
 }
 
 /* ==== Sidebar ==== */
@@ -32,6 +37,7 @@ html, body {
   display: flex;
   flex-direction: column;
   overflow: auto;
+  scroll-snap-align: start;      /* punto di snap */
 }
 
 .site-title {
@@ -57,7 +63,6 @@ html, body {
   text-align: center;
   margin-bottom: 1.2rem;
   color: #555;
-  /* breathing effect */
   animation: breathe 3s ease-in-out infinite alternate;
   display: inline-block;
   transform-origin: center center;
@@ -117,6 +122,8 @@ html, body {
   flex: 1;
   padding: 1.8rem;
   overflow-y: auto;
+  min-width: 100vw;
+  scroll-snap-align: start;      /* punto di snap */
 }
 .article-content h2 {
   font-size: 1.2rem;
@@ -129,8 +136,8 @@ html, body {
   margin: 0.5rem 0 1rem;
 }
 .article-content img {
-  width: auto;           /* lascia che il browser adatti */
-  max-width: 600px;      /* larghezza massima desiderata */
+  width: auto;
+  max-width: 600px;
   height: auto;
   display: block;
   margin: 0 auto 1rem;
@@ -141,41 +148,26 @@ html, body {
   color: #333;
 }
 
+/* ==== Mobile tweaks ==== */
 @media (max-width: 600px) {
-  /* 1) Il container prende SOLO i pan orizzontali */
   .container {
-    display: flex;
-    overflow-x: auto;
+    overscroll-behavior-x: auto;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior-x: contain;
-    touch-action: pan-x;          /* pan orizzontale a livello di container */
+    touch-action: pan-x;
   }
-
-  /* 2) Sidebar + main non si comprimono */
   .sidebar,
   .main-content {
     flex-shrink: 0;
   }
-
-
   .main-content {
-    /* full viewport width per caricare l’articolo a schermo pieno */
-    min-width: 100vw;
-    /* vertical pan solo qui, orizzontale passa al container */
+    /* mantieni scroll snap e touch vertical-only */
     touch-action: pan-y;
-    /* non gestire l’overscroll orizzontale per lasciare il container libero */
     overscroll-behavior-x: auto;
-  }
-
-  /* 3) Riduci immagini all’interno dello spazio reale */
-  .article-content img {
-    max-width: calc(100vw - 220px);
-    height: auto;
-  }
-
-  /* 4) Piccolo font sul mobile */
-  .article-content {
     font-size: 0.85rem;
     line-height: 1.4;
+  }
+  .article-content img {
+    max-width: calc(100vw - 220px);
   }
 }

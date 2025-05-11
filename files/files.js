@@ -1,3 +1,5 @@
+// files.js
+
 const pills      = Array.from(document.querySelectorAll('.filter-pill'));
 const list       = document.querySelector('.articles');
 let items        = Array.from(document.querySelectorAll('.article'));
@@ -29,7 +31,7 @@ pills.forEach(pill => {
 function activateFilter(type) {
   pills.forEach(p => p.classList.toggle('active', p.dataset.filter === type));
   if (type === 'all') {
-    items.sort((a,b) => new Date(b.dataset.date) - new Date(a.dataset.date));
+    items.sort((a, b) => new Date(b.dataset.date) - new Date(a.dataset.date));
   } else {
     items = initialOrder.slice();
   }
@@ -58,7 +60,6 @@ function selectArticle(item) {
   items.forEach(i => i.classList.remove('selected'));
   item.classList.add('selected');
 
-  // prendo l'HTML completo dal <template>
   const tpl = item.querySelector('template.article-body');
   const bodyHTML = tpl ? tpl.innerHTML : '';
 
@@ -81,39 +82,3 @@ fetch('phrases.json')
     setInterval(changePhrase, 7000);
   })
   .catch(err => console.error('Errore caricamento frasi:', err));
-
-// ——— swipe handler fluido per tornare alla sidebar ———
-const container = document.querySelector('.container');
-const main = document.querySelector('.main-content');
-let startX, startY;
-let isTicking = false;
-let lastDx = 0;
-
-main.addEventListener('touchstart', e => {
-  startX = e.touches[0].clientX;
-  startY = e.touches[0].clientY;
-});
-
-
-main.addEventListener('touchmove', e => {
-  const touch = e.touches[0];
-  const dx = touch.clientX - startX;
-  const dy = touch.clientY - startY;
-
-  // se lo spostamento è principalmente orizzontale
-  if (Math.abs(dx) > Math.abs(dy)) {
-    e.preventDefault();
-
-    lastDx = dx;
-    // scrolliamo solo una volta per frame, evita gli scatti
-    if (!isTicking) {
-      isTicking = true;
-      requestAnimationFrame(() => {
-        container.scrollLeft -= lastDx;
-        // resettiamo la base per il prossimo calcolo
-        startX = touch.clientX;
-        isTicking = false;
-      });
-    }
-  }
-});
