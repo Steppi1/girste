@@ -40,22 +40,11 @@ permalink: /files/
 
       <hr class="separator">
 
-      <ul class="articles">
-        {% assign sorted = site.articles | sort: 'date' | reverse %}
-        {% for art in sorted %}
-          <li
-            class="article"
-            data-type="{{ art.type }}"
-            data-date="{{ art.date | date: '%Y-%m-%d' }}"
-          >
-            {{ art.title }}
-            <!-- TUTTO il contenuto (testo + immagini inline) -->
-            <template class="article-body">
-              {{ art.content | markdownify }}
-            </template>
-          </li>
-        {% endfor %}
-      </ul>
+
+     <ul class="articles" id="article-list">
+  <!-- Popolato via JS -->
+</ul>
+
     </nav>
 
     <main class="main-content">
