@@ -94,6 +94,7 @@ main.addEventListener('touchstart', e => {
   startY = e.touches[0].clientY;
 });
 
+
 main.addEventListener('touchmove', e => {
   const touch = e.touches[0];
   const dx = touch.clientX - startX;
