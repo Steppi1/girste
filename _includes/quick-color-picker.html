@@ -1,0 +1,40 @@
+<input type="file" id="imgLoader" accept="image/*"><br><br>
+<canvas id="canvas"></canvas>
+<p>
+  Selected color:
+  <span id="colorBox"
+        style="display:inline-block;width:20px;
+               height:20px;border:1px solid #000;
+               vertical-align:middle;"></span>
+  <code id="hexCode">#FFFFFF</code>
+</p>
+
+<script>
+  const loader = document.getElementById('imgLoader');
+  const canvas = document.getElementById('canvas');
+  const ctx    = canvas.getContext('2d');
+  const box    = document.getElementById('colorBox');
+  const code   = document.getElementById('hexCode');
+
+  loader.addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const img = new Image();
+    img.onload = () => {
+      canvas.width  = img.width;
+      canvas.height = img.height;
+      ctx.drawImage(img, 0, 0);
+    };
+    img.src = URL.createObjectURL(file);
+  });
+
+  canvas.addEventListener('click', e => {
+    const { offsetX:x, offsetY:y } = e;
+    const [r,g,b] = ctx.getImageData(x,y,1,1).data;
+    const hex = '#' +
+      ((1<<24) + (r<<16) + (g<<8) + b)
+      .toString(16).slice(1).toUpperCase();
+    box.style.background = hex;
+    code.textContent = hex;
+  });
+</script>
