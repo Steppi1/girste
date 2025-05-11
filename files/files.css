@@ -155,7 +155,8 @@ html, body {
   }
   .main-content {
     min-width: 100vw;
-    touch-action: pan-y;
+    /* permette anche gli swipe orizzontali verso il JS */
+    touch-action: auto;
     font-size: 0.85rem;
     line-height: 1.4;
   }
@@ -163,3 +164,4 @@ html, body {
     max-width: calc(100vw - 220px);
   }
 }
+
