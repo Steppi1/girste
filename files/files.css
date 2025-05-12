@@ -45,8 +45,8 @@ html, body {
 }
 
 .home-icon {
-  width: 42px;
-  transform: translateY(-10px);
+  width: 36px;
+  transform: translateY(-8px);
   flex-shrink: 0;
   height: auto;
   display: block;
@@ -54,12 +54,16 @@ html, body {
 }
 
 .title-text {
-  font-weight: 400;
   font-size: 1.4rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: calc(100% - 56px);
+  max-width: calc(100% - 48px);
+  font-weight: 400;
+}
+
+.title-text strong {
+  font-weight: 700;
 }
 
 .separator {
@@ -240,10 +244,14 @@ html, body {
 
   .title-text {
     font-size: 1.15rem;
-    font-weight: 700;
+    font-weight: 400;
     max-width: calc(100% - 72px);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  .title-text strong {
+    font-weight: 700;
   }
 }
