@@ -1,3 +1,4 @@
+
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
 const supabase = createClient(
@@ -8,12 +9,19 @@ const supabase = createClient(
 const panzoomEl = document.getElementById('panzoom');
 const masonryEl = document.getElementById('masonry');
 
+// ✅ Usa panzoom globale, previene vibrazioni forzando touch-action corretto
 const panzoomInstance = window.panzoom(panzoomEl, {
   maxZoom: 5,
   minZoom: 0.1,
   bounds: true,
-  boundsPadding: 1.5
+  boundsPadding: 2,
+  smoothScroll: true,
+  zoomDoubleClickSpeed: 1,
+  autocenter: false
 });
+
+// Imposta il contenitore con touch-action corretto
+panzoomEl.style.touchAction = "none";
 
 async function loadImages() {
   const { data, error } = await supabase.storage.from('mosaic').list('', { limit: 500 });
@@ -34,13 +42,13 @@ async function loadImages() {
     const img = document.createElement('img');
     img.src = url;
     img.className = 'tile';
-    img.loading = 'eager';
     img.decoding = 'async';
+    img.loading = 'lazy'; // solo se supportato
     img.onerror = () => console.error('🚫 Errore immagine:', url);
     masonryEl.appendChild(img);
   }
 
-  await new Promise(r => setTimeout(r, 500));
+  await new Promise(r => setTimeout(r, 600));
   applyInitialZoomAndCenter();
 }
 
