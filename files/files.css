@@ -278,7 +278,7 @@ html, body {
 @media (max-width: 600px) {
   .title-row.stacked-title .home-icon {
     width: 72px;
-    margin-bottom: -0.2rem;
+    margin-bottom: -1rem;
   }
 }
 
