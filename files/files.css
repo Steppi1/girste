@@ -7,6 +7,7 @@ html,body{width:100%;height:100%;font-family:'IBM Plex Mono',monospace;font-size
   flex:0 0 220px;
   height:100vh;
   overflow-y:auto;
+  overflow-x:hidden;
   padding:1.8rem 0.8rem;
   border-right:1px solid #ddd;
   background:white;
@@ -40,9 +41,16 @@ html,body{width:100%;height:100%;font-family:'IBM Plex Mono',monospace;font-size
 .articles{
   list-style:none;
   overflow-y:auto;
+  overflow-x:hidden;
   flex:1;
   padding-bottom:6rem;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
+.articles::-webkit-scrollbar {
+  display: none;
+}
+
 .article{padding:0.5rem 0;border-bottom:1px solid #eee;cursor:pointer;}
 .article.selected{font-weight:700;}
 
@@ -68,19 +76,14 @@ html,body{width:100%;height:100%;font-family:'IBM Plex Mono',monospace;font-size
   .sidebar{
     flex:0 0 220px;
     overflow-y:auto;
-    position:relative;
-    background:white;
-  }
-  .filters {
-    position:sticky;
-    top:0;
+    overflow-x:hidden;
     background:white;
   }
   .articles{
     overflow-y:auto;
     overflow-x:hidden;
     padding-bottom:6rem;
-    max-height:calc(100vh - 200px);
+    max-height:calc(100vh - 220px);
   }
   .main-content{
     flex:0 0 auto;
