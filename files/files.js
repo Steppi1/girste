@@ -19,7 +19,7 @@ async function init() {
 
 function updateSplash() {
   if (splashes.length) {
-    document.querySelector('.breathing-text').textContent = splashes[Math.floor(Math.random()*splashes.length)];
+    headerPhrase.textContent = splashes[Math.floor(Math.random()*splashes.length)];
   } else {
     headerPhrase.textContent = '';
   }
