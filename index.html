@@ -2,19 +2,17 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
-  <meta name="description" content="Creative Designer Based in Turin">
-  <title>girste's</title>
-  <link rel="icon" href="girstefav.png" type="image/png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Girste Mosaic</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- full‐screen mosaic -->
   <div id="wrapper">
-    <div id="panzoom"></div>
+    <div id="panzoom">
+      <div id="masonry" class="masonry"></div>
+    </div>
   </div>
 
-  <!-- sticky yellow bar -->
   <div id="sticky-bar">
     <div class="icon-group">
       <a href="mailto:me@girste.com" title="email"><img src="assets/mail-icon.svg" alt="email"></a>
@@ -29,14 +27,10 @@
     </div>
   </div>
 
-  <!-- Panzoom (ESM) -->
   <script type="module">
     import panzoom from 'https://cdn.jsdelivr.net/npm/panzoom@9.4.3/dist/panzoom.esm.min.js';
     window.panzoom = panzoom;
   </script>
-
-  <!-- Supabase client + logic -->
-  <script type="module" src="supabase.js"></script>
   <script type="module" src="script.js"></script>
 </body>
 </html>

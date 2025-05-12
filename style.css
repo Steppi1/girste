@@ -4,8 +4,8 @@ html, body {
   width: 100%;
   height: 100%;
   background: #000;
-  user-select: none;
-  transition: background 0.3s ease;
+  font-family: monospace;
+  overflow: hidden;
 }
 
 body.light-mode {
@@ -25,86 +25,30 @@ body.light-mode {
   position: absolute;
   top: 0;
   left: 0;
-  display: flex;
-  align-items: flex-start;
+  display: block;
   will-change: transform;
   transform-origin: 50% 50%;
 }
 
-.column {
-  display: flex;
-  flex-direction: column;
-  contain: layout style;
-}
-
-.column + .column {
-  margin-left: 10px;
+#masonry {
+  column-count: 5;
+  column-gap: 10px;
+  padding: 10px;
 }
 
 .tile {
-  width: 300px;
-  margin-bottom: 10px;
-  pointer-events: none;
-}
-
-.tile img {
   width: 100%;
-  height: auto;
-  object-fit: cover;
+  margin-bottom: 10px;
   display: block;
+  break-inside: avoid;
 }
 
-/* Sticky Yellow Bar */
-#sticky-bar {
-  position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-    background: #ececec;  /* grigio chiaro */
-  border: 1px solid black;         /* bordo nero */
-  border-radius: 100px;
-  padding: 8px 24px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-family: monospace;
-  z-index: 9999;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+@media (max-width: 1200px) {
+  #masonry { column-count: 4; }
 }
-
-
-.icon-group {
-  display: flex;
-  gap: 16px;
+@media (max-width: 900px) {
+  #masonry { column-count: 2; }
 }
-
-#sticky-bar a,
-#sticky-bar button {
-  all: unset;
-  cursor: pointer;
-}
-
-#sticky-bar img {
-  width: 24px;
-  height: 24px;
-  transition: transform 0.2s ease;
-}
-
-#sticky-bar img:hover {
-  transform: scale(1.2);
-}
-
-#sticky-bar .icon-footer {
-  margin-top: 8px;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-#sticky-bar .icon-footer strong {
-  font-size: 0.5rem;
-}
-
-#sticky-bar .icon-footer small {
-  font-size: 0.4rem;
+@media (max-width: 600px) {
+  #masonry { column-count: 1; }
 }
