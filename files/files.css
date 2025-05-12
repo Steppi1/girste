@@ -10,7 +10,7 @@ html,body { width:100%; height:100%; background:#fff; font-family:'IBM Plex Mono
 
 /* ==== Sidebar ==== */
 .sidebar {
-  position:relative; top:0; height:100vh;
+  position:sticky; top:0; height:100vh;
   width:220px; border-right:1px solid #ddd;
   padding:1.8rem 0.8rem; display:flex; flex-direction:column; overflow-y:auto;
 }
@@ -32,7 +32,7 @@ html,body { width:100%; height:100%; background:#fff; font-family:'IBM Plex Mono
 .header-phrase {
   font-size:0.85rem; text-align:center; color:#555;
   margin:0.5rem 0; display:inline-block;
-  animation:breathe 2.5s ease-in-out infinite;
+  animation:breathe 4s ease-in-out infinite;
   transform-origin:center center;
 }
 @keyframes breathe { 0%,100%{transform:scale(1);} 50%{transform:scale(1.05);} }
@@ -70,7 +70,7 @@ html,body { width:100%; height:100%; background:#fff; font-family:'IBM Plex Mono
 @media(max-width:600px){
   .container { overflow-x:auto; }
   /* keep sidebar sticky, allow horizontal scroll */
-  .sidebar { position:relative; top:0; height:100vh; }
+  .sidebar { position:sticky; top:0; height:100vh; }
   /* keep same layout: no column change */
   .main-content { min-width:calc(100vw - 220px); }
 }
@@ -117,119 +117,20 @@ html,body { width:100%; height:100%; background:#fff; font-family:'IBM Plex Mono
 }
 
 /* Mobile horizontal scroll per articolo + sidebar */
-@media (max-width: 600px) {
-  .container {
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-  .sidebar, .main-content {
-    flex: 0 0 auto;
-    width: 100vw;
-  }
-}
 
-
-/* Freccia visiva a sinistra */
-.home-icon {
-  width: 20px !important;
-  height: auto !important;
-  filter: brightness(0%);
-  flex-shrink: 0;
-}
-
-/* Titolo in linea, con pesi diversi */
-.site-title {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  text-align: left;
-  margin-bottom: 0.8rem;
-}
-
-.site-sub {
-  font-weight: 400;
-}
-
-/* Mobile: mantieni layout desktop + larghezza articolo estesa */
-@media (max-width: 600px) {
-  .container {
-    flex-direction: row;
-    overflow-x: auto;
-    flex-wrap: nowrap;
-  }
-
-  .sidebar {
-    width: 220px;
-    flex-shrink: 0;
-    height: 100vh;
-  }
-
-  .main-content {
-    min-width: 100vw;
-    max-width: 100vw;
-    overflow-x: visible;
-  }
-
-  .article-content {
-    width: 100vw;
-  }
-}
-
-
-/* Layout mobile: tutto scrolla insieme orizzontalmente */
-@media (max-width: 600px) {
-  .container {
-    flex-direction: row;
-    width: calc(100vw + 220px);
-    overflow-x: scroll;
-    flex-wrap: nowrap;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .sidebar {
-    width: 220px;
-    flex-shrink: 0;
-    height: 100vh;
-    position: relative;
-  }
-
-  .main-content {
-    width: 100vw;
-    max-width: 100vw;
-    overflow: visible;
-  }
-
-  .article-content {
-    width: 100vw;
-  }
-
-  html, body {
-    overflow-x: hidden;
-  }
-}
-
-
-/* Nuova animazione su span interno */
-.breathing-text {
-  animation: breathe 2.5s ease-in-out infinite;
-  display: inline-block;
-  transform-origin: center;
-}
-
-/* Mobile layout: migliorato, niente bounce */
+/* Layout mobile minimale e corretto */
 @media (max-width: 600px) {
   html, body {
-    overscroll-behavior-x: none;
     overflow-x: hidden;
   }
 
   .container {
     display: flex;
     flex-direction: row;
-    width: 100vw;
-    min-width: calc(220px + 100vw);
     overflow-x: auto;
+    overflow-y: hidden;
+    width: calc(100vw + 220px);
+    height: 100vh;
     -webkit-overflow-scrolling: touch;
   }
 
@@ -241,19 +142,14 @@ html,body { width:100%; height:100%; background:#fff; font-family:'IBM Plex Mono
     position: relative;
   }
 
-  .articles {
-    flex: 1;
-    overflow-y: auto;
-    max-height: calc(100vh - 320px); /* stima ragionevole per contenuto fisso sopra */
-  }
-
   .main-content {
     width: 100vw;
-    max-width: 100vw;
-    overflow-x: visible;
+    flex-shrink: 0;
+    overflow-y: auto;
   }
 
   .article-content {
     width: 100vw;
+    overflow: visible;
   }
 }
