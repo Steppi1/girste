@@ -95,3 +95,17 @@ html,body { width:100%; height:100%; background:#fff; font-family:'IBM Plex Mono
     padding: 1.8rem;
   }
 }
+
+@media (max-width: 800px) {
+  .main-content {
+    position: relative;
+    background: white;
+    box-shadow: -1px 0 0 #ddd;
+    z-index: 1;
+  }
+  .sidebar {
+    z-index: 2;
+    background: white;
+    box-shadow: 1px 0 0 #ddd;
+  }
+}
