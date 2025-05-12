@@ -130,28 +130,37 @@ html,body { width:100%; height:100%; background:#fff; font-family:'IBM Plex Mono
 }
 
 
-/* MOBILE FIX: stesse proporzioni di desktop */
+/* Freccia sopra */
+.home-icon {
+  width: 20px !important;
+  height: auto !important;
+  margin-bottom: 0.6rem;
+  filter: brightness(0%);
+}
+
+/* Allineamento testo titolo a destra */
+.site-title {
+  text-align: right !important;
+  align-items: flex-end !important;
+}
+
+/* MOBILE: layout fisso affiancato come su desktop */
 @media (max-width: 600px) {
   .container {
     flex-direction: row;
     overflow-x: auto;
+    flex-wrap: nowrap;
   }
 
   .sidebar {
     width: 220px;
     flex-shrink: 0;
+    height: 100vh;
   }
 
   .main-content {
     min-width: calc(100vw - 220px);
     max-width: calc(100vw - 220px);
+    overflow-x: visible;
   }
-}
-
-/* Freccia leggermente più grande */
-.home-icon {
-  width: 20px !important;
-  height: auto !important;
-  margin-left: 0.4rem;
-  filter: brightness(0%);
 }
