@@ -130,28 +130,28 @@ html,body { width:100%; height:100%; background:#fff; font-family:'IBM Plex Mono
 }
 
 
-/* Fix per layout mobile identico a desktop */
+/* MOBILE FIX: stesse proporzioni di desktop */
 @media (max-width: 600px) {
   .container {
-    display: flex;
     flex-direction: row;
     overflow-x: auto;
   }
 
-  .sidebar, .main-content {
-    flex: 0 0 auto;
-    width: auto;
+  .sidebar {
+    width: 220px;
+    flex-shrink: 0;
   }
 
   .main-content {
     min-width: calc(100vw - 220px);
+    max-width: calc(100vw - 220px);
   }
 }
 
-/* Ingrandimento leggero freccia */
-.arrow-icon {
+/* Freccia leggermente più grande */
+.home-icon {
   width: 20px !important;
   height: auto !important;
-  margin-left: 0.5rem;
+  margin-left: 0.4rem;
   filter: brightness(0%);
 }
