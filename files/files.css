@@ -39,6 +39,11 @@ html, body {
   line-height: 1.2;
   margin-bottom: 0.8rem;
 }
+.site-title .home-icon {
+  width: 20px;
+  vertical-align: middle;
+  margin-right: 0.3rem;
+}
 .separator {
   border: none;
   border-top: 1px solid #ddd;
@@ -49,6 +54,12 @@ html, body {
   text-align: center;
   margin-bottom: 1.2rem;
   color: #555;
+  animation: breathe 1.5s ease-in-out infinite alternate;
+}
+@keyframes breathe {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.1); }
+  100% { transform: scale(1); }
 }
 
 /* ==== Filter pills ==== */

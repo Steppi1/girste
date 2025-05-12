@@ -14,7 +14,6 @@ async function init() {
     : '';
   posts = await getPosts();
   setupFilters();
-  // di default su 'all'
   applyFilter('all');
 }
 
