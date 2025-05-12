@@ -175,3 +175,36 @@ html,body { width:100%; height:100%; background:#fff; font-family:'IBM Plex Mono
     width: 100vw;
   }
 }
+
+
+/* Layout mobile: tutto scrolla insieme orizzontalmente */
+@media (max-width: 600px) {
+  .container {
+    flex-direction: row;
+    width: calc(100vw + 220px);
+    overflow-x: scroll;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .sidebar {
+    width: 220px;
+    flex-shrink: 0;
+    height: 100vh;
+    position: relative;
+  }
+
+  .main-content {
+    width: 100vw;
+    max-width: 100vw;
+    overflow: visible;
+  }
+
+  .article-content {
+    width: 100vw;
+  }
+
+  html, body {
+    overflow-x: hidden;
+  }
+}
