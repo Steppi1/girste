@@ -44,39 +44,36 @@
     <option value="blog">blog</option>
   </select>
 
-  <button id="submit">Pubblica</button>
+  <div style="display:flex; gap:0.5rem; margin-top:1rem;">
+    <button id="submit">Pubblica</button>
+    <button id="edit-splash">Imposta splash-text</button>
+  </div>
   <div class="feedback" id="feedback"></div>
+  <div class="feedback" id="splash-feedback"></div>
 
   <div class="drop-zone" id="drop-zone">📎 Trascina qui una o più immagini da caricare</div>
   <div class="img-url" id="img-url"></div>
 
   <script type="module">
-    import { supabase } from './supabase.js'
+    import { supabase, upsertSplashTxt } from './supabase.js'
 
+    // Elementi per i post
     const title     = document.getElementById('title')
     const snippet   = document.getElementById('snippet')
     const content   = document.getElementById('content')
     const tag       = document.getElementById('tag')
-    const feedback  = document.getElementById('feedback')
     const submitBtn = document.getElementById('submit')
-    const dropZone  = document.getElementById('drop-zone')
-    const imgUrlBox = document.getElementById('img-url')
+    const feedback  = document.getElementById('feedback')
 
-    // Pubblica post
+    // Elementi per lo splash-text
+    const editSplashBtn  = document.getElementById('edit-splash')
+    const splashFeedback = document.getElementById('splash-feedback')
+
+    // 1) Pubblica nuovo post
     submitBtn.addEventListener('click', async () => {
       feedback.textContent = ''
-      const post = {
-        title: title.value,
-        snippet: snippet.value,
-        content: content.value,
-        tag: tag.value,
-        image_url: null
-      }
-
-      const { error } = await supabase
-        .from('posts')
-        .insert([post])
-
+      const post = { title: title.value, snippet: snippet.value, content: content.value, tag: tag.value, image_url: null }
+      const { error } = await supabase.from('posts').insert([post])
       if (error) {
         feedback.textContent = '❌ ' + error.message
         feedback.className = 'feedback error'
@@ -88,7 +85,26 @@
       }
     })
 
-    // Drag & drop immagini + getPublicUrl()
+    // 2) Imposta splash-text
+    editSplashBtn.addEventListener('click', async () => {
+      const phrase = prompt('Inserisci la frase per lo splash-text:')
+      if (!phrase) return
+      splashFeedback.textContent = '⏳ Salvataggio…'
+      splashFeedback.className = 'feedback'
+      try {
+        await upsertSplashTxt(phrase)
+        splashFeedback.textContent = '✅ Splash-text aggiornato!'
+        splashFeedback.className = 'feedback ok'
+      } catch (err) {
+        splashFeedback.textContent = '❌ ' + err.message
+        splashFeedback.className = 'feedback error'
+      }
+    })
+
+    // 3) Drag & drop immagini + getPublicUrl()
+    const dropZone  = document.getElementById('drop-zone')
+    const imgUrlBox = document.getElementById('img-url')
+
     dropZone.addEventListener('dragover', e => {
       e.preventDefault()
       dropZone.style.borderColor = '#000'
@@ -96,7 +112,6 @@
     dropZone.addEventListener('dragleave', () => {
       dropZone.style.borderColor = '#ccc'
     })
-
     dropZone.addEventListener('drop', async e => {
       e.preventDefault()
       dropZone.style.borderColor = '#ccc'
@@ -105,37 +120,23 @@
       const files = Array.from(e.dataTransfer.files)
       for (const file of files) {
         const filename = `${Date.now()}-${file.name}`
-
-        // 1) Upload
-        const { error: uploadError } = await supabase
-          .storage
-          .from('images')
-          .upload(filename, file)
+        const { error: uploadError } = await supabase.storage.from('images').upload(filename, file)
         if (uploadError) {
           imgUrlBox.innerHTML += `<span class="error">❌ ${file.name}: ${uploadError.message}</span><br>`
           continue
         }
-
-        // 2) Prendi URL pubblico
-        const { data, error: urlError } = supabase
-          .storage
-          .from('images')
-          .getPublicUrl(filename)
+        const { data, error: urlError } = supabase.storage.from('images').getPublicUrl(filename)
         if (urlError) {
           imgUrlBox.innerHTML += `<span class="error">❌ ${file.name}: ${urlError.message}</span><br>`
           continue
         }
-
-        // 3) Mostra il tag <img>
         const publicUrl = data.publicUrl
         imgUrlBox.innerHTML += `
           ✅ ${file.name}<br>
           <pre>&lt;img src="${publicUrl}" alt="" /&gt;</pre>
           <button onclick="navigator.clipboard.writeText('<img src=&quot;${publicUrl}&quot; alt=&quot;&quot; />')">
             📋 Copia
-          </button>
-          <br><br>
-        `
+          </button><br><br>`
       }
     })
   </script>

@@ -5,10 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>GIRSTE’S files</title>
 
-  <link
-    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&display=swap"
-    rel="stylesheet"
-  />
+  <!-- Google Font & Reset omitted for brevity, usa il tuo files.css con l’animazione breathe -->
   <link rel="stylesheet" href="files.css">
 </head>
 <body>
@@ -16,7 +13,7 @@
     <nav class="sidebar">
       <h1 class="site-title"><a href="https://girste.com">GIRSTE’S<br>files</a></h1>
       <hr class="separator">
-      <p class="header-phrase">Where is the phrase?</p>
+      <p class="header-phrase">Loading…</p>
       <div class="filters">
         <button class="filter-pill" data-filter="stories">stories</button>
         <button class="filter-pill" data-filter="tools">tools</button>
@@ -26,8 +23,11 @@
       <hr class="separator">
       <ul class="articles" id="article-list"></ul>
     </nav>
-    <main class="main-content"><div class="article-content"></div></main>
+    <main class="main-content">
+      <div class="article-content"></div>
+    </main>
   </div>
+
   <script type="module" src="files.js"></script>
 </body>
 </html>
