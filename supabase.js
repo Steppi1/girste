@@ -1,11 +1,11 @@
-// supabase.js
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
-export const SUPABASE_URL = 'https://mcvvvhpmpouuupwqlbsn.supabase.co'
-export const SUPABASE_KEY = 'la-tua-anon-public-key'
-export const supabase     = createClient(SUPABASE_URL, SUPABASE_KEY)
+const SUPABASE_URL = 'https://mcvvvhpmpouuupwqlbsn.supabase.co'
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.<LA_TUA_ANON_PUBLIC_KEY>'
 
-// POSTS
+export const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
+
+/** Ottiene tutti i post, ordinati per data desc */
 export async function getPosts() {
   const { data, error } = await supabase
     .from('posts')
@@ -14,53 +14,20 @@ export async function getPosts() {
   if (error) throw error
   return data
 }
-export async function upsertPost(post) {
-  const { error } = post.id
-    ? await supabase.from('posts').update(post).eq('id', post.id)
-    : await supabase.from('posts').insert([post])
-  if (error) throw error
-}
-export async function deletePost(id) {
-  const { error } = await supabase.from('posts').delete().eq('id', id)
-  if (error) throw error
-}
 
-// SPLASH-TEXT
+/** Ottiene tutte le splash-text */
 export async function getSplashTxts() {
   const { data, error } = await supabase
     .from('splashtxt')
-    .select('*')
+    .select('phrase')
   if (error) throw error
-  return data
+  return data.map(r => r.phrase)
 }
+
+/** Aggiunge una nuova splash-text */
 export async function addSplashTxt(phrase) {
   const { error } = await supabase
     .from('splashtxt')
     .insert({ phrase })
-  if (error) throw error
-}
-export async function deleteSplashTxt(id) {
-  const { error } = await supabase.from('splashtxt').delete().eq('id', id)
-  if (error) throw error
-}
-
-// FOTO
-export async function listPhotos() {
-  const { data, error } = await supabase
-    .storage
-    .from('images')
-    .list('', { limit: 100 })
-  if (error) throw error
-  return data
-}
-export async function getPhotoUrl(name) {
-  const { data } = supabase
-    .storage
-    .from('images')
-    .getPublicUrl(name)
-  return data.publicUrl
-}
-export async function deletePhoto(name) {
-  const { error } = await supabase.storage.from('images').remove([name])
   if (error) throw error
 }

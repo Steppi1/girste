@@ -5,71 +5,44 @@
   <title>Admin Panel Protetto</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    /* ---------------- reset & base ---------------- */
     * { box-sizing:border-box; margin:0; padding:0 }
     body { font-family:sans-serif; min-height:100vh; }
     button { cursor:pointer; }
-
-    /* ------------- auth panel ------------- */
+    /* AUTH PANEL */
     #auth-panel {
       max-width:400px; margin:3rem auto; padding:1rem;
       border:1px solid #ddd; border-radius:4px;
     }
     #auth-panel label { display:block; margin-top:1rem; }
-    #auth-panel input {
-      width:100%; padding:0.6rem; margin-top:0.3rem;
-    }
-    #auth-panel .feedback { margin-top:0.5rem; font-size:0.9rem; }
+    #auth-panel input { width:100%; padding:0.6rem; margin-top:0.3rem; }
+    .feedback { margin-top:0.5rem; font-size:0.9rem; }
     .feedback.error { color:red }
     .feedback.ok    { color:green }
-
-    /* --------- admin container & nav --------- */
-    #admin-panel .container {
-      display:flex; min-height:100vh;
-    }
+    /* ADMIN LAYOUT */
+    #admin-panel .container { display:flex; min-height:100vh; }
     .sidebar {
       background:#f5f5f5; padding:1rem;
-      display:flex; flex-direction:column;
-      width:220px;
+      display:flex; flex-direction:column; width:220px;
     }
     .sidebar button {
       margin-bottom:0.5rem; padding:0.6rem;
       border:none; background:#fff; border-radius:4px;
       text-align:left;
     }
-    .sidebar button.active {
-      background:#ddd;
-    }
-    .sidebar #btn-logout {
-      margin-top:auto; background:#fee; 
-    }
-    .content {
-      flex:1; padding:1.5rem;
-    }
-
-    /* --------- section styling --------- */
+    .sidebar button.active { background:#ddd; }
+    .sidebar #btn-logout { margin-top:auto; background:#fee; }
+    .content { flex:1; padding:1.5rem; }
     .section { display:none; }
     .section.active { display:block; }
-
     .field-group { margin-top:1rem; }
     .field-group label { display:block; margin-bottom:0.3rem; }
     .field-group input,
     .field-group textarea,
-    .field-group select {
-      width:100%; padding:0.6rem;
-    }
-    .field-group textarea { resize:vertical; }
-
-    /* ---- drop-zone & img-list ---- */
+    .field-group select { width:100%; padding:0.6rem; }
     .drop-zone {
       border:2px dashed #ccc; padding:1rem; text-align:center;
       color:#666; margin-top:1rem;
     }
-    .img-list img {
-      max-width:100px; margin-right:0.5rem; vertical-align:middle;
-    }
-
-    /* -------- responsive -------- */
     @media (max-width:600px) {
       #admin-panel .container { flex-direction:column; }
       .sidebar {
@@ -79,10 +52,9 @@
     }
   </style>
 </head>
-
 <body>
 
-  <!-- ========== LOGIN PANEL ========== -->
+  <!-- LOGIN PANEL -->
   <div id="auth-panel">
     <h2>🔒 Accedi</h2>
     <label for="email">Email</label>
@@ -93,24 +65,24 @@
     <div class="feedback" id="auth-feedback"></div>
   </div>
 
-  <!-- ========== ADMIN PANEL ========== -->
+  <!-- ADMIN PANEL -->
   <div id="admin-panel" style="display:none;">
     <div class="container">
 
-      <!-- sidebar nav -->
+      <!-- SIDEBAR -->
       <nav class="sidebar">
-        <button data-section="new-post" class="nav-btn">📝 Nuovo Post</button>
-        <button data-section="edit-post" class="nav-btn">✏️ Modifica Post</button>
-        <button data-section="new-splash" class="nav-btn">💬 Nuovo Splash</button>
+        <button data-section="new-post"    class="nav-btn">📝 Nuovo Post</button>
+        <button data-section="edit-post"   class="nav-btn">✏️ Modifica Post</button>
+        <button data-section="new-splash"  class="nav-btn">💬 Nuovo Splash</button>
         <button data-section="manage-splash" class="nav-btn">🗑️ Gestione Splash</button>
         <button data-section="manage-photos" class="nav-btn">📷 Gestione Foto</button>
         <button data-section="manage-mosaic" class="nav-btn">🎛️ Gestione Mosaic</button>
         <button id="btn-logout">🚪 Logout</button>
       </nav>
 
-      <!-- main content -->
+      <!-- CONTENT -->
       <main class="content">
-        <!-- Sezione: Nuovo Post -->
+        <!-- Nuovo Post -->
         <section id="new-post" class="section">
           <h1>Nuovo Post</h1>
           <div class="field-group">
@@ -137,102 +109,93 @@
           <div class="feedback" id="fb-new-post"></div>
         </section>
 
-        <!-- Sezione: Modifica Post -->
+        <!-- Modifica Post -->
         <section id="edit-post" class="section">
           <h1>Modifica / Cancella Post</h1>
           <div id="list-posts">⏳ Caricamento…</div>
         </section>
 
-        <!-- Sezione: Nuovo Splash -->
+        <!-- Nuovo Splash -->
         <section id="new-splash" class="section">
           <h1>Nuovo Splash-Text</h1>
           <button id="submit-new-splash">Aggiungi Splash-Text</button>
           <div class="feedback" id="fb-new-splash"></div>
         </section>
 
-        <!-- Sezione: Gestione Splash -->
+        <!-- Gestione Splash -->
         <section id="manage-splash" class="section">
           <h1>Modifica / Cancella Splash</h1>
           <div id="list-splash">⏳ Caricamento…</div>
         </section>
 
-        <!-- Sezione: Gestione Foto -->
+        <!-- Gestione Foto -->
         <section id="manage-photos" class="section">
           <h1>Gestione Foto</h1>
           <div id="list-photos">⏳ Caricamento…</div>
         </section>
 
-        <!-- Sezione: Gestione Mosaic (placeholder) -->
+        <!-- Gestione Mosaic (placeholder) -->
         <section id="manage-mosaic" class="section">
           <h1>Gestione Mosaic</h1>
           <p>Funzionalità in arrivo…</p>
         </section>
       </main>
+
     </div>
   </div>
 
   <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+    import { supabase } from './supabase.js'
 
-    // ----- Supabase Setup -----
-    const SUPABASE_URL = 'https://mcvvvhpmpouuupwqlbsn.supabase.co'
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5...'
-    const supabase     = createClient(SUPABASE_URL, SUPABASE_KEY)
+    // — DOM —
+    const authPanel   = document.getElementById('auth-panel')
+    const adminPanel  = document.getElementById('admin-panel')
+    const emailInput  = document.getElementById('email')
+    const passInput   = document.getElementById('password')
+    const btnLogin    = document.getElementById('btn-login')
+    const btnLogout   = document.getElementById('btn-logout')
+    const authFb      = document.getElementById('auth-feedback')
 
-    // ----- DOM Elements -----
-    const authPanel    = document.getElementById('auth-panel')
-    const adminPanel   = document.getElementById('admin-panel')
-    const emailInput   = document.getElementById('email')
-    const passInput    = document.getElementById('password')
-    const btnLogin     = document.getElementById('btn-login')
-    const btnLogout    = document.getElementById('btn-logout')
-    const authFb       = document.getElementById('auth-feedback')
+    const navButtons  = document.querySelectorAll('.nav-btn')
+    const sections    = document.querySelectorAll('.section')
 
-    const navButtons   = document.querySelectorAll('.nav-btn')
-    const sections     = document.querySelectorAll('.section')
+    const fbNewPost   = document.getElementById('fb-new-post')
+    const listPosts   = document.getElementById('list-posts')
+    const fbNewSplash = document.getElementById('fb-new-splash')
+    const listSplash  = document.getElementById('list-splash')
+    const listPhotos  = document.getElementById('list-photos')
 
-    // feedback & containers
-    const fbNewPost    = document.getElementById('fb-new-post')
-    const fbNewSplash  = document.getElementById('fb-new-splash')
-    const listPosts    = document.getElementById('list-posts')
-    const listSplash   = document.getElementById('list-splash')
-    const listPhotos   = document.getElementById('list-photos')
+    const npTitle     = document.getElementById('np-title')
+    const npSnippet   = document.getElementById('np-snippet')
+    const npContent   = document.getElementById('np-content')
+    const npTag       = document.getElementById('np-tag')
+    const btnNewPost  = document.getElementById('submit-new-post')
 
-    // inputs for “new post”
-    const npTitle   = document.getElementById('np-title')
-    const npSnippet = document.getElementById('np-snippet')
-    const npContent = document.getElementById('np-content')
-    const npTag     = document.getElementById('np-tag')
-    const btnNewPost = document.getElementById('submit-new-post')
-
-    // ----- State -----
     let currentUser = null
 
-    // ----- UI Helpers -----
+    // — Helpers UI —
     function showSection(id) {
-      sections.forEach(s => s.id === id
+      sections.forEach(s => s.id===id
         ? s.classList.add('active')
         : s.classList.remove('active'))
-      navButtons.forEach(b => b.dataset.section === id
+      navButtons.forEach(b => b.dataset.section===id
         ? b.classList.add('active')
         : b.classList.remove('active'))
     }
-
-    function toggleAuth(loggedIn) {
-      authPanel.style.display  = loggedIn ? 'none' : 'block'
-      adminPanel.style.display = loggedIn ? 'block': 'none'
+    function toggleAuth(ok) {
+      authPanel.style.display  = ok ? 'none' : 'block'
+      adminPanel.style.display = ok ? 'block' : 'none'
       authFb.textContent = ''
-      if (loggedIn) { loadAllLists() }
+      if (ok) loadAll()
     }
 
-    // ----- Auth Flow -----
+    // — Auth Flow —
     window.addEventListener('load', async () => {
-      const { data: { session } } = await supabase.auth.getSession()
+      const { data:{ session }, error } = await supabase.auth.getSession()
       if (session) currentUser = session.user
       toggleAuth(!!session)
       if (session) showSection('new-post')
     })
-
     btnLogin.addEventListener('click', async () => {
       authFb.textContent = ''
       const { data, error } = await supabase.auth.signInWithPassword({
@@ -248,102 +211,77 @@
         showSection('new-post')
       }
     })
-
     btnLogout.addEventListener('click', async () => {
       await supabase.auth.signOut()
       currentUser = null
       toggleAuth(false)
     })
 
-    // ----- Nav Buttons -----
-    navButtons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        showSection(btn.dataset.section)
-        // se serve, ricarica la lista
-        if (btn.dataset.section === 'edit-post')    loadPosts()
-        if (btn.dataset.section === 'manage-splash') loadSplashes()
-        if (btn.dataset.section === 'manage-photos') loadPhotos()
-      })
-    })
+    // — Nav —
+    navButtons.forEach(btn => btn.addEventListener('click', () => {
+      showSection(btn.dataset.section)
+      if (btn.dataset.section==='edit-post')    loadPosts()
+      if (btn.dataset.section==='manage-splash') loadSplashes()
+      if (btn.dataset.section==='manage-photos') loadPhotos()
+    }))
 
-    // ----- Load / CRUD Helpers -----
-    async function loadAllLists() {
-      loadPosts(); loadSplashes(); loadPhotos()
+    // — Caricamenti —
+    async function loadAll() {
+      await Promise.all([loadPosts(), loadSplashes(), loadPhotos()])
     }
 
-    // — Posts —
+    // --- Posts CRUD ---
     async function loadPosts() {
       listPosts.textContent = '⏳ Caricamento…'
       const { data, error } = await supabase
-        .from('posts')
-        .select('*')
-        .order('date', { ascending:false })
-      if (error) {
-        listPosts.textContent = 'Errore: ' + error.message
-        return
-      }
-      if (!data.length) {
-        listPosts.textContent = 'Nessun post trovato.'
-        return
-      }
-      // render
-      listPosts.innerHTML = data.map(p => `
-        <div class="post-item" data-id="${p.id}">
+        .from('posts').select('*').order('date',{ascending:false})
+      if (error) { listPosts.textContent = error.message; return }
+      if (!data.length) { listPosts.textContent = 'Nessun post.'; return }
+      listPosts.innerHTML = data.map(p=>`
+        <div data-id="${p.id}">
           <strong>${p.title}</strong>
           <button class="edit-post">✏️</button>
           <button class="del-post">🗑️</button>
         </div>
       `).join('')
-      // attach edit/delete
-      listPosts.querySelectorAll('.edit-post').forEach(btn => {
-        btn.onclick = async () => {
-          const id = btn.parentElement.dataset.id
-          const post = data.find(x=>x.id==id)
-          // popola form “new-post” per edit
-          npTitle.value   = post.title
-          npSnippet.value = post.snippet
-          npContent.value = post.content
-          npTag.value     = post.tag
+      listPosts.querySelectorAll('.edit-post').forEach(b=>{
+        b.onclick = ()=>{
+          const id = b.parentElement.dataset.id
+          const p  = data.find(x=>x.id==id)
+          npTitle.value = p.title
+          npSnippet.value = p.snippet
+          npContent.value = p.content
+          npTag.value = p.tag
           showSection('new-post')
           btnNewPost.textContent = 'Aggiorna Post'
           btnNewPost.dataset.editId = id
         }
       })
-      listPosts.querySelectorAll('.del-post').forEach(btn => {
-        btn.onclick = async () => {
-          const id = btn.parentElement.dataset.id
+      listPosts.querySelectorAll('.del-post').forEach(b=>{
+        b.onclick = async ()=>{
           if (!confirm('Confermi cancellazione?')) return
-          await supabase.from('posts').delete().eq('id', id)
+          const id = b.parentElement.dataset.id
+          await supabase.from('posts').delete().eq('id',id)
           loadPosts()
         }
       })
     }
-
-    // — Create / Update Post —
-    btnNewPost.addEventListener('click', async () => {
+    btnNewPost.addEventListener('click', async ()=>{
       fbNewPost.textContent = ''
       const payload = {
-        title:   npTitle.value,
+        title: npTitle.value,
         snippet: npSnippet.value,
         content: npContent.value,
-        tag:     npTag.value,
+        tag: npTag.value,
         user_id: currentUser.id
       }
       if (btnNewPost.dataset.editId) {
-        // update
-        await supabase
-          .from('posts')
-          .update(payload)
-          .eq('id', btnNewPost.dataset.editId)
+        await supabase.from('posts').update(payload).eq('id',btnNewPost.dataset.editId)
+        delete btnNewPost.dataset.editId
+        btnNewPost.textContent = 'Pubblica Post'
       } else {
-        // insert
-        await supabase
-          .from('posts')
-          .insert([payload])
+        await supabase.from('posts').insert([payload])
       }
-      // reset
-      delete btnNewPost.dataset.editId
-      btnNewPost.textContent = 'Pubblica Post'
       npTitle.value = npSnippet.value = npContent.value = ''
       npTag.value = 'tools'
       fbNewPost.textContent = '✅ Operazione completata'
@@ -351,75 +289,54 @@
       loadPosts()
     })
 
-    // — Splashes —
+    // --- Splash CRUD ---
     async function loadSplashes() {
       listSplash.textContent = '⏳ Caricamento…'
-      const { data, error } = await supabase
-        .from('splashtxt')
-        .select('*')
-      if (error) {
-        listSplash.textContent = 'Errore: '+error.message
-        return
-      }
-      if (!data.length) {
-        listSplash.textContent = 'Nessuno splash.'
-        return
-      }
-      listSplash.innerHTML = data.map(s => `
+      const { data, error } = await supabase.from('splashtxt').select('*')
+      if (error) { listSplash.textContent = error.message; return }
+      if (!data.length) { listSplash.textContent = 'Nessuno splash.'; return }
+      listSplash.innerHTML = data.map(s=>`
         <div data-id="${s.id}">
           "${s.phrase}"
           <button class="del-splash">🗑️</button>
         </div>
       `).join('')
-      listSplash.querySelectorAll('.del-splash').forEach(btn => {
-        btn.onclick = async () => {
-          const id = btn.parentElement.dataset.id
+      listSplash.querySelectorAll('.del-splash').forEach(b=>{
+        b.onclick = async ()=>{
           if (!confirm('Cancelli questo splash?')) return
-          await supabase.from('splashtxt').delete().eq('id', id)
+          const id = b.parentElement.dataset.id
+          await supabase.from('splashtxt').delete().eq('id',id)
           loadSplashes()
         }
       })
     }
-
-    document.getElementById('submit-new-splash').addEventListener('click', async () => {
+    document.getElementById('submit-new-splash').addEventListener('click', async ()=>{
       const phrase = prompt('Inserisci splash-text:')
       if (!phrase) return
-      await supabase
-        .from('splashtxt')
-        .insert({ phrase, user_id: currentUser.id })
+      await supabase.from('splashtxt').insert({ phrase, user_id: currentUser.id })
       fbNewSplash.textContent = '✅ Aggiunto!'
       fbNewSplash.className = 'feedback ok'
       loadSplashes()
     })
 
-    // — Photos —
+    // --- Photo Management ---
     async function loadPhotos() {
       listPhotos.textContent = '⏳ Caricamento…'
-      const { data, error } = await supabase
-        .storage
-        .from('images')
-        .list('', { limit: 100 })
-      if (error) {
-        listPhotos.textContent = 'Errore: '+error.message
-        return
-      }
-      if (!data.length) {
-        listPhotos.textContent = 'Nessuna foto.'
-        return
-      }
-      listPhotos.innerHTML = data.map(f => `
-        <div style="margin-bottom:1rem;" data-file="${f.name}">
-          <img src="${supabase
-            .storage
-            .from('images')
-            .getPublicUrl(f.name).data.publicUrl}" />
-          <button class="del-photo">🗑️</button>
-        </div>
-      `).join('')
-      listPhotos.querySelectorAll('.del-photo').forEach(btn => {
-        btn.onclick = async () => {
-          const file = btn.parentElement.dataset.file
+      const { data, error } = await supabase.storage.from('images').list('',{limit:100})
+      if (error) { listPhotos.textContent = error.message; return }
+      if (!data.length) { listPhotos.textContent = 'Nessuna foto.'; return }
+      listPhotos.innerHTML = data.map(f=>{
+        const url = supabase.storage.from('images').getPublicUrl(f.name).data.publicUrl
+        return `
+          <div data-file="${f.name}" style="margin-bottom:1rem;">
+            <img src="${url}" style="max-width:120px">
+            <button class="del-photo">🗑️</button>
+          </div>`
+      }).join('')
+      listPhotos.querySelectorAll('.del-photo').forEach(b=>{
+        b.onclick = async ()=>{
           if (!confirm('Eliminare?')) return
+          const file = b.parentElement.dataset.file
           await supabase.storage.from('images').remove([file])
           loadPhotos()
         }
