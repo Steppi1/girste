@@ -6,7 +6,7 @@
 html,body { width:100%; height:100%; background:#fff; font-family:'IBM Plex Mono',monospace; color:#000; font-size:15px; }
 
 /* ==== Layout ==== */
-.container { display:flex; height:100%; }
+.container { display:flex; height:100%; overflow-x:auto; }
 
 /* ==== Sidebar ==== */
 .sidebar {
@@ -18,12 +18,11 @@ html,body { width:100%; height:100%; background:#fff; font-family:'IBM Plex Mono
   font-weight:700; font-size:1.4rem; text-align:center; line-height:1.2;
   margin-bottom:0.8rem;
 }
-.site-title a { all:unset; color:inherit; text-decoration:none; }
-.site-title .home-icon {
-  width:16px; vertical-align:middle; margin-right:0.3rem;
-  transition:transform 0.2s ease;
+.site-title a { all:unset; }
+.home-icon {
+  width:16px; vertical-align:middle; transition:transform 0.2s ease;
 }
-.site-title .home-icon:hover { transform:scale(1.1); }
+.home-icon:hover { transform:scale(1.1); }
 .site-sub { display:block; font-weight:400; }
 
 /* ==== Separators ==== */
@@ -48,9 +47,15 @@ html,body { width:100%; height:100%; background:#fff; font-family:'IBM Plex Mono
 .filter-pill:hover, .filter-pill.active { background:rgba(0,0,0,0.05); }
 
 /* ==== Article list ==== */
-.articles { list-style:none; margin-top:0.8rem; overflow-y:auto; flex:1; }
-.article { padding:0.5rem 0; border-bottom:1px solid #eee; cursor:pointer;
-  font-size:0.9rem; transition:color 0.2s; }
+.articles {
+  list-style:none; margin-top:0.8rem; overflow-y:auto; flex:1;
+  -ms-overflow-style: none; scrollbar-width: none;
+}
+.articles::-webkit-scrollbar { display: none; }
+.article {
+  padding:0.5rem 0; border-bottom:1px solid #eee; cursor:pointer;
+  font-size:0.9rem; transition:color 0.2s;
+}
 .article:hover { color:#555; }
 .article.selected { font-weight:700; }
 
@@ -63,8 +68,9 @@ html,body { width:100%; height:100%; background:#fff; font-family:'IBM Plex Mono
 
 /* ==== Mobile tweaks ==== */
 @media(max-width:600px){
-  .container { flex-direction:column; }
-  .sidebar { position:relative; height:auto; width:100%; }
-  .main-content { min-width:100vw; font-size:0.85rem; line-height:1.4; }
-  .article-content img { max-width:calc(100vw - 220px); }
+  .container { overflow-x:auto; }
+  /* keep sidebar sticky, allow horizontal scroll */
+  .sidebar { position:sticky; top:0; height:100vh; }
+  /* keep same layout: no column change */
+  .main-content { min-width:calc(100vw - 220px); }
 }
