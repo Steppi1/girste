@@ -1,4 +1,4 @@
-import { supabase } from '../supabase.js';
+import { supabase } from '/supabase.js';
 import { showSection } from './nav.js';
 
 const listPosts   = document.getElementById('list-posts');
@@ -18,23 +18,32 @@ btnNewPost.addEventListener('click', async () => {
     tag: npTag.value,
     user_id: (await supabase.auth.getSession()).data.session.user.id
   };
-  if (btnNewPost.dataset.editId) {
-    await supabase.from('posts').update(payload).eq('id', btnNewPost.dataset.editId);
-    delete btnNewPost.dataset.editId;
-    btnNewPost.textContent = 'Pubblica Post';
-  } else {
-    await supabase.from('posts').insert([payload]);
+  try {
+    if (btnNewPost.dataset.editId) {
+      const { error } = await supabase.from('posts').update(payload).eq('id', btnNewPost.dataset.editId);
+      delete btnNewPost.dataset.editId;
+      btnNewPost.textContent = 'Pubblica Post';
+      if (error) throw error;
+    } else {
+      const { error } = await supabase.from('posts').insert([payload]);
+      if (error) throw error;
+    }
+    npTitle.value = npSnippet.value = npContent.value = '';
+    npTag.value = 'tools';
+    fbNewPost.textContent = '✅ Operazione completata';
+    loadPosts();
+  } catch (err) {
+    console.error('Errore CRUD post:', err);
+    fbNewPost.textContent = '❌ ' + err.message;
+    fbNewPost.className = 'feedback error';
   }
-  npTitle.value = npSnippet.value = npContent.value = '';
-  npTag.value = 'tools';
-  fbNewPost.textContent = '✅ Operazione completata';
-  loadPosts();
 });
 
 export async function loadPosts() {
   listPosts.textContent = '⏳ Caricamento…';
   const { data, error } = await supabase.from('posts').select('*').order('date', { ascending:false });
   if (error) { listPosts.textContent = error.message; return; }
+  if (!data.length) { listPosts.textContent = 'Nessun post.'; return; }
   listPosts.innerHTML = data.map(p => `
     <div data-id="${p.id}">
       <strong>${p.title}</strong>
@@ -45,22 +54,30 @@ export async function loadPosts() {
   listPosts.querySelectorAll('.edit-post').forEach(b => {
     b.onclick = () => {
       const p = data.find(x => x.id == b.parentElement.dataset.id);
-      document.getElementById('np-title').value = p.title;
-      document.getElementById('np-snippet').value = p.snippet;
-      document.getElementById('np-content').value = p.content;
-      document.getElementById('np-tag').value = p.tag;
+      npTitle.value = p.title;
+      npSnippet.value = p.snippet;
+      npContent.value = p.content;
+      npTag.value = p.tag;
       showSection('new-post');
-      b.parentElement.parentElement.querySelector('#submit-new-post').dataset.editId = p.id;
+      btnNewPost.dataset.editId = p.id;
+      btnNewPost.textContent = 'Aggiorna Post';
     };
   });
   listPosts.querySelectorAll('.del-post').forEach(b => {
     b.onclick = async () => {
       if (!confirm('Confermi cancellazione?')) return;
-      await supabase.from('posts').delete().eq('id', b.parentElement.dataset.id);
-      loadPosts();
+      const id = b.parentElement.dataset.id;
+      try {
+        const { error } = await supabase.from('posts').delete().eq('id', id);
+        if (error) throw error;
+        loadPosts();
+      } catch (err) {
+        console.error('Errore delete post:', err);
+        alert('Errore cancellazione: ' + err.message);
+      }
     };
   });
 }
 
-// inizializzazione
+// Inizializzazione
 window.addEventListener('load', () => loadPosts());

@@ -139,6 +139,23 @@ button {
   font-size: 0.9rem;
 }
 
+/* — PHOTO GRID — */
+#list-photos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+#list-photos div {
+  text-align: center;
+}
+#list-photos img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto 0.5rem;
+}
+
 /* — RESPONSIVE — */
 @media (max-width: 600px) {
   #admin-panel .container {
