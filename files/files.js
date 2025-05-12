@@ -7,11 +7,9 @@ const phraseEl   = document.querySelector('.header-phrase')
 const container  = document.querySelector('.container')
 const main       = document.querySelector('.main-content')
 
-let phrases = []
-let items = []
-let initialOrder = []
+let phrases = [], items = [], initialOrder = []
 
-// — Carica articoli da Supabase
+// Carica articoli
 getPosts().then(posts => {
   posts.forEach(post => {
     const li = document.createElement('li')
@@ -26,28 +24,23 @@ getPosts().then(posts => {
     `
     list.appendChild(li)
   })
-
   items = Array.from(document.querySelectorAll('.article'))
   initialOrder = items.slice()
   activateFilter('all')
 })
 
-// — Filtro e ordinamento
+// Filtri
 pills.forEach(pill => {
-  pill.addEventListener('click', () => {
-    activateFilter(pill.dataset.filter)
-  })
+  pill.addEventListener('click', () => activateFilter(pill.dataset.filter))
 })
 
 function activateFilter(type) {
   pills.forEach(p => p.classList.toggle('active', p.dataset.filter === type))
-
   if (type === 'all') {
-    items.sort((a, b) => new Date(b.dataset.date) - new Date(a.dataset.date))
+    items.sort((a,b) => new Date(b.dataset.date) - new Date(a.dataset.date))
   } else {
     items = initialOrder.slice()
   }
-
   const frag = document.createDocumentFragment()
   items.forEach(item => {
     const show = (type === 'all' || item.dataset.type === type)
@@ -58,8 +51,8 @@ function activateFilter(type) {
   list.innerHTML = ''
   list.appendChild(frag)
 
-  const firstVisible = items.find(i => i.style.display === '')
-  if (firstVisible) selectArticle(firstVisible)
+  const first = items.find(i => i.style.display === '')
+  if (first) selectArticle(first)
   else contentBox.innerHTML = ''
 }
 
@@ -71,19 +64,17 @@ list.addEventListener('click', e => {
 function selectArticle(item) {
   items.forEach(i => i.classList.remove('selected'))
   item.classList.add('selected')
-
   const tpl = item.querySelector('template.article-body')
-  const bodyHTML = tpl ? tpl.innerHTML : ''
   contentBox.innerHTML = `
     <h2>${item.textContent}</h2>
     <hr />
-    ${bodyHTML}
+    ${tpl ? tpl.innerHTML : ''}
   `
 }
 
-// — Frasi casuali da phrases.json
+// Frasi random
 fetch('phrases.json')
-  .then(res => res.ok ? res.json() : Promise.reject(`HTTP ${res.status}`))
+  .then(r => r.ok ? r.json() : Promise.reject(`HTTP ${r.status}`))
   .then(arr => {
     phrases = Array.isArray(arr) ? arr : []
     changePhrase()
@@ -93,23 +84,19 @@ fetch('phrases.json')
 
 function changePhrase() {
   if (!phrases.length) return
-  const i = Math.floor(Math.random() * phrases.length)
-  phraseEl.textContent = phrases[i]
+  phraseEl.textContent = phrases[Math.floor(Math.random() * phrases.length)]
 }
 
-// — Swipe sidebar su mobile
+// Swipe mobile
 let startX, startY, isTicking = false, lastDx = 0
-
 main.addEventListener('touchstart', e => {
   startX = e.touches[0].clientX
   startY = e.touches[0].clientY
 })
-
 main.addEventListener('touchmove', e => {
   const touch = e.touches[0]
   const dx = touch.clientX - startX
   const dy = touch.clientY - startY
-
   if (Math.abs(dx) > Math.abs(dy)) {
     e.preventDefault()
     lastDx = dx
