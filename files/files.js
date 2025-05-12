@@ -9,7 +9,6 @@ const main       = document.querySelector('.main-content')
 
 let phrases = [], items = [], initialOrder = []
 
-// Carica articoli
 getPosts().then(posts => {
   posts.forEach(post => {
     const li = document.createElement('li')
@@ -18,9 +17,7 @@ getPosts().then(posts => {
     li.dataset.date = post.date.split('T')[0]
     li.innerHTML = `
       ${post.title}
-      <template class="article-body">
-        ${post.content}
-      </template>
+      <template class="article-body">${post.content}</template>
     `
     list.appendChild(li)
   })
@@ -29,29 +26,26 @@ getPosts().then(posts => {
   activateFilter('all')
 })
 
-// Filtri
 pills.forEach(pill => {
   pill.addEventListener('click', () => activateFilter(pill.dataset.filter))
 })
 
 function activateFilter(type) {
   pills.forEach(p => p.classList.toggle('active', p.dataset.filter === type))
-  if (type === 'all') {
-    items.sort((a,b) => new Date(b.dataset.date) - new Date(a.dataset.date))
-  } else {
-    items = initialOrder.slice()
-  }
+  if (type === 'all') items.sort((a,b)=>new Date(b.dataset.date)-new Date(a.dataset.date))
+  else items = initialOrder.slice()
+
   const frag = document.createDocumentFragment()
   items.forEach(item => {
-    const show = (type === 'all' || item.dataset.type === type)
-    item.style.display = show ? '' : 'none'
+    const show = (type==='all'||item.dataset.type===type)
+    item.style.display = show?'':'none'
     item.classList.remove('selected')
     frag.appendChild(item)
   })
   list.innerHTML = ''
   list.appendChild(frag)
 
-  const first = items.find(i => i.style.display === '')
+  const first = items.find(i=>i.style.display==='')
   if (first) selectArticle(first)
   else contentBox.innerHTML = ''
 }
@@ -62,51 +56,32 @@ list.addEventListener('click', e => {
 })
 
 function selectArticle(item) {
-  items.forEach(i => i.classList.remove('selected'))
+  items.forEach(i=>i.classList.remove('selected'))
   item.classList.add('selected')
   const tpl = item.querySelector('template.article-body')
-  contentBox.innerHTML = `
-    <h2>${item.textContent}</h2>
-    <hr />
-    ${tpl ? tpl.innerHTML : ''}
-  `
+  contentBox.innerHTML = `<h2>${item.textContent}</h2><hr/>${tpl?tpl.innerHTML:''}`
 }
 
-// Frasi random
 fetch('phrases.json')
-  .then(r => r.ok ? r.json() : Promise.reject(`HTTP ${r.status}`))
-  .then(arr => {
-    phrases = Array.isArray(arr) ? arr : []
-    changePhrase()
-    setInterval(changePhrase, 7000)
-  })
-  .catch(err => console.error('Errore caricamento frasi:', err))
+  .then(r=>r.ok?r.json():Promise.reject(`HTTP ${r.status}`))
+  .then(arr=>{ phrases=Array.isArray(arr)?arr:[]; changePhrase(); setInterval(changePhrase,7000)})
+  .catch(err=>console.error('Errore frasi:',err))
 
-function changePhrase() {
-  if (!phrases.length) return
-  phraseEl.textContent = phrases[Math.floor(Math.random() * phrases.length)]
+function changePhrase(){
+  if(!phrases.length) return
+  phraseEl.textContent = phrases[Math.floor(Math.random()*phrases.length)]
 }
 
-// Swipe mobile
-let startX, startY, isTicking = false, lastDx = 0
-main.addEventListener('touchstart', e => {
-  startX = e.touches[0].clientX
-  startY = e.touches[0].clientY
-})
+let startX, startY, isTicking=false, lastDx=0
+main.addEventListener('touchstart', e => { startX=e.touches[0].clientX; startY=e.touches[0].clientY })
 main.addEventListener('touchmove', e => {
   const touch = e.touches[0]
-  const dx = touch.clientX - startX
-  const dy = touch.clientY - startY
-  if (Math.abs(dx) > Math.abs(dy)) {
-    e.preventDefault()
-    lastDx = dx
-    if (!isTicking) {
-      isTicking = true
-      requestAnimationFrame(() => {
-        container.scrollLeft -= lastDx
-        startX = touch.clientX
-        isTicking = false
-      })
-    }
+  const dx = touch.clientX - startX, dy = touch.clientY - startY
+  if(Math.abs(dx)>Math.abs(dy)){ e.preventDefault(); lastDx=dx 
+    if(!isTicking){ isTicking=true; requestAnimationFrame(()=>{
+      container.scrollLeft -= lastDx
+      startX = touch.clientX
+      isTicking = false
+    }) }
   }
 })

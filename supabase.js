@@ -1,3 +1,4 @@
+// supabase.js
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
 export const SUPABASE_URL = 'https://mcvvvhpmpouuupwqlbsn.supabase.co'

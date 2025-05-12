@@ -53,7 +53,6 @@
   <script type="module">
     import { supabase } from './supabase.js'
 
-    // ELEMENTI
     const title     = document.getElementById('title')
     const snippet   = document.getElementById('snippet')
     const content   = document.getElementById('content')
@@ -63,7 +62,7 @@
     const dropZone  = document.getElementById('drop-zone')
     const imgUrlBox = document.getElementById('img-url')
 
-    // 1) PUBBLICA NUOVO POST
+    // Pubblica post
     submitBtn.addEventListener('click', async () => {
       feedback.textContent = ''
       const post = {
@@ -75,7 +74,7 @@
       }
 
       const { error } = await supabase
-        .from('posts')         // schema public di default
+        .from('posts')
         .insert([post])
 
       if (error) {
@@ -89,7 +88,7 @@
       }
     })
 
-    // 2) CARICAMENTO IMMAGINI + getPublicUrl()
+    // Drag & drop immagini + getPublicUrl()
     dropZone.addEventListener('dragover', e => {
       e.preventDefault()
       dropZone.style.borderColor = '#000'
@@ -107,31 +106,28 @@
       for (const file of files) {
         const filename = `${Date.now()}-${file.name}`
 
-        // upload
+        // 1) Upload
         const { error: uploadError } = await supabase
           .storage
           .from('images')
           .upload(filename, file)
-
         if (uploadError) {
           imgUrlBox.innerHTML += `<span class="error">❌ ${file.name}: ${uploadError.message}</span><br>`
           continue
         }
 
-        // get public URL
+        // 2) Prendi URL pubblico
         const { data, error: urlError } = supabase
           .storage
           .from('images')
           .getPublicUrl(filename)
-
         if (urlError) {
           imgUrlBox.innerHTML += `<span class="error">❌ ${file.name}: ${urlError.message}</span><br>`
           continue
         }
 
+        // 3) Mostra il tag <img>
         const publicUrl = data.publicUrl
-
-        // mostra tag <img>
         imgUrlBox.innerHTML += `
           ✅ ${file.name}<br>
           <pre>&lt;img src="${publicUrl}" alt="" /&gt;</pre>

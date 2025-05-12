@@ -5,21 +5,16 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>GIRSTE’S files</title>
 
-  <!-- Font monospace -->
   <link
     href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&display=swap"
     rel="stylesheet"
   />
-
-  <!-- Il tuo CSS -->
   <link rel="stylesheet" href="files.css">
 </head>
 <body>
   <div class="container">
     <nav class="sidebar">
-      <h1 class="site-title">
-        <a href="https://girste.com">GIRSTE’S<br>files</a>
-      </h1>
+      <h1 class="site-title"><a href="https://girste.com">GIRSTE’S<br>files</a></h1>
       <hr class="separator">
       <p class="header-phrase">Where is the phrase?</p>
       <div class="filters">
@@ -29,16 +24,10 @@
         <button class="filter-pill" data-filter="all">all</button>
       </div>
       <hr class="separator">
-      <ul class="articles" id="article-list">
-        <!-- Popolato via JS -->
-      </ul>
+      <ul class="articles" id="article-list"></ul>
     </nav>
-    <main class="main-content">
-      <div class="article-content"></div>
-    </main>
+    <main class="main-content"><div class="article-content"></div></main>
   </div>
-
-  <!-- Il tuo JS -->
   <script type="module" src="files.js"></script>
 </body>
 </html>
