@@ -7,26 +7,20 @@
   <link rel="stylesheet" href="files.css">
 </head>
 <body>
-  <div class="logo">
-    <a href="/">
-      <img src="/assets/home-icon.svg" alt="Home" class="logo-icon">
-      <span class="logo-main">GIRSTE’S</span>
-      <span class="logo-sub">files</span>
-    </a>
-  </div>
   <div class="container">
     <nav class="sidebar">
+      <h1 class="site-title">GIRSTE’S<br>files</h1>
       <hr class="separator">
 
-      <p class="header-phrase">Low light. Low budget. Fake ficus.</p>
+      <p class="header-phrase">Low light. Low budget.<br>Fake ficus.</p>
       <hr class="separator">
 
-      <ul class="filters">
-        <li><button class="filter-pill" data-filter="stories">cases</button></li>
-        <li><button class="filter-pill" data-filter="tools">lab</button></li>
-        <li><button class="filter-pill" data-filter="blog">notes</button></li>
-        <li><button class="filter-pill active" data-filter="all">all</button></li>
-      </ul>
+      <div class="filters">
+        <button class="filter-pill" data-filter="stories">cases</button>
+        <button class="filter-pill" data-filter="tools">lab</button>
+        <button class="filter-pill" data-filter="blog">notes</button>
+        <button class="filter-pill active" data-filter="all">all</button>
+      </div>
       <hr class="separator">
 
       <ul class="articles" id="article-list"></ul>
@@ -35,6 +29,7 @@
       <div class="article-content"></div>
     </main>
   </div>
+
   <script type="module" src="files.js"></script>
 </body>
 </html>
