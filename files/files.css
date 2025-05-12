@@ -110,3 +110,21 @@ html,body { width:100%; height:100%; background:#fff; font-family:'IBM Plex Mono
     padding: 1.8rem;
   }
 }
+
+
+.site-title {
+  text-align: right;
+}
+
+/* Mobile horizontal scroll per articolo + sidebar */
+@media (max-width: 600px) {
+  .container {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .sidebar, .main-content {
+    flex: 0 0 auto;
+    width: 100vw;
+  }
+}
