@@ -29,24 +29,13 @@ html, body {
   overflow: hidden;
 }
 
-.site-title {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin: 1.2rem 0 0.2rem 0;
-  padding: 0 1.2rem;
-}
+
 .home-link {
   display: flex;
   align-items: center;
   margin: 0.4rem 0 0.2rem 0.6rem;
 }
-.home-icon {
-  width: 38px;
-  margin-right: 0.6rem;
-  height: auto;
-  display: block;
-}
+
 
 .title-text {
   font-weight: 400;
@@ -240,7 +229,7 @@ html, body {
   width: 36px;
   height: auto;
   display: block;
-  transform: translateY(-4px);
+  transform: translateY(-8px);
   margin: 0;
 }
 
