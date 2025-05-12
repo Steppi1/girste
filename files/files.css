@@ -253,6 +253,13 @@ html, body {
   .title-text strong {
     font-weight: 700;
   }
+
+.title-row.stacked-title .home-icon {
+  width: 72px;
+    margin-bottom: -0.2rem; /* regola tu la distanza */
+}
+
+
 }
 
 
