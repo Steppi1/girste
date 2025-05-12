@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Admin Panel Protetto</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="/style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- CSS specifico per Admin -->
+  <link rel="stylesheet" href="admin.css" />
 </head>
 <body>
 
@@ -12,9 +13,9 @@
   <div id="auth-panel">
     <h2>🔒 Accedi</h2>
     <label for="email">Email</label>
-    <input type="email" id="email">
+    <input type="email" id="email" />
     <label for="password">Password</label>
-    <input type="password" id="password">
+    <input type="password" id="password" />
     <button id="btn-login">Accedi</button>
     <div class="feedback" id="auth-feedback"></div>
   </div>
@@ -25,9 +26,9 @@
 
       <!-- SIDEBAR -->
       <nav class="sidebar">
-        <button data-section="new-post"    class="nav-btn">📝 Nuovo Post</button>
-        <button data-section="edit-post"   class="nav-btn">✏️ Modifica Post</button>
-        <button data-section="new-splash"  class="nav-btn">💬 Nuovo Splash</button>
+        <button data-section="new-post" class="nav-btn">📝 Nuovo Post</button>
+        <button data-section="edit-post" class="nav-btn">✏️ Modifica Post</button>
+        <button data-section="new-splash" class="nav-btn">💬 Nuovo Splash</button>
         <button data-section="manage-splash" class="nav-btn">🗑️ Gestione Splash</button>
         <button data-section="manage-photos" class="nav-btn">📷 Gestione Foto</button>
         <button id="btn-logout">🚪 Logout</button>
@@ -37,8 +38,8 @@
       <main class="content">
         <section id="new-post" class="section">
           <h1>Nuovo Post</h1>
-          <div class="field-group"><label for="np-title">Titolo</label><input type="text" id="np-title"></div>
-          <div class="field-group"><label for="np-snippet">Snippet</label><input type="text" id="np-snippet"></div>
+          <div class="field-group"><label for="np-title">Titolo</label><input type="text" id="np-title" /></div>
+          <div class="field-group"><label for="np-snippet">Snippet</label><input type="text" id="np-snippet" /></div>
           <div class="field-group"><label for="np-content">Contenuto</label><textarea id="np-content" rows="5"></textarea></div>
           <div class="field-group"><label for="np-tag">Tag</label>
             <select id="np-tag">
@@ -76,11 +77,11 @@
     </div>
   </div>
 
-  <!-- Script modulari -->
-  <script type="module" src="files/auth.js"></script>
-  <script type="module" src="files/nav.js"></script>
-  <script type="module" src="files/posts.js"></script>
-  <script type="module" src="files/splashes.js"></script>
-  <script type="module" src="files/photos.js"></script>
+  <!-- Script modulari senza sottocartella -->
+  <script type="module" src="auth.js"></script>
+  <script type="module" src="nav.js"></script>
+  <script type="module" src="posts.js"></script>
+  <script type="module" src="splashes.js"></script>
+  <script type="module" src="photos.js"></script>
 </body>
 </html>
