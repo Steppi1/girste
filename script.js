@@ -1,4 +1,3 @@
-
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
 const supabase = createClient(
@@ -9,7 +8,7 @@ const supabase = createClient(
 const panzoomEl = document.getElementById('panzoom');
 const masonryEl = document.getElementById('masonry');
 
-const panzoomInstance = panzoom(panzoomEl, {
+const panzoomInstance = window.panzoom(panzoomEl, {
   maxZoom: 5,
   minZoom: 0.1,
   bounds: true,
