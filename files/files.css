@@ -37,12 +37,13 @@ html, body {
   padding: 0 1.2rem;
 }
 .home-link {
-  display: inline-block;
-  margin-left: 0.6rem;
+  display: flex;
+  align-items: center;
+  margin: 0.4rem 0 0.2rem 0.6rem;
 }
 .home-icon {
-  width: 42px;
-  margin-right: 0.8rem;
+  width: 38px;
+  margin-right: 0.6rem;
   height: auto;
   display: block;
 }
