@@ -7,8 +7,9 @@
   <title>girste's</title>
   <link rel="icon" href="girstefav.png" type="image/png">
   <link rel="stylesheet" href="style.css">
+
+  <!-- Override per panzoom wrapper -->
   <style>
-    /* override per panzoom wrapper */
     #wrapper {
       position: relative;
       overflow: hidden;
@@ -34,10 +35,12 @@
   </style>
 </head>
 <body>
+  <!-- contenitore full‐screen per il mosaico -->
   <div id="wrapper">
     <div id="panzoom"></div>
   </div>
 
+  <!-- sticky yellow bar -->
   <div id="sticky-bar">
     <div class="icon-group">
       <a href="mailto:me@girste.com" title="email">
@@ -62,9 +65,14 @@
     </div>
   </div>
 
-  <!-- Panzoom -->
-  <script src="https://unpkg.com/panzoom@9.4.3/dist/panzoom.min.js"></script>
-  <!-- Il tuo script -->
-  <script src="script.js"></script>
+  <!-- 1) Import Panzoom come ESM e lo espone su window -->
+  <script type="module">
+    import panzoom from 'https://unpkg.com/panzoom@9.4.3/dist/panzoom.esm.js';
+    window.panzoom = panzoom;
+  </script>
+
+  <!-- 2) Moduli Supabase + logica client‐side -->
+  <script type="module" src="supabase.js"></script>
+  <script type="module" src="script.js"></script>
 </body>
 </html>
