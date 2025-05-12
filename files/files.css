@@ -1,61 +1,55 @@
-/* Updated files.css */
-
-/* Logo */
-.logo {
-  text-align: center;
-  margin: 1rem 0;
-}
-.logo-icon {
-  width: 24px;
-  vertical-align: middle;
-  margin-right: 0.5rem;
-}
-.logo-main {
-  font-family: 'IBM Plex Mono', monospace;
-  font-weight: 700;
-  font-size: 1.4rem;
-  vertical-align: middle;
-}
-.logo-sub {
-  font-family: 'IBM Plex Mono', monospace;
-  font-weight: 400;
-  font-size: 1rem;
-  margin-left: 0.3rem;
-  vertical-align: middle;
-}
-
 /* Reset & Base */
-* { margin:0; padding:0; box-sizing:border-box; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
 html, body { width:100%; height:100%; background:#fff; font-family:'IBM Plex Mono', monospace; color:#000; font-size:15px; }
 
+/* Logo */
+.logo { text-align: center; margin: 1rem 0; }
+.logo-icon { width: 24px; vertical-align: middle; margin-right: 0.5rem; }
+.logo-main { font-weight: 700; font-size: 1.4rem; vertical-align: middle; }
+.logo-sub { font-weight: 400; font-size: 1rem; margin-left: 0.3rem; vertical-align: middle; }
+
 /* Layout */
-.container { display:flex; height: calc(100vh - 4rem); }
+.container { display: flex; height: calc(100vh - 4rem); }
+.sidebar { width: 220px; border-right: 1px solid #ddd; padding: 1rem; display: flex; flex-direction: column; overflow-y: auto; }
+.main-content { flex: 1; padding: 1.8rem; overflow-y: auto; }
 
-/* Sidebar */
-.sidebar { width:220px; border-right:1px solid #ddd; padding:1rem; display:flex; flex-direction:column; overflow:auto; }
-.separator { border:none; border-top:1px solid #ddd; margin:0.8rem 0; }
-.header-phrase { font-size:0.85rem; text-align:center; margin-bottom:1.2rem; color:#555; }
+/* Separators */
+.separator { border: none; border-top: 1px solid #ddd; margin: 0.8rem 0; }
 
-/* Filters */
-.filters { display:flex; flex-direction:column; gap:0.4rem; }
-.filter-pill { all: unset; cursor:pointer; padding:0.4rem 0.8rem; font-size:0.85rem; color:#333; }
-.filter-pill.active, .filter-pill:hover { font-weight:700; }
+/* Header phrase */
+.header-phrase { font-size: 0.85rem; text-align: center; color: #555; margin-bottom: 0.8rem; }
+
+/* Filters as list */
+.filters { list-style: none; margin-bottom: 0.8rem; }
+.filters li + li { margin-top: 0.4rem; }
+.filter-pill {
+  all: unset;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: #000;
+}
+.filter-pill.active,
+.filter-pill:hover {
+  font-weight: 700;
+}
 
 /* Articles List */
-.articles { list-style:none; margin-top:0.8rem; overflow-y:auto; }
-.article { padding:0.3rem 0; cursor:pointer; }
-.article .title { font-weight:700; font-size:0.9rem; color:#000; }
-.article.selected .title { color:#555; }
+.articles { list-style: none; margin-top: 0.8rem; }
+.article {
+  padding: 0.3rem 0;
+  cursor: pointer;
+}
+.article .title { font-weight: 700; font-size: 0.9rem; }
+.article.selected .title { color: #555; }
 
-/* Main Content */
-.main-content { flex:1; padding:1.8rem; overflow-y:auto; }
-.article-content h2 { font-size:1.2rem; margin-bottom:0.5rem; }
-.article-content p { font-size:0.95rem; line-height:1.5; color:#333; }
-.article-content img { max-width:600px; display:block; margin:1rem auto; }
+/* Article Content */
+.article-content h2 { font-size: 1.2rem; margin-bottom: 0.5rem; }
+.article-content p  { font-size: 0.95rem; line-height: 1.5; color: #333; }
+.article-content img { max-width: 600px; display: block; margin: 1rem auto; }
 
 /* Mobile Tweaks */
-@media (max-width:600px) {
-  .container { overflow-x:auto; }
-  .sidebar, .main-content { flex-shrink:0; }
-  .main-content { min-width:100vw; font-size:0.85rem; line-height:1.4; }
+@media (max-width: 600px) {
+  .container { flex-direction: column; }
+  .sidebar, .main-content { flex-shrink: 0; }
+  .main-content { min-width: 100vw; font-size: 0.85rem; line-height: 1.4; }
 }
