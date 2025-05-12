@@ -254,12 +254,6 @@ html, body {
     font-weight: 700;
   }
 
-.title-row.stacked-title .home-icon {
-  width: 72px;
-    margin-bottom: -0.2rem; /* regola tu la distanza */
-}
-
-
 }
 
 
@@ -279,6 +273,15 @@ html, body {
   flex-shrink: 0;
   display: block;
 }
+
+
+@media (max-width: 600px) {
+  .title-row.stacked-title .home-icon {
+    width: 72px;
+    margin-bottom: -0.2rem;
+  }
+}
+
 
 .title-row.stacked-title .title-text {
   font-size: 1.35rem;
