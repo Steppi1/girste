@@ -23,10 +23,10 @@ export async function getSplashTxts() {
   return data.map(r => r.phrase)
 }
 
-/** Aggiunge una nuova splash-text (senza cancellare le precedenti) */
+// supabase.js
 export async function addSplashTxt(phrase) {
   const { error } = await supabase
     .from('splashtxt')
-    .insert({ phrase })
+    .insert({ phrase })     // <- qui NON passi più l'id
   if (error) throw error
 }
