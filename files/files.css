@@ -267,7 +267,7 @@ html, body {
 .title-row.stacked-title .home-icon {
   width: 55px;
   height: auto;
-  margin-bottom: 0.2rem;
+  margin-bottom: -0.2rem;
   transform: none;
   flex-shrink: 0;
   display: block;
