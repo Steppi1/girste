@@ -8,6 +8,8 @@ const npTitle     = document.getElementById('np-title');
 const npSnippet   = document.getElementById('np-snippet');
 const npContent   = document.getElementById('np-content');
 const npTag       = document.getElementById('np-tag');
+const uploadInput = document.getElementById('newpost-upload');
+const uploadLink  = document.getElementById('newpost-upload-link');
 
 btnNewPost.addEventListener('click', async () => {
   fbNewPost.textContent = '';
@@ -15,8 +17,7 @@ btnNewPost.addEventListener('click', async () => {
     title: npTitle.value,
     snippet: npSnippet.value,
     content: npContent.value,
-    tag: npTag.value,
-    user_id: (await supabase.auth.getSession()).data.session.user.id
+    tag: npTag.value
   };
   try {
     if (btnNewPost.dataset.editId) {
@@ -30,8 +31,9 @@ btnNewPost.addEventListener('click', async () => {
     }
     npTitle.value = npSnippet.value = npContent.value = '';
     npTag.value = 'tools';
+    uploadLink.value = '';
     fbNewPost.textContent = '✅ Operazione completata';
-    loadPosts();
+    await loadPosts();
   } catch (err) {
     console.error('Errore CRUD post:', err);
     fbNewPost.textContent = '❌ ' + err.message;
@@ -39,11 +41,36 @@ btnNewPost.addEventListener('click', async () => {
   }
 });
 
+// image upload in new-post
+uploadInput.addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const fileName = `${Date.now()}_${file.name}`;
+  try {
+    const { error: uploadError } = await supabase.storage.from('images').upload(fileName, file);
+    if (uploadError) throw uploadError;
+    const { data: urlData } = supabase.storage.from('images').getPublicUrl(fileName);
+    const md = `![](${urlData.publicUrl})`;
+    uploadLink.value = md;
+    // append to content
+    npContent.value += `\n${md}\n`;
+  } catch (err) {
+    console.error('Errore upload image:', err);
+    alert('Errore upload: ' + err.message);
+  }
+});
+
 export async function loadPosts() {
   listPosts.textContent = '⏳ Caricamento…';
   const { data, error } = await supabase.from('posts').select('*').order('date', { ascending:false });
-  if (error) { listPosts.textContent = error.message; return; }
-  if (!data.length) { listPosts.textContent = 'Nessun post.'; return; }
+  if (error) {
+    listPosts.textContent = error.message;
+    return;
+  }
+  if (!data.length) {
+    listPosts.textContent = 'Nessun post.';
+    return;
+  }
   listPosts.innerHTML = data.map(p => `
     <div data-id="${p.id}">
       <strong>${p.title}</strong>
@@ -70,7 +97,7 @@ export async function loadPosts() {
       try {
         const { error } = await supabase.from('posts').delete().eq('id', id);
         if (error) throw error;
-        loadPosts();
+        await loadPosts();
       } catch (err) {
         console.error('Errore delete post:', err);
         alert('Errore cancellazione: ' + err.message);
@@ -79,5 +106,4 @@ export async function loadPosts() {
   });
 }
 
-// Inizializzazione
 window.addEventListener('load', () => loadPosts());

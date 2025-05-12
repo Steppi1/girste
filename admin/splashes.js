@@ -1,5 +1,5 @@
 import { supabase } from '/supabase.js';
-
+// Table name: splashtxt
 const listSplash   = document.getElementById('list-splash');
 const btnNewSplash = document.getElementById('submit-new-splash');
 const fbNewSplash  = document.getElementById('fb-new-splash');
@@ -11,7 +11,7 @@ btnNewSplash.addEventListener('click', async () => {
     const { error } = await supabase.from('splashtxt').insert({ phrase });
     if (error) throw error;
     fbNewSplash.textContent = '✅ Aggiunto!';
-    loadSplashes();
+    await loadSplashes();
   } catch (err) {
     console.error('Errore add splash:', err);
     fbNewSplash.textContent = '❌ ' + err.message;
@@ -22,8 +22,14 @@ btnNewSplash.addEventListener('click', async () => {
 export async function loadSplashes() {
   listSplash.textContent = '⏳ Caricamento…';
   const { data, error } = await supabase.from('splashtxt').select('*');
-  if (error) { listSplash.textContent = error.message; return; }
-  if (!data.length) { listSplash.textContent = 'Nessuno splash.'; return; }
+  if (error) {
+    listSplash.textContent = error.message;
+    return;
+  }
+  if (!data.length) {
+    listSplash.textContent = 'Nessuno splash.';
+    return;
+  }
   listSplash.innerHTML = data.map(s => `
     <div data-id="${s.id}">
       "${s.phrase}"
@@ -37,7 +43,7 @@ export async function loadSplashes() {
       try {
         const { error } = await supabase.from('splashtxt').delete().eq('id', id);
         if (error) throw error;
-        loadSplashes();
+        await loadSplashes();
       } catch (err) {
         console.error('Errore delete splash:', err);
         alert('Errore cancellazione: ' + err.message);
@@ -46,5 +52,4 @@ export async function loadSplashes() {
   });
 }
 
-// Inizializzazione
 window.addEventListener('load', () => loadSplashes());
