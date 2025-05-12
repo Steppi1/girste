@@ -10,7 +10,6 @@ export async function getPosts() {
     .from('posts')
     .select('*')
     .order('date', { ascending: false })
-
   if (error) throw error
   return data
 }
@@ -20,16 +19,14 @@ export async function getSplashTxts() {
   const { data, error } = await supabase
     .from('splashtxt')
     .select('phrase')
-
   if (error) throw error
   return data.map(r => r.phrase)
 }
 
-/** Inserisce o aggiorna la splash-text nella tabella public.splashtxt */
-export async function upsertSplashTxt(phrase) {
+/** Aggiunge una nuova splash-text (senza cancellare le precedenti) */
+export async function addSplashTxt(phrase) {
   const { error } = await supabase
     .from('splashtxt')
-    .upsert({ id: 1, phrase }, { onConflict: ['id'] })
-
+    .insert({ phrase })
   if (error) throw error
 }

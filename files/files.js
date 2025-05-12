@@ -27,7 +27,7 @@ getPosts().then(posts => {
   activateFilter('all')
 })
 
-// 2) Carica tutte le splash-text e alterna ogni 7s
+// 2) Carica tutte le splash-text e alternale ogni 7s
 let splashTexts = [], splashIdx = 0
 getSplashTxts()
   .then(arr => {
@@ -37,10 +37,10 @@ getSplashTxts()
       setInterval(() => {
         splashIdx = (splashIdx + 1) % splashTexts.length
         phraseEl.textContent = splashTexts[splashIdx]
-      }, 4000)
+      }, 7000)
     }
   })
-  .catch(err => console.error('Errore caricamento splash-texts:', err))
+  .catch(err => console.error('Errore fetch splash-texts:', err))
 
 // 3) Filtri
 pills.forEach(pill => {
@@ -50,21 +50,21 @@ pills.forEach(pill => {
 function activateFilter(type) {
   pills.forEach(p => p.classList.toggle('active', p.dataset.filter === type))
   if (type === 'all') {
-    items.sort((a, b) => new Date(b.dataset.date) - new Date(a.dataset.date))
+    items.sort((a,b)=>new Date(b.dataset.date)-new Date(a.dataset.date))
   } else {
     items = initialOrder.slice()
   }
   const frag = document.createDocumentFragment()
   items.forEach(item => {
-    const show = (type === 'all' || item.dataset.type === type)
-    item.style.display = show ? '' : 'none'
+    const show = (type==='all'||item.dataset.type===type)
+    item.style.display = show?'':'none'
     item.classList.remove('selected')
     frag.appendChild(item)
   })
   list.innerHTML = ''
   list.appendChild(frag)
 
-  const first = items.find(i => i.style.display === '')
+  const first = items.find(i=>i.style.display==='')
   if (first) selectArticle(first)
   else contentBox.innerHTML = ''
 }
@@ -75,27 +75,27 @@ list.addEventListener('click', e => {
 })
 
 function selectArticle(item) {
-  items.forEach(i => i.classList.remove('selected'))
+  items.forEach(i=>i.classList.remove('selected'))
   item.classList.add('selected')
   const tpl = item.querySelector('template.article-body')
   contentBox.innerHTML = `
     <h2>${item.textContent}</h2>
     <hr/>
-    ${tpl ? tpl.innerHTML : ''}
+    ${tpl?tpl.innerHTML:''}
   `
 }
 
 // 4) Swipe sidebar su mobile
-let startX, startY, isTicking = false, lastDx = 0
+let startX, startY, isTicking=false, lastDx=0
 main.addEventListener('touchstart', e => {
   startX = e.touches[0].clientX
   startY = e.touches[0].clientY
 })
 main.addEventListener('touchmove', e => {
   const touch = e.touches[0]
-  const dx = touch.clientX - startX
-  const dy = touch.clientY - startY
-  if (Math.abs(dx) > Math.abs(dy)) {
+  const dx    = touch.clientX - startX
+  const dy    = touch.clientY - startY
+  if (Math.abs(dx)>Math.abs(dy)) {
     e.preventDefault()
     lastDx = dx
     if (!isTicking) {

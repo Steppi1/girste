@@ -2,22 +2,14 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <title>Admin - Nuovo Post</title>
+  <title>Admin - Nuovo Post & Splash</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body { font-family: sans-serif; max-width: 600px; margin: 2rem auto; padding: 1rem; }
     label { display: block; margin-top: 1rem; }
-    input, textarea, select, button {
-      width: 100%; padding: 0.6rem; font-size: 1rem; margin-top: 0.3rem;
-    }
+    input, textarea, select, button { width: 100%; padding: 0.6rem; font-size: 1rem; margin-top: 0.3rem; }
     button { margin-top: 1rem; }
-    .drop-zone {
-      border: 2px dashed #ccc;
-      padding: 1rem;
-      text-align: center;
-      margin-top: 1rem;
-      color: #666;
-    }
+    .drop-zone { border: 2px dashed #ccc; padding: 1rem; text-align: center; margin-top: 1rem; color: #666; }
     .feedback, .img-url { margin-top: 1rem; font-size: 0.9rem; }
     .ok { color: green; }
     .error { color: red; }
@@ -26,85 +18,93 @@
   </style>
 </head>
 <body>
-  <h1>Nuovo post</h1>
+  <h1>Admin Panel</h1>
 
+  <!-- Sezione Nuovo Post -->
+  <h2>Nuovo Post</h2>
   <label for="title">Titolo</label>
   <input type="text" id="title">
-
   <label for="snippet">Snippet</label>
   <input type="text" id="snippet">
-
   <label for="content">Contenuto (puoi inserire tag &lt;img&gt;)</label>
-  <textarea id="content" rows="8"></textarea>
-
+  <textarea id="content" rows="6"></textarea>
   <label for="tag">Tag</label>
   <select id="tag">
     <option value="tools">tools</option>
     <option value="stories">stories</option>
     <option value="blog">blog</option>
   </select>
+  <button id="submit">Pubblica Post</button>
+  <div class="feedback" id="post-feedback"></div>
 
-  <div style="display:flex; gap:0.5rem; margin-top:1rem;">
-    <button id="submit">Pubblica</button>
-    <button id="edit-splash">Imposta splash-text</button>
-  </div>
-  <div class="feedback" id="feedback"></div>
+  <!-- Sezione Splash Text -->
+  <h2>Nuova Splash-Text</h2>
+  <button id="add-splash">Aggiungi Splash-Text</button>
   <div class="feedback" id="splash-feedback"></div>
 
-  <div class="drop-zone" id="drop-zone">📎 Trascina qui una o più immagini da caricare</div>
+  <!-- Sezione Upload Immagini -->
+  <h2>Upload Immagini</h2>
+  <div class="drop-zone" id="drop-zone">📎 Trascina qui una o più immagini</div>
   <div class="img-url" id="img-url"></div>
 
   <script type="module">
-    import { supabase, upsertSplashTxt } from './supabase.js'
+    import { supabase, addSplashTxt } from './supabase.js'
 
-    // Elementi per i post
-    const title     = document.getElementById('title')
-    const snippet   = document.getElementById('snippet')
-    const content   = document.getElementById('content')
-    const tag       = document.getElementById('tag')
-    const submitBtn = document.getElementById('submit')
-    const feedback  = document.getElementById('feedback')
+    // Post elements
+    const title       = document.getElementById('title')
+    const snippet     = document.getElementById('snippet')
+    const content     = document.getElementById('content')
+    const tag         = document.getElementById('tag')
+    const submitBtn   = document.getElementById('submit')
+    const postFb      = document.getElementById('post-feedback')
 
-    // Elementi per lo splash-text
-    const editSplashBtn  = document.getElementById('edit-splash')
-    const splashFeedback = document.getElementById('splash-feedback')
+    // Splash elements
+    const addSplashBtn = document.getElementById('add-splash')
+    const splashFb     = document.getElementById('splash-feedback')
 
-    // 1) Pubblica nuovo post
+    // Image upload elements
+    const dropZone    = document.getElementById('drop-zone')
+    const imgUrlBox   = document.getElementById('img-url')
+
+    // PUBBLICA POST
     submitBtn.addEventListener('click', async () => {
-      feedback.textContent = ''
-      const post = { title: title.value, snippet: snippet.value, content: content.value, tag: tag.value, image_url: null }
+      postFb.textContent = ''
+      const post = {
+        title: title.value,
+        snippet: snippet.value,
+        content: content.value,
+        tag: tag.value,
+        image_url: null
+      }
       const { error } = await supabase.from('posts').insert([post])
       if (error) {
-        feedback.textContent = '❌ ' + error.message
-        feedback.className = 'feedback error'
+        postFb.textContent = '❌ ' + error.message
+        postFb.className = 'feedback error'
       } else {
-        feedback.textContent = '✅ Post pubblicato!'
-        feedback.className = 'feedback ok'
+        postFb.textContent = '✅ Post pubblicato!'
+        postFb.className = 'feedback ok'
         title.value = snippet.value = content.value = ''
         tag.value = 'tools'
       }
     })
 
-    // 2) Imposta splash-text
-    editSplashBtn.addEventListener('click', async () => {
-      const phrase = prompt('Inserisci la frase per lo splash-text:')
+    // AGGIUNGI SPLASH-TEXT
+    addSplashBtn.addEventListener('click', async () => {
+      const phrase = prompt('Inserisci la nuova splash-text:')
       if (!phrase) return
-      splashFeedback.textContent = '⏳ Salvataggio…'
-      splashFeedback.className = 'feedback'
+      splashFb.textContent = '⏳ Salvataggio…'
+      splashFb.className = 'feedback'
       try {
-        await upsertSplashTxt(phrase)
-        splashFeedback.textContent = '✅ Splash-text aggiornato!'
-        splashFeedback.className = 'feedback ok'
+        await addSplashTxt(phrase)
+        splashFb.textContent = '✅ Frase aggiunta alla rotazione!'
+        splashFb.className = 'feedback ok'
       } catch (err) {
-        splashFeedback.textContent = '❌ ' + err.message
-        splashFeedback.className = 'feedback error'
+        splashFb.textContent = '❌ ' + err.message
+        splashFb.className = 'feedback error'
       }
     })
 
-    // 3) Drag & drop immagini + getPublicUrl()
-    const dropZone  = document.getElementById('drop-zone')
-    const imgUrlBox = document.getElementById('img-url')
-
+    // UPLOAD IMMAGINI
     dropZone.addEventListener('dragover', e => {
       e.preventDefault()
       dropZone.style.borderColor = '#000'
@@ -115,28 +115,26 @@
     dropZone.addEventListener('drop', async e => {
       e.preventDefault()
       dropZone.style.borderColor = '#ccc'
-      imgUrlBox.innerHTML = '⏳ Caricamento immagini…<br>'
-
+      imgUrlBox.innerHTML = '⏳ Caricamento…<br>'
       const files = Array.from(e.dataTransfer.files)
       for (const file of files) {
-        const filename = `${Date.now()}-${file.name}`
-        const { error: uploadError } = await supabase.storage.from('images').upload(filename, file)
-        if (uploadError) {
-          imgUrlBox.innerHTML += `<span class="error">❌ ${file.name}: ${uploadError.message}</span><br>`
+        const fn = `${Date.now()}-${file.name}`
+        const { error: upErr } = await supabase.storage.from('images').upload(fn, file)
+        if (upErr) {
+          imgUrlBox.innerHTML += `<span class="error">❌ ${file.name}: ${upErr.message}</span><br>`
           continue
         }
-        const { data, error: urlError } = supabase.storage.from('images').getPublicUrl(filename)
-        if (urlError) {
-          imgUrlBox.innerHTML += `<span class="error">❌ ${file.name}: ${urlError.message}</span><br>`
+        const { data, error: urlErr } = supabase.storage.from('images').getPublicUrl(fn)
+        if (urlErr) {
+          imgUrlBox.innerHTML += `<span class="error">❌ ${file.name}: ${urlErr.message}</span><br>`
           continue
         }
         const publicUrl = data.publicUrl
         imgUrlBox.innerHTML += `
           ✅ ${file.name}<br>
           <pre>&lt;img src="${publicUrl}" alt="" /&gt;</pre>
-          <button onclick="navigator.clipboard.writeText('<img src=&quot;${publicUrl}&quot; alt=&quot;&quot; />')">
-            📋 Copia
-          </button><br><br>`
+          <button onclick="navigator.clipboard.writeText('<img src=&quot;${publicUrl}&quot; alt=&quot;&quot; />')">📋 Copia</button><br><br>
+        `
       }
     })
   </script>
