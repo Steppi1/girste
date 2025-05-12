@@ -5,18 +5,27 @@ const articleContent = document.querySelector('.article-content');
 const filterButtons  = document.querySelectorAll('.filter-pill');
 const headerPhrase   = document.querySelector('.header-phrase');
 
-let posts = [];
+let posts = [], splashes = [];
 
+// Init: load splashes & posts, start rotation, setup filters
 async function init() {
-  const texts = await getSplashTxts();
-  headerPhrase.textContent = texts.length
-    ? texts[Math.floor(Math.random() * texts.length)]
-    : '';
+  splashes = await getSplashTxts();
+  updateSplash();
+  setInterval(updateSplash, 4000);
   posts = await getPosts();
   setupFilters();
   applyFilter('all');
 }
 
+function updateSplash() {
+  if (splashes.length) {
+    headerPhrase.textContent = splashes[Math.floor(Math.random()*splashes.length)];
+  } else {
+    headerPhrase.textContent = '';
+  }
+}
+
+// Render list and attach handlers
 function renderList(data) {
   articleList.innerHTML = data.map(p => `
     <li class="article" data-id="${p.id}" data-tag="${p.tag}">
@@ -29,13 +38,17 @@ function renderList(data) {
 }
 
 function selectArticle(id) {
-  document.querySelectorAll('.article').forEach(li => {
+  const listItems = document.querySelectorAll('.article');
+  listItems.forEach(li => {
     li.classList.toggle('selected', li.dataset.id === id);
   });
+  const selected = document.querySelector('.article.selected');
+  if (selected) selected.scrollIntoView({block:'nearest'});
   const post = posts.find(p => p.id == id);
   articleContent.innerHTML = post
     ? `<h2>${post.title}</h2><p>${post.snippet}</p>${post.content}`
     : '';
+  document.querySelector('.main-content').scrollTop = 0;
 }
 
 function setupFilters() {
