@@ -44,6 +44,7 @@ html, body {
 .home-icon {
   width: 38px;
   margin-right: 0.6rem;
+  margin-top: -20px;
   height: auto;
   display: block;
 }
