@@ -66,10 +66,12 @@
   </div>
 
   <!-- 1) Import Panzoom come ESM e lo espone su window -->
-  <script type="module">
-    import panzoom from 'https://unpkg.com/panzoom@9.4.3/dist/panzoom.esm.js';
-    window.panzoom = panzoom;
-  </script>
+<!-- nuovo (funzionante): -->
+<script type="module">
+  import panzoom from 'https://cdn.jsdelivr.net/npm/panzoom@9.4.3/dist/panzoom.esm.js';
+  window.panzoom = panzoom;
+</script>
+
 
   <!-- 2) Moduli Supabase + logica client‐side -->
   <script type="module" src="supabase.js"></script>
