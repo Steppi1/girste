@@ -37,7 +37,7 @@ getSplashTxts()
       setInterval(() => {
         splashIdx = (splashIdx + 1) % splashTexts.length
         phraseEl.textContent = splashTexts[splashIdx]
-      }, 7000)
+      }, 4000)
     }
   })
   .catch(err => console.error('Errore caricamento splash-texts:', err))
