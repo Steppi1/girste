@@ -7,66 +7,61 @@ const headerPhrase   = document.querySelector('.header-phrase');
 
 let posts = [];
 
+// Carica splash e post, inizializza filtri e anteprima
 async function init() {
-  try {
-    const texts = await getSplashTxts();
-    headerPhrase.textContent = texts.length
-      ? texts[Math.floor(Math.random() * texts.length)]
-      : '';
-
-    posts = await getPosts();
-    renderList(posts);
-    setupFilters();
-  } catch (e) {
-    console.error(e);
-    headerPhrase.textContent = 'Errore caricamento';
-  }
+  const texts = await getSplashTxts();
+  headerPhrase.textContent = texts.length
+    ? texts[Math.floor(Math.random() * texts.length)]
+    : '';
+  posts = await getPosts();
+  setupFilters();
+  showFilter('all');
 }
 
+// Mostra la lista di link ai post per un filter
 function renderList(data) {
   articleList.innerHTML = data.map(p => `
-    <li data-id="${p.id}" data-tag="${p.tag}">
-      <button class="article-link">${p.title}</button>
+    <li class="article" data-id="${p.id}" data-tag="${p.tag}">
+      <span class="title">${p.title}</span>
     </li>
   `).join('');
-  articleList.querySelectorAll('.article-link').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const id = btn.parentElement.dataset.id;
-      const post = posts.find(x => x.id == id);
-      articleContent.innerHTML = `
-        <h1>${post.title}</h1>
-        <p>${post.snippet}</p>
-        ${post.content}
-      `;
-      history.pushState({ id }, '', `#${id}`);
+  // click su ogni li
+  document.querySelectorAll('.article').forEach(li => {
+    li.addEventListener('click', () => {
+      selectArticle(li.dataset.id);
     });
   });
 }
 
+// Seleziona e mostra contenuto articolo
+function selectArticle(id) {
+  document.querySelectorAll('.article').forEach(li => {
+    li.classList.toggle('selected', li.dataset.id === id);
+  });
+  const post = posts.find(p => p.id == id);
+  articleContent.innerHTML = post
+    ? `<h2>${post.title}</h2><p>${post.snippet}</p>${post.content}`
+    : '';
+}
+
+// Setup filtri
 function setupFilters() {
   filterButtons.forEach(btn => {
     btn.addEventListener('click', () => {
-      filterButtons.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
       const f = btn.dataset.filter;
-      const filtered = f === 'all' ? posts : posts.filter(p => p.tag === f);
-      renderList(filtered);
-      articleContent.innerHTML = '';
+      showFilter(f);
     });
   });
 }
 
-window.addEventListener('popstate', e => {
-  if (e.state?.id) {
-    const post = posts.find(x => x.id == e.state.id);
-    articleContent.innerHTML = `
-      <h1>${post.title}</h1>
-      <p>${post.snippet}</p>
-      ${post.content}
-    `;
-  } else {
-    articleContent.innerHTML = '';
-  }
-});
+// Mostra filter e carica prima anteprima
+function showFilter(filter) {
+  filterButtons.forEach(b => b.classList.toggle('active', b.dataset.filter === filter));
+  const filtered = filter === 'all' ? posts : posts.filter(p => p.tag === filter);
+  renderList(filtered);
+  if (filtered.length) selectArticle(filtered[0].id);
+}
 
-init();
+// Inizializzazione
+window.addEventListener('load', init);
+
