@@ -34,6 +34,7 @@ html, body {
   display: flex;
   align-items: center;
   margin: 0.4rem 0 0.2rem 0.6rem;
+  padding-top: 0.4rem;
 }
 
 
@@ -216,7 +217,7 @@ html, body {
 .title-row {
   display: flex;
   align-items: flex-start;
-  margin: 0.4rem 0 0 0.4rem;
+  margin: 0.8rem 0 0 0.4rem;
   gap: 0.3rem;
 }
 
