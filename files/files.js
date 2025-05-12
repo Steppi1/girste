@@ -11,7 +11,7 @@ let posts = [], splashes = [];
 async function init() {
   splashes = await getSplashTxts();
   updateSplash();
-  setInterval(updateSplash, 4000), 4000;
+  setInterval(updateSplash, 4000);
   posts = await getPosts();
   setupFilters();
   applyFilter('all');
