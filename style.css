@@ -28,7 +28,7 @@ body.light-mode {
   display: flex;
   align-items: flex-start;
   will-change: transform;
-  transform-origin: 0 0;
+  transform-origin: 50% 50%;
 }
 
 .column {
@@ -97,7 +97,6 @@ body.light-mode {
   display: flex;
   align-items: center;
   gap: 4px;
-  flex-wrap: nowrap;
 }
 
 #sticky-bar .icon-footer strong {

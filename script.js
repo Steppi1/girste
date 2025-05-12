@@ -1,91 +1,97 @@
-import { supabase } from './supabase.js'
+import { supabase } from './supabase.js';
 
-const wrapper   = document.getElementById('wrapper')
-const panzoomEl = document.getElementById('panzoom')
+const wrapper   = document.getElementById('wrapper');
+const panzoomEl = document.getElementById('panzoom');
 
-const minScale = 0.1
-const maxScale = 5
+const minScale = 0.1;
+const maxScale = 5;
 
+// Fisher–Yates shuffle
 function shuffle(arr) {
   for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1))
-    ;[arr[i], arr[j]] = [arr[j], arr[i]]
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
   }
 }
 
+// Build masonry gallery
 function buildGallery(images, onComplete) {
-  shuffle(images)
-  const count = images.length
-  const colsN = Math.floor(Math.sqrt(count)) || 1
+  shuffle(images);
+  const count = images.length;
+  const colsN  = Math.floor(Math.sqrt(count)) || 1;
 
-  panzoomEl.innerHTML = ''
+  panzoomEl.innerHTML = '';
   const cols = Array.from({ length: colsN }, () => {
-    const c = document.createElement('div')
-    c.className = 'column'
-    panzoomEl.appendChild(c)
-    return c
-  })
+    const c = document.createElement('div');
+    c.className = 'column';
+    panzoomEl.appendChild(c);
+    return c;
+  });
 
-  let loaded = 0
+  let loaded = 0;
   images.forEach(src => {
-    const img = new Image()
-    img.src      = src
-    img.loading  = 'lazy'
-    img.decoding = 'async'
+    const img = new Image();
+    img.src      = src;
+    img.loading  = 'lazy';
+    img.decoding = 'async';
     img.onload = () => {
-      const tile = document.createElement('div')
-      tile.className = 'tile'
-      tile.appendChild(img)
+      const tile = document.createElement('div');
+      tile.className = 'tile';
+      tile.appendChild(img);
 
+      // Append to shortest column
       const shortest = cols.reduce((a, b) =>
         a.offsetHeight < b.offsetHeight ? a : b
-      )
-      shortest.appendChild(tile)
+      );
+      shortest.appendChild(tile);
 
       if (++loaded === count && typeof onComplete === 'function') {
-        onComplete()
+        onComplete();
       }
-    }
-  })
+    };
+  });
 }
 
+// Init Panzoom with bounds
 function initPanzoom() {
-  const gb = panzoomEl.getBoundingClientRect()
-  const wb = wrapper.getBoundingClientRect()
+  const gb = panzoomEl.getBoundingClientRect();
+  const wb = wrapper.getBoundingClientRect();
 
-  const scaleX = wb.width  / gb.width
-  const scaleY = wb.height / gb.height
-  const margin = window.matchMedia('(pointer: coarse)').matches ? 0.8 : 0.95
-  const initialScale = Math.min(scaleX, scaleY) * margin
+  const scaleX = wb.width  / gb.width;
+  const scaleY = wb.height / gb.height;
+  const margin = window.matchMedia('(pointer: coarse)').matches ? 0.8 : 0.95;
+  const initialScale = Math.min(scaleX, scaleY) * margin;
 
   const instance = panzoom(panzoomEl, {
     minZoom:        minScale,
     maxZoom:        maxScale,
     zoomSpeed:      0.065,
     filterKey:      () => true,
-    beforeWheel:    () => false,
-    beforeMouseDown:() => false,
     bounds:         true,
-    boundsPadding:  0.2,
-  })
+    boundsPadding:  0
+  });
 
-  instance.zoomAbs(0, 0, initialScale)
+  instance.zoomAbs(0, 0, initialScale);
 
-  const scaledW = gb.width  * initialScale
-  const scaledH = gb.height * initialScale
-  instance.moveTo((wb.width - scaledW) / 2, (wb.height - scaledH) / 2)
+  const scaledW = gb.width  * initialScale;
+  const scaledH = gb.height * initialScale;
+  instance.moveTo(
+    (wb.width  - scaledW) / 2,
+    (wb.height - scaledH) / 2
+  );
 }
 
-;(async () => {
+// Fetch images from Supabase “mosaic” bucket
+(async () => {
   try {
     const { data: files, error } = await supabase
       .storage
       .from('mosaic')
-      .list('', { limit: 1000 })
+      .list('', { limit: 1000 });
 
     if (error) {
-      console.error('Errore listing bucket mosaic:', error)
-      return
+      console.error('Errore listing bucket mosaic:', error);
+      return;
     }
 
     const images = files
@@ -94,27 +100,30 @@ function initPanzoom() {
         const { data, error: urlErr } = supabase
           .storage
           .from('mosaic')
-          .getPublicUrl(f.name)
-        if (urlErr) console.error(`getPublicUrl ${f.name}:`, urlErr)
-        return data.publicUrl
+          .getPublicUrl(f.name);
+        if (urlErr) console.error(`getPublicUrl ${f.name}:`, urlErr);
+        return data.publicUrl;
       })
-      .filter(url => !!url)
+      .filter(url => !!url);
 
     if (!images.length) {
-      console.warn('Nessuna immagine trovata nel bucket "mosaic"')
-      return
+      console.warn('Nessuna immagine trovata nel bucket "mosaic"');
+      return;
     }
 
-    buildGallery(images, initPanzoom)
+    buildGallery(images, initPanzoom);
   } catch (err) {
-    console.error('Errore inizializzazione mosaico:', err)
+    console.error('Errore inizializzazione mosaico:', err);
   }
-})()
+})();
 
-document.getElementById('toggle-theme').addEventListener('click', () =>
-  document.body.classList.toggle('light-mode')
-)
+// Sticky‐bar buttons
+document.getElementById('toggle-theme')
+  .addEventListener('click', () =>
+    document.body.classList.toggle('light-mode')
+  );
 
-document.querySelector('button[title="refresh"]').addEventListener('click', () =>
-  window.location.reload()
-)
+document.querySelector('button[title="refresh"]')
+  .addEventListener('click', () =>
+    window.location.reload()
+  );
