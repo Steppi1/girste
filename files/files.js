@@ -1,110 +1,249 @@
-import { getPosts, getSplashTxts } from '../supabase.js'
+import { supabase } from './supabase.js'
 
-const pills      = Array.from(document.querySelectorAll('.filter-pill'))
-const list       = document.getElementById('article-list')
-const contentBox = document.querySelector('.article-content')
-const phraseEl   = document.querySelector('.header-phrase')
-const container  = document.querySelector('.container')
-const main       = document.querySelector('.main-content')
+// — DOM Elements —
+const authPanel   = document.getElementById('auth-panel')
+const adminPanel  = document.getElementById('admin-panel')
+const emailInput  = document.getElementById('email')
+const passInput   = document.getElementById('password')
+const btnLogin    = document.getElementById('btn-login')
+const btnLogout   = document.getElementById('btn-logout')
+const authFb      = document.getElementById('auth-feedback')
 
-let items = [], initialOrder = []
+const navButtons  = document.querySelectorAll('.nav-btn')
+const sections    = document.querySelectorAll('.section')
 
-// 1) Carica articoli
-getPosts().then(posts => {
-  posts.forEach(post => {
-    const li = document.createElement('li')
-    li.className = 'article'
-    li.dataset.type = post.tag
-    li.dataset.date = post.date.split('T')[0]
-    li.innerHTML = `
-      ${post.title}
-      <template class="article-body">${post.content}</template>
-    `
-    list.appendChild(li)
-  })
-  items = Array.from(document.querySelectorAll('.article'))
-  initialOrder = items.slice()
-  activateFilter('all')
+const fbNewPost   = document.getElementById('fb-new-post')
+const fbNewSplash = document.getElementById('fb-new-splash')
+const listPosts   = document.getElementById('list-posts')
+const listSplash  = document.getElementById('list-splash')
+const listPhotos  = document.getElementById('list-photos')
+
+const npTitle     = document.getElementById('np-title')
+const npSnippet   = document.getElementById('np-snippet')
+const npContent   = document.getElementById('np-content')
+const npTag       = document.getElementById('np-tag')
+const btnNewPost  = document.getElementById('submit-new-post')
+
+let currentUser = null
+
+// — UI Helpers —
+function showSection(id) {
+  sections.forEach(s => s.id === id
+    ? s.classList.add('active')
+    : s.classList.remove('active')
+  )
+  navButtons.forEach(b => b.dataset.section === id
+    ? b.classList.add('active')
+    : b.classList.remove('active')
+  )
+}
+
+function toggleAuth(loggedIn) {
+  authPanel.style.display  = loggedIn ? 'none' : 'block'
+  adminPanel.style.display = loggedIn ? 'block' : 'none'
+  authFb.textContent = ''
+  if (loggedIn) loadAllLists()
+}
+
+// — Auth Flow —
+window.addEventListener('load', async () => {
+  const { data: { session }, error } = await supabase.auth.getSession()
+  if (error) console.error(error)
+  if (session) currentUser = session.user
+  toggleAuth(!!session)
+  if (session) showSection('new-post')
 })
 
-// 2) Carica tutte le splash-text e alternale ogni 7s
-let splashTexts = [], splashIdx = 0
-getSplashTxts()
-  .then(arr => {
-    splashTexts = arr
-    if (splashTexts.length) {
-      phraseEl.textContent = splashTexts[0]
-      setInterval(() => {
-        splashIdx = (splashIdx + 1) % splashTexts.length
-        phraseEl.textContent = splashTexts[splashIdx]
-      }, 7000)
-    }
+btnLogin.addEventListener('click', async () => {
+  authFb.textContent = ''
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email: emailInput.value,
+    password: passInput.value
   })
-  .catch(err => console.error('Errore fetch splash-texts:', err))
-
-// 3) Filtri
-pills.forEach(pill => {
-  pill.addEventListener('click', () => activateFilter(pill.dataset.filter))
-})
-
-function activateFilter(type) {
-  pills.forEach(p => p.classList.toggle('active', p.dataset.filter === type))
-  if (type === 'all') {
-    items.sort((a,b)=>new Date(b.dataset.date)-new Date(a.dataset.date))
+  if (error) {
+    authFb.textContent = error.message
+    authFb.className = 'feedback error'
   } else {
-    items = initialOrder.slice()
+    currentUser = data.user
+    toggleAuth(true)
+    showSection('new-post')
   }
-  const frag = document.createDocumentFragment()
-  items.forEach(item => {
-    const show = (type==='all'||item.dataset.type===type)
-    item.style.display = show?'':'none'
-    item.classList.remove('selected')
-    frag.appendChild(item)
+})
+
+btnLogout.addEventListener('click', async () => {
+  await supabase.auth.signOut()
+  currentUser = null
+  toggleAuth(false)
+})
+
+// — Navigation —
+navButtons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    showSection(btn.dataset.section)
+    if (btn.dataset.section === 'edit-post')    loadPosts()
+    if (btn.dataset.section === 'manage-splash') loadSplashes()
+    if (btn.dataset.section === 'manage-photos') loadPhotos()
   })
-  list.innerHTML = ''
-  list.appendChild(frag)
-
-  const first = items.find(i=>i.style.display==='')
-  if (first) selectArticle(first)
-  else contentBox.innerHTML = ''
-}
-
-list.addEventListener('click', e => {
-  if (!e.target.classList.contains('article')) return
-  selectArticle(e.target)
 })
 
-function selectArticle(item) {
-  items.forEach(i=>i.classList.remove('selected'))
-  item.classList.add('selected')
-  const tpl = item.querySelector('template.article-body')
-  contentBox.innerHTML = `
-    <h2>${item.textContent}</h2>
-    <hr/>
-    ${tpl?tpl.innerHTML:''}
-  `
+// — Load All Lists —
+async function loadAllLists() {
+  await Promise.all([ loadPosts(), loadSplashes(), loadPhotos() ])
 }
 
-// 4) Swipe sidebar su mobile
-let startX, startY, isTicking=false, lastDx=0
-main.addEventListener('touchstart', e => {
-  startX = e.touches[0].clientX
-  startY = e.touches[0].clientY
-})
-main.addEventListener('touchmove', e => {
-  const touch = e.touches[0]
-  const dx    = touch.clientX - startX
-  const dy    = touch.clientY - startY
-  if (Math.abs(dx)>Math.abs(dy)) {
-    e.preventDefault()
-    lastDx = dx
-    if (!isTicking) {
-      isTicking = true
-      requestAnimationFrame(() => {
-        container.scrollLeft -= lastDx
-        startX = touch.clientX
-        isTicking = false
-      })
-    }
+// — Posts — 
+async function loadPosts() {
+  listPosts.textContent = '⏳ Caricamento…'
+  const { data, error } = await supabase
+    .from('posts')
+    .select('*')
+    .order('date', { ascending: false })
+
+  if (error) {
+    listPosts.textContent = 'Errore: ' + error.message
+    return
   }
+  if (!data.length) {
+    listPosts.textContent = 'Nessun post.'
+    return
+  }
+  listPosts.innerHTML = data.map(p => `
+    <div data-id="${p.id}">
+      <strong>${p.title}</strong>
+      <button class="edit-post">✏️</button>
+      <button class="del-post">🗑️</button>
+    </div>
+  `).join('')
+
+  listPosts.querySelectorAll('.edit-post').forEach(btn => {
+    btn.onclick = () => {
+      const id = btn.parentElement.dataset.id
+      const post = data.find(x => x.id == id)
+      npTitle.value   = post.title
+      npSnippet.value = post.snippet
+      npContent.value = post.content
+      npTag.value     = post.tag
+      showSection('new-post')
+      btnNewPost.textContent        = 'Aggiorna Post'
+      btnNewPost.dataset.editId     = id
+    }
+  })
+  listPosts.querySelectorAll('.del-post').forEach(btn => {
+    btn.onclick = async () => {
+      const id = btn.parentElement.dataset.id
+      if (!confirm('Confermi?')) return
+      await supabase.from('posts').delete().eq('id', id)
+      loadPosts()
+    }
+  })
+}
+
+btnNewPost.addEventListener('click', async () => {
+  fbNewPost.textContent = ''
+  const payload = {
+    title:   npTitle.value,
+    snippet: npSnippet.value,
+    content: npContent.value,
+    tag:     npTag.value,
+    user_id: currentUser.id
+  }
+  if (btnNewPost.dataset.editId) {
+    await supabase
+      .from('posts')
+      .update(payload)
+      .eq('id', btnNewPost.dataset.editId)
+    delete btnNewPost.dataset.editId
+    btnNewPost.textContent = 'Pubblica Post'
+  } else {
+    await supabase
+      .from('posts')
+      .insert([payload])
+  }
+  npTitle.value = npSnippet.value = npContent.value = ''
+  npTag.value = 'tools'
+  fbNewPost.textContent = '✅ Operazione completata'
+  fbNewPost.className = 'feedback ok'
+  loadPosts()
 })
+
+// — Splashes —
+async function loadSplashes() {
+  listSplash.textContent = '⏳ Caricamento…'
+  const { data, error } = await supabase
+    .from('splashtxt')
+    .select('*')
+
+  if (error) {
+    listSplash.textContent = 'Errore: ' + error.message
+    return
+  }
+  if (!data.length) {
+    listSplash.textContent = 'Nessuno splash.'
+    return
+  }
+  listSplash.innerHTML = data.map(s => `
+    <div data-id="${s.id}">
+      "${s.phrase}"
+      <button class="del-splash">🗑️</button>
+    </div>
+  `).join('')
+
+  listSplash.querySelectorAll('.del-splash').forEach(btn => {
+    btn.onclick = async () => {
+      const id = btn.parentElement.dataset.id
+      if (!confirm('Cancelli?')) return
+      await supabase.from('splashtxt').delete().eq('id', id)
+      loadSplashes()
+    }
+  })
+}
+
+document.getElementById('submit-new-splash').addEventListener('click', async () => {
+  const phrase = prompt('Inserisci splash-text:')
+  if (!phrase) return
+  await supabase
+    .from('splashtxt')
+    .insert({ phrase, user_id: currentUser.id })
+  fbNewSplash.textContent = '✅ Aggiunto!'
+  fbNewSplash.className = 'feedback ok'
+  loadSplashes()
+})
+
+// — Photos —
+async function loadPhotos() {
+  listPhotos.textContent = '⏳ Caricamento…'
+  const { data, error } = await supabase
+    .storage
+    .from('images')
+    .list('', { limit: 100 })
+
+  if (error) {
+    listPhotos.textContent = 'Errore: ' + error.message
+    return
+  }
+  if (!data.length) {
+    listPhotos.textContent = 'Nessuna foto.'
+    return
+  }
+  listPhotos.innerHTML = data.map(f => {
+    const url = supabase
+      .storage
+      .from('images')
+      .getPublicUrl(f.name).data.publicUrl
+    return `
+      <div data-file="${f.name}" style="margin-bottom:1rem;">
+        <img src="${url}" style="max-width:120px;">
+        <button class="del-photo">🗑️</button>
+      </div>
+    `
+  }).join('')
+
+  listPhotos.querySelectorAll('.del-photo').forEach(btn => {
+    btn.onclick = async () => {
+      const file = btn.parentElement.dataset.file
+      if (!confirm('Eliminare?')) return
+      await supabase.storage.from('images').remove([file])
+      loadPhotos()
+    }
+  })
+}
