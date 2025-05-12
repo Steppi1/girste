@@ -32,14 +32,15 @@ html, body {
 .site-title {
   display: flex;
   align-items: center;
-  gap: 0.8rem;
-  margin: 1rem 0 0.8rem 0;
+  gap: 1rem;
+  margin: 1.5rem 0 1rem 0;
+  padding: 0 0.8rem;
 }
 .home-link {
   display: inline-block;
 }
 .home-icon {
-  width: 36px;
+  width: 42px;
   height: auto;
   display: block;
 }
@@ -110,6 +111,7 @@ html, body {
   cursor: pointer;
   word-wrap: break-word;
   white-space: normal;
+  overflow-wrap: break-word;
 }
 .article.selected {
   font-weight: 700;
@@ -152,6 +154,7 @@ html, body {
   .site-title {
     padding-left: 0.8rem;
     padding-right: 0.8rem;
+    margin-top: 1.2rem;
   }
 
   .filters,
@@ -160,6 +163,10 @@ html, body {
     padding-left: 0.8rem;
     padding-right: 0.8rem;
     flex-shrink: 0;
+  }
+
+  .home-icon {
+    width: 42px;
   }
 
   .articles {
