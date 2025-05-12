@@ -1,16 +1,17 @@
 import { getPosts } from '../supabase.js'
 
-const pills      = Array.from(document.querySelectorAll('.filter-pill'));
-const list       = document.querySelector('.articles');
-const contentBox = document.querySelector('.article-content');
-const phraseEl   = document.querySelector('.header-phrase');
-const container  = document.querySelector('.container');
-const main       = document.querySelector('.main-content');
+const pills      = Array.from(document.querySelectorAll('.filter-pill'))
+const list       = document.getElementById('article-list')
+const contentBox = document.querySelector('.article-content')
+const phraseEl   = document.querySelector('.header-phrase')
+const container  = document.querySelector('.container')
+const main       = document.querySelector('.main-content')
 
 let phrases = []
 let items = []
+let initialOrder = []
 
-// ——— CARICA ARTICOLI DINAMICAMENTE DA SUPABASE ———
+// — Carica articoli da Supabase
 getPosts().then(posts => {
   posts.forEach(post => {
     const li = document.createElement('li')
@@ -26,15 +27,12 @@ getPosts().then(posts => {
     list.appendChild(li)
   })
 
-  items = Array.from(document.querySelectorAll('.article')) // ora che li abbiamo
+  items = Array.from(document.querySelectorAll('.article'))
   initialOrder = items.slice()
   activateFilter('all')
 })
 
-// ——— conserva ordine iniziale per il reset ———
-let initialOrder = []
-
-// ——— click sui filtri ———
+// — Filtro e ordinamento
 pills.forEach(pill => {
   pill.addEventListener('click', () => {
     activateFilter(pill.dataset.filter)
@@ -43,20 +41,22 @@ pills.forEach(pill => {
 
 function activateFilter(type) {
   pills.forEach(p => p.classList.toggle('active', p.dataset.filter === type))
+
   if (type === 'all') {
     items.sort((a, b) => new Date(b.dataset.date) - new Date(a.dataset.date))
   } else {
     items = initialOrder.slice()
   }
 
-  const fragment = document.createDocumentFragment()
+  const frag = document.createDocumentFragment()
   items.forEach(item => {
-    item.style.display = (type === 'all' || item.dataset.type === type) ? '' : 'none'
+    const show = (type === 'all' || item.dataset.type === type)
+    item.style.display = show ? '' : 'none'
     item.classList.remove('selected')
-    fragment.appendChild(item)
+    frag.appendChild(item)
   })
   list.innerHTML = ''
-  list.appendChild(fragment)
+  list.appendChild(frag)
 
   const firstVisible = items.find(i => i.style.display === '')
   if (firstVisible) selectArticle(firstVisible)
@@ -81,12 +81,9 @@ function selectArticle(item) {
   `
 }
 
-// ——— frasi random da phrases.json ———
+// — Frasi casuali da phrases.json
 fetch('phrases.json')
-  .then(res => {
-    if (!res.ok) throw new Error(`HTTP ${res.status}`)
-    return res.json()
-  })
+  .then(res => res.ok ? res.json() : Promise.reject(`HTTP ${res.status}`))
   .then(arr => {
     phrases = Array.isArray(arr) ? arr : []
     changePhrase()
@@ -100,10 +97,8 @@ function changePhrase() {
   phraseEl.textContent = phrases[i]
 }
 
-// ——— swipe sidebar su mobile ———
-let startX, startY
-let isTicking = false
-let lastDx = 0
+// — Swipe sidebar su mobile
+let startX, startY, isTicking = false, lastDx = 0
 
 main.addEventListener('touchstart', e => {
   startX = e.touches[0].clientX

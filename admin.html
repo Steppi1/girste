@@ -28,16 +28,16 @@
 <body>
   <h1>Nuovo post</h1>
 
-  <label>Titolo</label>
+  <label for="title">Titolo</label>
   <input type="text" id="title">
 
-  <label>Snippet</label>
+  <label for="snippet">Snippet</label>
   <input type="text" id="snippet">
 
-  <label>Contenuto (puoi inserire tag &lt;img&gt;)</label>
+  <label for="content">Contenuto (puoi inserire tag &lt;img&gt;)</label>
   <textarea id="content" rows="8"></textarea>
 
-  <label>Tag</label>
+  <label for="tag">Tag</label>
   <select id="tag">
     <option value="tools">tools</option>
     <option value="stories">stories</option>
@@ -51,22 +51,18 @@
   <div class="img-url" id="img-url"></div>
 
   <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+    import { supabase } from './supabase.js'
 
-    const supabaseUrl = 'https://mcvvvhpmpouuupwqlbsn.supabase.co'
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jdnZ2aHBtcG91dXVwd3FsYnNuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY5ODY5NzEsImV4cCI6MjA2MjU2Mjk3MX0.bEqtAPxy-fB31FrsIh8Mn240udNrKWAsdv4akpjNg8Q'
-    const supabase = createClient(supabaseUrl, supabaseKey)
-
-    const title = document.getElementById('title')
-    const snippet = document.getElementById('snippet')
-    const content = document.getElementById('content')
-    const tag = document.getElementById('tag')
-    const feedback = document.getElementById('feedback')
+    const title     = document.getElementById('title')
+    const snippet   = document.getElementById('snippet')
+    const content   = document.getElementById('content')
+    const tag       = document.getElementById('tag')
+    const feedback  = document.getElementById('feedback')
     const submitBtn = document.getElementById('submit')
-    const dropZone = document.getElementById('drop-zone')
+    const dropZone  = document.getElementById('drop-zone')
     const imgUrlBox = document.getElementById('img-url')
 
-    // ✅ Pubblica post su schema 'public'
+    // Pubblica post su schema 'public' (default)
     submitBtn.addEventListener('click', async () => {
       feedback.textContent = ''
       const post = {
@@ -78,8 +74,7 @@
       }
 
       const { error } = await supabase
-        .schema('public')
-        .from('posts')
+        .from('posts')         // usa direttamente la tabella in public
         .insert([post])
 
       if (error) {
@@ -93,8 +88,8 @@
       }
     })
 
-    // ✅ Multi-upload immagini
-    dropZone.addEventListener('dragover', (e) => {
+    // Multi-upload immagini
+    dropZone.addEventListener('dragover', e => {
       e.preventDefault()
       dropZone.style.borderColor = '#000'
     })
@@ -103,7 +98,7 @@
       dropZone.style.borderColor = '#ccc'
     })
 
-    dropZone.addEventListener('drop', async (e) => {
+    dropZone.addEventListener('drop', async e => {
       e.preventDefault()
       dropZone.style.borderColor = '#ccc'
 
@@ -123,7 +118,7 @@
           continue
         }
 
-        const url = `${supabaseUrl}/storage/v1/object/public/images/${filename}`
+        const url = `${supabase.storageUrl}/object/public/images/${filename}`
         imgUrlBox.innerHTML += `
           ✅ ${file.name}<br>
           <pre>&lt;img src="${url}" alt="" /&gt;</pre>
