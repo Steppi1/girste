@@ -116,7 +116,7 @@ html, body {
   background: white;
 }
 .article-content {
-  padding: 2.6rem 1.8rem 2rem 1.8rem;
+  padding: 2.6rem 1.8rem 4rem 1.8rem;
   max-width: 720px;
   width: 100%;
   margin: 0 auto;
@@ -192,7 +192,7 @@ html, body {
 
   .article-content {
     max-width: 90vw;
-    padding: 2.4rem 1.2rem 1.8rem 1.2rem;
+    padding: 2.4rem 1.2rem 4rem 1.2rem;
   }
 
   .article-content h2 {
