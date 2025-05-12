@@ -7,40 +7,12 @@
   <title>girste's</title>
   <link rel="icon" href="girstefav.png" type="image/png">
   <link rel="stylesheet" href="style.css">
-
-  <!-- Override per panzoom wrapper -->
-  <style>
-    #wrapper {
-      position: relative;
-      overflow: hidden;
-      touch-action: none;
-      width: 100%;
-      height: 100%;
-    }
-    #panzoom {
-      position: absolute;
-      top: 0;
-      left: 0;
-      touch-action: none;
-      transform-origin: 50% 50%;
-      display: flex;
-      align-items: flex-start;
-      will-change: transform;
-    }
-    #panzoom img {
-      user-select: none;
-      -webkit-user-drag: none;
-      pointer-events: none;
-    }
-  </style>
 </head>
 <body>
-  <!-- contenitore full‐screen per il mosaico -->
   <div id="wrapper">
     <div id="panzoom"></div>
   </div>
 
-  <!-- sticky yellow bar -->
   <div id="sticky-bar">
     <div class="icon-group">
       <a href="mailto:me@girste.com" title="email">
@@ -65,15 +37,10 @@
     </div>
   </div>
 
-  <!-- 1) Import Panzoom come ESM e lo espone su window -->
-<!-- nuovo (funzionante): -->
-<script type="module">
-  import panzoom from 'https://cdn.jsdelivr.net/npm/panzoom@9.4.3/dist/panzoom.esm.js';
-  window.panzoom = panzoom;
-</script>
-
-
-  <!-- 2) Moduli Supabase + logica client‐side -->
+  <script type="module">
+    import panzoom from 'https://cdn.jsdelivr.net/npm/panzoom@9.4.3/dist/panzoom.esm.js';
+    window.panzoom = panzoom;
+  </script>
   <script type="module" src="supabase.js"></script>
   <script type="module" src="script.js"></script>
 </body>

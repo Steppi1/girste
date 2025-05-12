@@ -71,12 +71,10 @@ body.light-mode {
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
 }
 
-
 .icon-group {
   display: flex;
   gap: 16px;
 }
-
 
 #sticky-bar a,
 #sticky-bar button {
@@ -94,7 +92,6 @@ body.light-mode {
   transform: scale(1.2);
 }
 
-/* Footer in linea e testo molto piccolo */
 #sticky-bar .icon-footer {
   margin-top: 8px;
   display: flex;

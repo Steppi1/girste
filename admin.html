@@ -4,53 +4,7 @@
   <meta charset="UTF-8">
   <title>Admin Panel Protetto</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    * { box-sizing:border-box; margin:0; padding:0 }
-    body { font-family:sans-serif; min-height:100vh; }
-    button { cursor:pointer; }
-    /* AUTH PANEL */
-    #auth-panel {
-      max-width:400px; margin:3rem auto; padding:1rem;
-      border:1px solid #ddd; border-radius:4px;
-    }
-    #auth-panel label { display:block; margin-top:1rem; }
-    #auth-panel input { width:100%; padding:0.6rem; margin-top:0.3rem; }
-    .feedback { margin-top:0.5rem; font-size:0.9rem; }
-    .feedback.error { color:red }
-    .feedback.ok    { color:green }
-    /* ADMIN LAYOUT */
-    #admin-panel .container { display:flex; min-height:100vh; }
-    .sidebar {
-      background:#f5f5f5; padding:1rem;
-      display:flex; flex-direction:column; width:220px;
-    }
-    .sidebar button {
-      margin-bottom:0.5rem; padding:0.6rem;
-      border:none; background:#fff; border-radius:4px;
-      text-align:left;
-    }
-    .sidebar button.active { background:#ddd; }
-    .sidebar #btn-logout { margin-top:auto; background:#fee; }
-    .content { flex:1; padding:1.5rem; }
-    .section { display:none; }
-    .section.active { display:block; }
-    .field-group { margin-top:1rem; }
-    .field-group label { display:block; margin-bottom:0.3rem; }
-    .field-group input,
-    .field-group textarea,
-    .field-group select { width:100%; padding:0.6rem; }
-    .drop-zone {
-      border:2px dashed #ccc; padding:1rem; text-align:center;
-      color:#666; margin-top:1rem;
-    }
-    @media (max-width:600px) {
-      #admin-panel .container { flex-direction:column; }
-      .sidebar {
-        flex-direction:row; overflow-x:auto; width:100%;
-      }
-      .sidebar button { flex:1; margin:0.25rem; font-size:0.9rem; }
-    }
-  </style>
+  <link rel="stylesheet" href="/style.css">
 </head>
 <body>
 
@@ -76,29 +30,17 @@
         <button data-section="new-splash"  class="nav-btn">💬 Nuovo Splash</button>
         <button data-section="manage-splash" class="nav-btn">🗑️ Gestione Splash</button>
         <button data-section="manage-photos" class="nav-btn">📷 Gestione Foto</button>
-        <button data-section="manage-mosaic" class="nav-btn">🎛️ Gestione Mosaic</button>
         <button id="btn-logout">🚪 Logout</button>
       </nav>
 
       <!-- CONTENT -->
       <main class="content">
-        <!-- Nuovo Post -->
         <section id="new-post" class="section">
           <h1>Nuovo Post</h1>
-          <div class="field-group">
-            <label for="np-title">Titolo</label>
-            <input type="text" id="np-title">
-          </div>
-          <div class="field-group">
-            <label for="np-snippet">Snippet</label>
-            <input type="text" id="np-snippet">
-          </div>
-          <div class="field-group">
-            <label for="np-content">Contenuto</label>
-            <textarea id="np-content" rows="5"></textarea>
-          </div>
-          <div class="field-group">
-            <label for="np-tag">Tag</label>
+          <div class="field-group"><label for="np-title">Titolo</label><input type="text" id="np-title"></div>
+          <div class="field-group"><label for="np-snippet">Snippet</label><input type="text" id="np-snippet"></div>
+          <div class="field-group"><label for="np-content">Contenuto</label><textarea id="np-content" rows="5"></textarea></div>
+          <div class="field-group"><label for="np-tag">Tag</label>
             <select id="np-tag">
               <option value="tools">tools</option>
               <option value="stories">stories</option>
@@ -109,239 +51,36 @@
           <div class="feedback" id="fb-new-post"></div>
         </section>
 
-        <!-- Modifica Post -->
         <section id="edit-post" class="section">
           <h1>Modifica / Cancella Post</h1>
           <div id="list-posts">⏳ Caricamento…</div>
         </section>
 
-        <!-- Nuovo Splash -->
         <section id="new-splash" class="section">
           <h1>Nuovo Splash-Text</h1>
           <button id="submit-new-splash">Aggiungi Splash-Text</button>
           <div class="feedback" id="fb-new-splash"></div>
         </section>
 
-        <!-- Gestione Splash -->
         <section id="manage-splash" class="section">
           <h1>Modifica / Cancella Splash</h1>
           <div id="list-splash">⏳ Caricamento…</div>
         </section>
 
-        <!-- Gestione Foto -->
         <section id="manage-photos" class="section">
           <h1>Gestione Foto</h1>
           <div id="list-photos">⏳ Caricamento…</div>
-        </section>
-
-        <!-- Gestione Mosaic (placeholder) -->
-        <section id="manage-mosaic" class="section">
-          <h1>Gestione Mosaic</h1>
-          <p>Funzionalità in arrivo…</p>
         </section>
       </main>
 
     </div>
   </div>
 
-  <script type="module">
-    import { supabase } from './supabase.js'
-
-    // — DOM —
-    const authPanel   = document.getElementById('auth-panel')
-    const adminPanel  = document.getElementById('admin-panel')
-    const emailInput  = document.getElementById('email')
-    const passInput   = document.getElementById('password')
-    const btnLogin    = document.getElementById('btn-login')
-    const btnLogout   = document.getElementById('btn-logout')
-    const authFb      = document.getElementById('auth-feedback')
-
-    const navButtons  = document.querySelectorAll('.nav-btn')
-    const sections    = document.querySelectorAll('.section')
-
-    const fbNewPost   = document.getElementById('fb-new-post')
-    const listPosts   = document.getElementById('list-posts')
-    const fbNewSplash = document.getElementById('fb-new-splash')
-    const listSplash  = document.getElementById('list-splash')
-    const listPhotos  = document.getElementById('list-photos')
-
-    const npTitle     = document.getElementById('np-title')
-    const npSnippet   = document.getElementById('np-snippet')
-    const npContent   = document.getElementById('np-content')
-    const npTag       = document.getElementById('np-tag')
-    const btnNewPost  = document.getElementById('submit-new-post')
-
-    let currentUser = null
-
-    // — Helpers UI —
-    function showSection(id) {
-      sections.forEach(s => s.id===id
-        ? s.classList.add('active')
-        : s.classList.remove('active'))
-      navButtons.forEach(b => b.dataset.section===id
-        ? b.classList.add('active')
-        : b.classList.remove('active'))
-    }
-    function toggleAuth(ok) {
-      authPanel.style.display  = ok ? 'none' : 'block'
-      adminPanel.style.display = ok ? 'block' : 'none'
-      authFb.textContent = ''
-      if (ok) loadAll()
-    }
-
-    // — Auth Flow —
-    window.addEventListener('load', async () => {
-      const { data:{ session }, error } = await supabase.auth.getSession()
-      if (session) currentUser = session.user
-      toggleAuth(!!session)
-      if (session) showSection('new-post')
-    })
-    btnLogin.addEventListener('click', async () => {
-      authFb.textContent = ''
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: emailInput.value,
-        password: passInput.value
-      })
-      if (error) {
-        authFb.textContent = error.message
-        authFb.className = 'feedback error'
-      } else {
-        currentUser = data.user
-        toggleAuth(true)
-        showSection('new-post')
-      }
-    })
-    btnLogout.addEventListener('click', async () => {
-      await supabase.auth.signOut()
-      currentUser = null
-      toggleAuth(false)
-    })
-
-    // — Nav —
-    navButtons.forEach(btn => btn.addEventListener('click', () => {
-      showSection(btn.dataset.section)
-      if (btn.dataset.section==='edit-post')    loadPosts()
-      if (btn.dataset.section==='manage-splash') loadSplashes()
-      if (btn.dataset.section==='manage-photos') loadPhotos()
-    }))
-
-    // — Caricamenti —
-    async function loadAll() {
-      await Promise.all([loadPosts(), loadSplashes(), loadPhotos()])
-    }
-
-    // --- Posts CRUD ---
-    async function loadPosts() {
-      listPosts.textContent = '⏳ Caricamento…'
-      const { data, error } = await supabase
-        .from('posts').select('*').order('date',{ascending:false})
-      if (error) { listPosts.textContent = error.message; return }
-      if (!data.length) { listPosts.textContent = 'Nessun post.'; return }
-      listPosts.innerHTML = data.map(p=>`
-        <div data-id="${p.id}">
-          <strong>${p.title}</strong>
-          <button class="edit-post">✏️</button>
-          <button class="del-post">🗑️</button>
-        </div>
-      `).join('')
-      listPosts.querySelectorAll('.edit-post').forEach(b=>{
-        b.onclick = ()=>{
-          const id = b.parentElement.dataset.id
-          const p  = data.find(x=>x.id==id)
-          npTitle.value = p.title
-          npSnippet.value = p.snippet
-          npContent.value = p.content
-          npTag.value = p.tag
-          showSection('new-post')
-          btnNewPost.textContent = 'Aggiorna Post'
-          btnNewPost.dataset.editId = id
-        }
-      })
-      listPosts.querySelectorAll('.del-post').forEach(b=>{
-        b.onclick = async ()=>{
-          if (!confirm('Confermi cancellazione?')) return
-          const id = b.parentElement.dataset.id
-          await supabase.from('posts').delete().eq('id',id)
-          loadPosts()
-        }
-      })
-    }
-    btnNewPost.addEventListener('click', async ()=>{
-      fbNewPost.textContent = ''
-      const payload = {
-        title: npTitle.value,
-        snippet: npSnippet.value,
-        content: npContent.value,
-        tag: npTag.value,
-        user_id: currentUser.id
-      }
-      if (btnNewPost.dataset.editId) {
-        await supabase.from('posts').update(payload).eq('id',btnNewPost.dataset.editId)
-        delete btnNewPost.dataset.editId
-        btnNewPost.textContent = 'Pubblica Post'
-      } else {
-        await supabase.from('posts').insert([payload])
-      }
-      npTitle.value = npSnippet.value = npContent.value = ''
-      npTag.value = 'tools'
-      fbNewPost.textContent = '✅ Operazione completata'
-      fbNewPost.className = 'feedback ok'
-      loadPosts()
-    })
-
-    // --- Splash CRUD ---
-    async function loadSplashes() {
-      listSplash.textContent = '⏳ Caricamento…'
-      const { data, error } = await supabase.from('splashtxt').select('*')
-      if (error) { listSplash.textContent = error.message; return }
-      if (!data.length) { listSplash.textContent = 'Nessuno splash.'; return }
-      listSplash.innerHTML = data.map(s=>`
-        <div data-id="${s.id}">
-          "${s.phrase}"
-          <button class="del-splash">🗑️</button>
-        </div>
-      `).join('')
-      listSplash.querySelectorAll('.del-splash').forEach(b=>{
-        b.onclick = async ()=>{
-          if (!confirm('Cancelli questo splash?')) return
-          const id = b.parentElement.dataset.id
-          await supabase.from('splashtxt').delete().eq('id',id)
-          loadSplashes()
-        }
-      })
-    }
-    document.getElementById('submit-new-splash').addEventListener('click', async ()=>{
-      const phrase = prompt('Inserisci splash-text:')
-      if (!phrase) return
-      await supabase.from('splashtxt').insert({ phrase, user_id: currentUser.id })
-      fbNewSplash.textContent = '✅ Aggiunto!'
-      fbNewSplash.className = 'feedback ok'
-      loadSplashes()
-    })
-
-    // --- Photo Management ---
-    async function loadPhotos() {
-      listPhotos.textContent = '⏳ Caricamento…'
-      const { data, error } = await supabase.storage.from('images').list('',{limit:100})
-      if (error) { listPhotos.textContent = error.message; return }
-      if (!data.length) { listPhotos.textContent = 'Nessuna foto.'; return }
-      listPhotos.innerHTML = data.map(f=>{
-        const url = supabase.storage.from('images').getPublicUrl(f.name).data.publicUrl
-        return `
-          <div data-file="${f.name}" style="margin-bottom:1rem;">
-            <img src="${url}" style="max-width:120px">
-            <button class="del-photo">🗑️</button>
-          </div>`
-      }).join('')
-      listPhotos.querySelectorAll('.del-photo').forEach(b=>{
-        b.onclick = async ()=>{
-          if (!confirm('Eliminare?')) return
-          const file = b.parentElement.dataset.file
-          await supabase.storage.from('images').remove([file])
-          loadPhotos()
-        }
-      })
-    }
-  </script>
+  <!-- Script modulari -->
+  <script type="module" src="files/auth.js"></script>
+  <script type="module" src="files/nav.js"></script>
+  <script type="module" src="files/posts.js"></script>
+  <script type="module" src="files/splashes.js"></script>
+  <script type="module" src="files/photos.js"></script>
 </body>
 </html>

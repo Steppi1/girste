@@ -1,15 +1,11 @@
-// script.js
 import { supabase } from './supabase.js'
 
-// — DOM references
 const wrapper   = document.getElementById('wrapper')
 const panzoomEl = document.getElementById('panzoom')
 
-// — Limiti di zoom
 const minScale = 0.1
 const maxScale = 5
 
-// — Fisher–Yates shuffle
 function shuffle(arr) {
   for (let i = arr.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1))
@@ -17,7 +13,6 @@ function shuffle(arr) {
   }
 }
 
-// — Costruisce la galleria masonry
 function buildGallery(images, onComplete) {
   shuffle(images)
   const count = images.length
@@ -42,7 +37,6 @@ function buildGallery(images, onComplete) {
       tile.className = 'tile'
       tile.appendChild(img)
 
-      // append alla colonna più corta
       const shortest = cols.reduce((a, b) =>
         a.offsetHeight < b.offsetHeight ? a : b
       )
@@ -55,16 +49,13 @@ function buildGallery(images, onComplete) {
   })
 }
 
-// — Inizializza pan & zoom una volta costruita la galleria
 function initPanzoom() {
   const gb = panzoomEl.getBoundingClientRect()
   const wb = wrapper.getBoundingClientRect()
 
   const scaleX = wb.width  / gb.width
   const scaleY = wb.height / gb.height
-  const margin = window.matchMedia('(pointer: coarse)').matches
-    ? 0.8
-    : 0.95
+  const margin = window.matchMedia('(pointer: coarse)').matches ? 0.8 : 0.95
   const initialScale = Math.min(scaleX, scaleY) * margin
 
   const instance = panzoom(panzoomEl, {
@@ -82,13 +73,9 @@ function initPanzoom() {
 
   const scaledW = gb.width  * initialScale
   const scaledH = gb.height * initialScale
-  instance.moveTo(
-    (wb.width  - scaledW) / 2,
-    (wb.height - scaledH) / 2
-  )
+  instance.moveTo((wb.width - scaledW) / 2, (wb.height - scaledH) / 2)
 }
 
-// — Carica le immagini da Supabase e monta la galleria
 ;(async () => {
   try {
     const { data: files, error } = await supabase
@@ -124,15 +111,10 @@ function initPanzoom() {
   }
 })()
 
-// — Sticky-bar: toggle tema e refresh
-document
-  .getElementById('toggle-theme')
-  .addEventListener('click', () =>
-    document.body.classList.toggle('light-mode')
-  )
+document.getElementById('toggle-theme').addEventListener('click', () =>
+  document.body.classList.toggle('light-mode')
+)
 
-document
-  .querySelector('button[title="refresh"]')
-  .addEventListener('click', () =>
-    window.location.reload()
-  )
+document.querySelector('button[title="refresh"]').addEventListener('click', () =>
+  window.location.reload()
+)
