@@ -57,11 +57,11 @@ html, body {
 }
 .breathing-text {
   display: inline-block;
-  animation: breathe 2s ease-in-out infinite alternate;
+  animation: breathe 2s ease-in-out infinite;
 }
 @keyframes breathe {
-  0% { opacity: 1; }
-  100% { opacity: 0.8; }
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
 }
 
 .filters {
@@ -86,7 +86,6 @@ html, body {
   background: rgba(0, 0, 0, 0.05);
 }
 
-/* Lista articoli solo scroll verticale */
 .articles {
   flex: 1;
   overflow-y: auto;
@@ -149,6 +148,10 @@ html, body {
     padding-left: 0.8rem;
     padding-right: 0.8rem;
     flex-shrink: 0;
+  }
+
+  .home-icon {
+    width: 36px;
   }
 
   .articles {
