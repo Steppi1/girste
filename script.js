@@ -1,129 +1,97 @@
-import { supabase } from './supabase.js';
 
-const wrapper   = document.getElementById('wrapper');
-const panzoomEl = document.getElementById('panzoom');
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
-const minScale = 0.1;
-const maxScale = 5;
+// Config Supabase
+const supabase = createClient('https://mcvvvhpmpouuupwqlbsn.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'); // TRONCATO
 
-// Fisher–Yates shuffle
-function shuffle(arr) {
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-}
+// Init Panzoom con inerzia
+const panzoomInstance = panzoom(document.getElementById('panzoom'), {
+  maxZoom: 5,
+  minZoom: 0.05,
+  bounds: true,
+  boundsPadding: 1.5, // consente pan oltre i limiti ma con un margine
+  autocenter: false,
+  zoomDoubleClickSpeed: 1,
+  smoothScroll: true
+});
 
-// Build masonry gallery
-function buildGallery(images, onComplete) {
-  shuffle(images);
-  const count = images.length;
-  const colsN  = Math.floor(Math.sqrt(count)) || 1;
+// Inerzia (pan a rilascio morbido)
+let isPanning = false;
+let velocity = { x: 0, y: 0 };
+let last = { x: 0, y: 0 };
+let raf;
 
-  panzoomEl.innerHTML = '';
-  const cols = Array.from({ length: colsN }, () => {
-    const c = document.createElement('div');
-    c.className = 'column';
-    panzoomEl.appendChild(c);
-    return c;
-  });
+document.getElementById('wrapper').addEventListener('pointerdown', e => {
+  isPanning = true;
+  velocity = { x: 0, y: 0 };
+  last = { x: e.clientX, y: e.clientY };
+  cancelAnimationFrame(raf);
+});
 
-  let loaded = 0;
-  images.forEach(src => {
-    const img = new Image();
-    img.src      = src;
-    img.loading  = 'lazy';
-    img.decoding = 'async';
-    img.onload = () => {
-      const tile = document.createElement('div');
-      tile.className = 'tile';
-      tile.appendChild(img);
+document.getElementById('wrapper').addEventListener('pointermove', e => {
+  if (!isPanning) return;
+  const dx = e.clientX - last.x;
+  const dy = e.clientY - last.y;
+  velocity = { x: dx, y: dy };
+  last = { x: e.clientX, y: e.clientY };
+});
 
-      // Append to shortest column
-      const shortest = cols.reduce((a, b) =>
-        a.offsetHeight < b.offsetHeight ? a : b
-      );
-      shortest.appendChild(tile);
+document.getElementById('wrapper').addEventListener('pointerup', () => {
+  isPanning = false;
+  applyInertia();
+});
 
-      if (++loaded === count && typeof onComplete === 'function') {
-        onComplete();
-      }
-    };
-  });
-}
-
-// Init Panzoom with bounds
-function initPanzoom() {
-  const gb = panzoomEl.getBoundingClientRect();
-  const wb = wrapper.getBoundingClientRect();
-
-  const scaleX = wb.width  / gb.width;
-  const scaleY = wb.height / gb.height;
-  const margin = window.matchMedia('(pointer: coarse)').matches ? 0.8 : 0.95;
-  const initialScale = Math.min(scaleX, scaleY) * margin;
-
-  const instance = panzoom(panzoomEl, {
-    minZoom:        minScale,
-    maxZoom:        maxScale,
-    zoomSpeed:      0.065,
-    filterKey:      () => true,
-    bounds:         true,
-    boundsPadding:  0
-  });
-
-  instance.zoomAbs(0, 0, initialScale);
-
-  const scaledW = gb.width  * initialScale;
-  const scaledH = gb.height * initialScale;
-  instance.moveTo(
-    (wb.width  - scaledW) / 2,
-    (wb.height - scaledH) / 2
-  );
-}
-
-// Fetch images from Supabase “mosaic” bucket
-(async () => {
-  try {
-    const { data: files, error } = await supabase
-      .storage
-      .from('mosaic')
-      .list('', { limit: 1000 });
-
-    if (error) {
-      console.error('Errore listing bucket mosaic:', error);
-      return;
+function applyInertia() {
+  const friction = 0.9;
+  function step() {
+    velocity.x *= friction;
+    velocity.y *= friction;
+    panzoomInstance.moveBy(velocity.x, velocity.y);
+    if (Math.abs(velocity.x) > 0.5 || Math.abs(velocity.y) > 0.5) {
+      raf = requestAnimationFrame(step);
     }
-
-    const images = files
-      .filter(f => /\.(jpe?g|png|webp|gif)$/i.test(f.name))
-      .map(f => {
-        const { data, error: urlErr } = supabase
-          .storage
-          .from('mosaic')
-          .getPublicUrl(f.name);
-        if (urlErr) console.error(`getPublicUrl ${f.name}:`, urlErr);
-        return data.publicUrl;
-      })
-      .filter(url => !!url);
-
-    if (!images.length) {
-      console.warn('Nessuna immagine trovata nel bucket "mosaic"');
-      return;
-    }
-
-    buildGallery(images, initPanzoom);
-  } catch (err) {
-    console.error('Errore inizializzazione mosaico:', err);
   }
-})();
+  raf = requestAnimationFrame(step);
+}
 
-// Sticky‐bar buttons
-document.getElementById('toggle-theme')
-  .addEventListener('click', () =>
-    document.body.classList.toggle('light-mode')
-  );
+// Carica immagini dal bucket Supabase 'mosaic'
+async function loadImages() {
+  const { data, error } = await supabase.storage.from('mosaic').list('', { limit: 100 });
+  if (error) {
+    console.error('Errore caricamento immagini:', error);
+    return;
+  }
 
-document.querySelector('button[title="refresh"]')
-  .addEventListener('click', () =>
-    window.location.reload()
-  );
+  const panzoomEl = document.getElementById('panzoom');
+  data.forEach(item => {
+    const img = document.createElement('img');
+    img.src = `https://mcvvvhpmpouuupwqlbsn.supabase.co/storage/v1/object/public/mosaic/${item.name}`;
+    img.className = 'tile';
+    panzoomEl.appendChild(img);
+  });
+
+  await new Promise(r => setTimeout(r, 500)); // attesa layout immagini
+  applyInitialZoomAndCenter();
+}
+
+// Zoom iniziale e centraggio
+function applyInitialZoomAndCenter() {
+  const wrapper = document.getElementById('wrapper');
+  const panzoomEl = document.getElementById('panzoom');
+
+  const wrapperRect = wrapper.getBoundingClientRect();
+  const contentRect = panzoomEl.getBoundingClientRect();
+
+  const scaleX = wrapperRect.width / contentRect.width;
+  const scaleY = wrapperRect.height / contentRect.height;
+  const scale = Math.min(scaleX, scaleY) * 0.9;
+
+  panzoomInstance.zoomAbs(0, 0, scale);
+
+  const panX = (wrapperRect.width - contentRect.width * scale) / 2;
+  const panY = (wrapperRect.height - contentRect.height * scale) / 2;
+
+  panzoomInstance.moveTo(panX, panY);
+}
+
+loadImages();
