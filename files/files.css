@@ -38,15 +38,16 @@ html, body {
 }
 .home-link {
   display: flex;
-  align-items: center;
-  margin: 0.4rem 0 0.2rem 0.6rem;
+  align-items: flex-start;
+  margin: 0.2rem 0 0 0.4rem; /* meno spazio sopra, più vicino a bordo */
 }
+
 .home-icon {
-  width: 38px;
-  margin-right: 0.6rem;
-  height: auto;
-  display: block;
+  width: 36px;
+  margin-right: 0.2rem; /* vicinissima alla scritta */
+  margin-top: 0.2rem;    /* spinge la freccia verso il basso */
 }
+
 
 .title-text {
   font-weight: 400;
