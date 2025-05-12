@@ -29,14 +29,12 @@ html, body {
   overflow: hidden;
 }
 
-
 .home-link {
   display: flex;
   align-items: center;
   margin: 0.4rem 0 0.2rem 0.6rem;
   padding-top: 0.4rem;
 }
-
 
 .title-text {
   font-weight: 400;
@@ -171,8 +169,10 @@ html, body {
   }
 
   .home-icon {
-    width: 54px;
-    margin-left: 0.3rem;
+    width: 48px;
+    height: auto;
+    transform: translateY(-6px);
+    flex-shrink: 0;
   }
 
   .articles {
@@ -211,8 +211,21 @@ html, body {
     margin-top: 1.4rem;
     margin-bottom: 2rem;
   }
-}
 
+  .title-text {
+    font-size: 1.05rem;
+    max-width: calc(100% - 64px);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .title-row {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+}
 
 .title-row {
   display: flex;
