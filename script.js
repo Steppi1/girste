@@ -1,6 +1,5 @@
 // script.js
-import { getImageUrls, getPosts, getSplashTxts } from './supabase.js'
-import panzoom from 'https://unpkg.com/panzoom@9.4.3/dist/panzoom.esm.js'
+import { supabase } from './supabase.js'
 
 // — DOM references
 const wrapper   = document.getElementById('wrapper')
@@ -10,7 +9,7 @@ const panzoomEl = document.getElementById('panzoom')
 const minScale = 0.1
 const maxScale = 5
 
-// — Fisher–Yates shuffle per randomizzare un array
+// — Fisher–Yates shuffle
 function shuffle(arr) {
   for (let i = arr.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1))
@@ -18,7 +17,7 @@ function shuffle(arr) {
   }
 }
 
-// — Costruisce la galleria in stile masonry + lazy-load
+// — Costruisce la galleria masonry
 function buildGallery(images, onComplete) {
   shuffle(images)
   const count = images.length
@@ -43,78 +42,97 @@ function buildGallery(images, onComplete) {
       tile.className = 'tile'
       tile.appendChild(img)
 
-      // trova la colonna più corta
+      // append alla colonna più corta
       const shortest = cols.reduce((a, b) =>
         a.offsetHeight < b.offsetHeight ? a : b
       )
       shortest.appendChild(tile)
 
-      loaded++
-      if (loaded === count && typeof onComplete === 'function') {
+      if (++loaded === count && typeof onComplete === 'function') {
         onComplete()
       }
     }
   })
 }
 
-// — Inizializzazione principale (IIFE async)
+// — Inizializza pan & zoom una volta costruita la galleria
+function initPanzoom() {
+  const gb = panzoomEl.getBoundingClientRect()
+  const wb = wrapper.getBoundingClientRect()
+
+  const scaleX = wb.width  / gb.width
+  const scaleY = wb.height / gb.height
+  const margin = window.matchMedia('(pointer: coarse)').matches
+    ? 0.8
+    : 0.95
+  const initialScale = Math.min(scaleX, scaleY) * margin
+
+  const instance = panzoom(panzoomEl, {
+    minZoom:        minScale,
+    maxZoom:        maxScale,
+    zoomSpeed:      0.065,
+    filterKey:      () => true,
+    beforeWheel:    () => false,
+    beforeMouseDown:() => false,
+    bounds:         true,
+    boundsPadding:  0.2,
+  })
+
+  instance.zoomAbs(0, 0, initialScale)
+
+  const scaledW = gb.width  * initialScale
+  const scaledH = gb.height * initialScale
+  instance.moveTo(
+    (wb.width  - scaledW) / 2,
+    (wb.height - scaledH) / 2
+  )
+}
+
+// — Carica le immagini da Supabase e monta la galleria
 ;(async () => {
   try {
-    // 1) Prendo le immagini dal bucket Supabase
-    const images = await getImageUrls('mosaic')
-    console.log('Immagini caricate:', images)
+    const { data: files, error } = await supabase
+      .storage
+      .from('mosaic')
+      .list('', { limit: 1000 })
 
-    if (images.length === 0) {
-      console.warn('Nessuna immagine trovata nel bucket "mosaic"!')
+    if (error) {
+      console.error('Errore listing bucket mosaic:', error)
       return
     }
 
-    // 2) Costruisco la gallery e avvio panzoom al termine
-    buildGallery(images, () => {
-      requestAnimationFrame(() => {
-        const gb = panzoomEl.getBoundingClientRect()
-        const wb = wrapper.getBoundingClientRect()
-
-        const scaleX = wb.width  / gb.width
-        const scaleY = wb.height / gb.height
-        const isMobile = window.matchMedia('(pointer: coarse)').matches
-        const margin  = isMobile ? 0.8 : 0.95
-        const initialScale = Math.min(scaleX, scaleY) * margin
-
-        const instance = panzoom(panzoomEl, {
-          minZoom: minScale,
-          maxZoom: maxScale,
-          zoomSpeed: 0.065,
-          filterKey:       () => true,
-          beforeWheel:     () => false,
-          beforeMouseDown: () => false,
-          bounds: true,
-          boundsPadding: 0.2,
-        })
-
-        instance.zoomAbs(0, 0, initialScale)
-        const scaledW = gb.width  * initialScale
-        const scaledH = gb.height * initialScale
-        instance.moveTo((wb.width - scaledW) / 2, (wb.height - scaledH) / 2)
+    const images = files
+      .filter(f => /\.(jpe?g|png|webp|gif)$/i.test(f.name))
+      .map(f => {
+        const { data, error: urlErr } = supabase
+          .storage
+          .from('mosaic')
+          .getPublicUrl(f.name)
+        if (urlErr) console.error(`getPublicUrl ${f.name}:`, urlErr)
+        return data.publicUrl
       })
-    })
+      .filter(url => !!url)
 
-    // 3) (Opzionale) Carico e monto post e splash-text se hai sezioni dedicate
-    // const posts = await getPosts()
-    // const splashTxts = await getSplashTxts()
-    // // Es. montaggio post e frasi
+    if (!images.length) {
+      console.warn('Nessuna immagine trovata nel bucket "mosaic"')
+      return
+    }
 
+    buildGallery(images, initPanzoom)
   } catch (err) {
-    console.error('Errore in inizializzazione script.js:', err)
+    console.error('Errore inizializzazione mosaico:', err)
   }
 })()
 
-// — Toggle tema chiaro/scuro
-document.getElementById('toggle-theme')
+// — Sticky-bar: toggle tema e refresh
+document
+  .getElementById('toggle-theme')
   .addEventListener('click', () =>
     document.body.classList.toggle('light-mode')
   )
 
-// — Bottone “refresh”
-document.querySelector('button[title="refresh"]')
-  .addEventListener('click', () => window.location.reload())
+document
+  .querySelector('button[title="refresh"]')
+  .addEventListener('click', () =>
+    window.location.reload()
+  )
