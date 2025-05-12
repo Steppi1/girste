@@ -33,11 +33,12 @@ html, body {
   display: flex;
   align-items: center;
   gap: 1rem;
-  margin: 1.8rem 0 1.2rem 0;
-  padding: 0 1rem;
+  margin: 2rem 0 0.6rem 0;
+  padding: 0 1.2rem;
 }
 .home-link {
   display: inline-block;
+  margin-left: 0.3rem;
 }
 .home-icon {
   width: 48px;
@@ -54,18 +55,18 @@ html, body {
 .separator {
   border: none;
   border-top: 1px solid #ddd;
-  margin: 0.5rem 0;
+  margin: 0.4rem 0;
 }
 
 .header-phrase {
   text-align: center;
   color: #555;
   margin: 0.4rem 0;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
 }
 .breathing-text {
   display: inline-block;
-  animation: breathe 2s ease-in-out infinite;
+  animation: breathe 1.5s ease-in-out infinite;
 }
 @keyframes breathe {
   0%, 100% { transform: scale(1); }
@@ -124,21 +125,27 @@ html, body {
   background: white;
 }
 .article-content {
-  padding: 2.2rem 1.8rem 1.8rem 1.8rem;
+  padding: 2.6rem 1.8rem 2rem 1.8rem;
   max-width: 720px;
   width: 100%;
   margin: 0 auto;
 }
 .article-content h2 {
   font-size: 1.2rem;
+  margin-top: 1.2rem;
   margin-bottom: 1.2rem;
-  margin-top: 0.8rem;
+  max-width: 100%;
+  overflow-wrap: break-word;
+}
+.article-content p {
+  margin-bottom: 1.4rem;
+  line-height: 1.55;
 }
 .article-content img {
   max-width: 100%;
   height: auto;
   display: block;
-  margin: 0 auto 1rem;
+  margin: 1.2rem auto 2rem;
 }
 
 /* MOBILE */
@@ -160,7 +167,7 @@ html, body {
   .site-title {
     padding-left: 0.8rem;
     padding-right: 0.8rem;
-    margin-top: 1.6rem;
+    margin-top: 1.8rem;
   }
 
   .filters,
@@ -172,7 +179,8 @@ html, body {
   }
 
   .home-icon {
-    width: 48px;
+    width: 54px;
+    margin-left: 0.3rem;
   }
 
   .articles {
@@ -191,6 +199,22 @@ html, body {
 
   .article-content {
     max-width: 90vw;
-    padding: 2rem 1.2rem 1.6rem 1.2rem;
+    padding: 2.4rem 1.2rem 1.8rem 1.2rem;
+  }
+
+  .article-content h2 {
+    max-width: 100%;
+    word-wrap: break-word;
+    margin-top: 1.2rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .article-content p {
+    margin-bottom: 1.4rem;
+  }
+
+  .article-content img {
+    margin-top: 1.4rem;
+    margin-bottom: 2rem;
   }
 }
