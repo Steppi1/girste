@@ -2,14 +2,14 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <title>Admin Panel</title>
+  <title>Admin Panel Protetto</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body { font-family: sans-serif; max-width: 600px; margin: 2rem auto; padding: 1rem; }
     h1, h2 { margin-bottom: 0.5rem; }
     label { display: block; margin-top: 1rem; }
-    input, textarea, select, button { 
-      width: 100%; padding: 0.6rem; font-size: 1rem; margin-top: 0.3rem; 
+    input, textarea, select, button {
+      width: 100%; padding: 0.6rem; font-size: 1rem; margin-top: 0.3rem;
     }
     button { cursor: pointer; }
     .section { margin-top: 2rem; }
@@ -25,48 +25,82 @@
     }
     pre { background: #f3f3f3; padding: 0.5rem; overflow-x: auto; }
     .img-url button { margin: 0.2rem 0 1rem 0; }
+
+    /* Nasconde il pannello admin finché non sei loggato */
+    #admin-panel { display: none; }
+    #auth-panel { max-width: 400px; margin: 2rem auto; }
   </style>
 </head>
 <body>
-  <h1>Admin Panel</h1>
 
-  <!-- Sezione 1: Nuovo Post -->
-  <div class="section">
-    <h2>Nuovo Post</h2>
-    <label for="title">Titolo</label>
-    <input type="text" id="title">
-    <label for="snippet">Snippet</label>
-    <input type="text" id="snippet">
-    <label for="content">Contenuto (puoi inserire tag &lt;img&gt;)</label>
-    <textarea id="content" rows="6"></textarea>
-    <label for="tag">Tag</label>
-    <select id="tag">
-      <option value="tools">tools</option>
-      <option value="stories">stories</option>
-      <option value="blog">blog</option>
-    </select>
-    <button id="submit-post">Pubblica Post</button>
-    <div class="feedback" id="post-feedback"></div>
+  <!-- LOGIN PANEL -->
+  <div id="auth-panel">
+    <h2>🔒 Accedi all’Admin</h2>
+    <label for="email">Email</label>
+    <input type="email" id="email">
+    <label for="password">Password</label>
+    <input type="password" id="password">
+    <button id="btn-login">Accedi</button>
+    <button id="btn-logout" style="display:none;">Esci</button>
+    <div class="feedback" id="auth-feedback"></div>
+    <hr>
   </div>
 
-  <!-- Sezione 2: Aggiungi Splash-Text -->
-  <div class="section">
-    <h2>Nuova Splash-Text</h2>
-    <button id="add-splash">Aggiungi Splash-Text</button>
-    <div class="feedback" id="splash-feedback"></div>
-  </div>
+  <!-- ADMIN PANEL: inizialmente nascosto -->
+  <div id="admin-panel">
+    <h1>Admin Panel</h1>
 
-  <!-- Sezione 3: Upload Immagini -->
-  <div class="section">
-    <h2>Upload Immagini</h2>
-    <div class="drop-zone" id="drop-zone">📎 Trascina qui una o più immagini da caricare</div>
-    <div class="img-url" id="img-url"></div>
+    <!-- Sezione 1: Nuovo Post -->
+    <div class="section">
+      <h2>Nuovo Post</h2>
+      <label for="title">Titolo</label>
+      <input type="text" id="title">
+      <label for="snippet">Snippet</label>
+      <input type="text" id="snippet">
+      <label for="content">Contenuto (puoi inserire tag &lt;img&gt;)</label>
+      <textarea id="content" rows="6"></textarea>
+      <label for="tag">Tag</label>
+      <select id="tag">
+        <option value="tools">tools</option>
+        <option value="stories">stories</option>
+        <option value="blog">blog</option>
+      </select>
+      <button id="submit-post">Pubblica Post</button>
+      <div class="feedback" id="post-feedback"></div>
+    </div>
+
+    <!-- Sezione 2: Aggiungi Splash-Text -->
+    <div class="section">
+      <h2>Nuova Splash-Text</h2>
+      <button id="add-splash">Aggiungi Splash-Text</button>
+      <div class="feedback" id="splash-feedback"></div>
+    </div>
+
+    <!-- Sezione 3: Upload Immagini -->
+    <div class="section">
+      <h2>Upload Immagini</h2>
+      <div class="drop-zone" id="drop-zone">📎 Trascina qui una o più immagini da caricare</div>
+      <div class="img-url" id="img-url"></div>
+    </div>
   </div>
 
   <script type="module">
-    import { supabase, addSplashTxt } from './supabase.js'
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
-    // --- POST ---
+    // --- Setup Supabase ---
+    const SUPABASE_URL = 'https://mcvvvhpmpouuupwqlbsn.supabase.co'
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jdnZ2aHBtcG91dXVwd3FsYnNuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY5ODY5NzEsImV4cCI6MjA2MjU2Mjk3MX0.bEqtAPxy-fB31FrsIh8Mn240udNrKWAsdv4akpjNg8Q'
+    const supabase     = createClient(SUPABASE_URL, SUPABASE_KEY)
+
+    // --- Elementi DOM ---
+    const authPanel    = document.getElementById('auth-panel')
+    const adminPanel   = document.getElementById('admin-panel')
+    const emailInput   = document.getElementById('email')
+    const passInput    = document.getElementById('password')
+    const btnLogin     = document.getElementById('btn-login')
+    const btnLogout    = document.getElementById('btn-logout')
+    const authFeedback = document.getElementById('auth-feedback')
+
     const titleInput   = document.getElementById('title')
     const snippetInput = document.getElementById('snippet')
     const contentInput = document.getElementById('content')
@@ -74,6 +108,56 @@
     const submitPost   = document.getElementById('submit-post')
     const postFb       = document.getElementById('post-feedback')
 
+    const addSplashBtn = document.getElementById('add-splash')
+    const splashFb     = document.getElementById('splash-feedback')
+
+    const dropZone     = document.getElementById('drop-zone')
+    const imgUrlBox    = document.getElementById('img-url')
+
+    // --- Funzione di toggle UI ---
+    function toggleUI(isLoggedIn) {
+      if (isLoggedIn) {
+        authPanel.style.display  = 'none'
+        adminPanel.style.display = 'block'
+        btnLogout.style.display  = 'inline-block'
+      } else {
+        authPanel.style.display  = 'block'
+        adminPanel.style.display = 'none'
+        btnLogout.style.display  = 'none'
+        emailInput.value = ''
+        passInput.value  = ''
+      }
+      authFeedback.textContent = ''
+    }
+
+    // --- Controlla sessione all'avvio ---
+    window.addEventListener('load', async () => {
+      const { data: { session } } = await supabase.auth.getSession()
+      toggleUI(!!session)
+    })
+
+    // --- Login ---
+    btnLogin.addEventListener('click', async () => {
+      authFeedback.textContent = ''
+      const { error } = await supabase.auth.signInWithPassword({
+        email: emailInput.value,
+        password: passInput.value,
+      })
+      if (error) {
+        authFeedback.textContent = '❌ ' + error.message
+        authFeedback.className = 'feedback error'
+      } else {
+        toggleUI(true)
+      }
+    })
+
+    // --- Logout ---
+    btnLogout.addEventListener('click', async () => {
+      await supabase.auth.signOut()
+      toggleUI(false)
+    })
+
+    // --- PUBBLICA POST ---
     submitPost.addEventListener('click', async () => {
       postFb.textContent = ''
       const post = {
@@ -81,7 +165,8 @@
         snippet: snippetInput.value,
         content: contentInput.value,
         tag: tagSelect.value,
-        image_url: null
+        image_url: null,
+        user_id: supabase.auth.getUser()?.id
       }
       const { error } = await supabase.from('posts').insert([post])
       if (error) {
@@ -98,28 +183,26 @@
     })
 
     // --- SPLASH-TEXT ---
-    const addSplashBtn = document.getElementById('add-splash')
-    const splashFb     = document.getElementById('splash-feedback')
+    async function addSplashTxt(phrase) {
+      return supabase.from('splashtxt').insert({ phrase, user_id: supabase.auth.getUser()?.id })
+    }
 
     addSplashBtn.addEventListener('click', async () => {
       const phrase = prompt('Inserisci la nuova splash-text:')
       if (!phrase) return
       splashFb.textContent = '⏳ Salvataggio…'
       splashFb.className = 'feedback'
-      try {
-        await addSplashTxt(phrase)   // usa solo insert({ phrase })
+      const { error } = await addSplashTxt(phrase)
+      if (error) {
+        splashFb.textContent = '❌ ' + error.message
+        splashFb.className = 'feedback error'
+      } else {
         splashFb.textContent = '✅ Frase aggiunta alla rotazione!'
         splashFb.className = 'feedback ok'
-      } catch (err) {
-        splashFb.textContent = '❌ ' + err.message
-        splashFb.className = 'feedback error'
       }
     })
 
     // --- UPLOAD IMMAGINI ---
-    const dropZone  = document.getElementById('drop-zone')
-    const imgUrlBox = document.getElementById('img-url')
-
     dropZone.addEventListener('dragover', e => {
       e.preventDefault()
       dropZone.style.borderColor = '#000'
