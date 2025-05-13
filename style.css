@@ -6,14 +6,14 @@ html, body {
   width: 100%;
   overflow: hidden;
   font-family: monospace;
-  background: #000; /* initial black background */
+  background: #000; /* initial black */
 }
 
 body.dark-mode {
   background: #fff; /* toggled white */
 }
 
-/* Wrapper container */
+/* Wrapper */
 #wrapper {
   position: relative;
   width: 100%;
@@ -22,17 +22,18 @@ body.dark-mode {
   background: transparent;
 }
 
-/* Panzoom container */
+/* Panzoom container sized to content */
 #panzoom {
   position: absolute;
-  top: 0;
-  left: 0;
+  top: 0; left: 0;
   transform-origin: 50% 50%;
   will-change: transform;
   touch-action: none;
+  width: max-content;
+  height: max-content;
 }
 
-/* Masonry via Flex-wrap, width of grid is content width */
+/* Masonry via Flex-wrap */
 .grid {
   display: flex;
   flex-wrap: wrap;
@@ -42,13 +43,14 @@ body.dark-mode {
 }
 
 .grid img {
-  flex: 0 0 auto;
+  flex: 0 0 200px;
   width: 200px;
   height: auto;
   display: block;
+  /* use full quality image */
 }
 
-/* Sticky bar (unchanged) */
+/* Sticky bar unchanged */
 #sticky-bar {
   position: fixed;
   bottom: 20px; left: 50%;
@@ -61,7 +63,7 @@ body.dark-mode {
   z-index: 9999; touch-action: auto;
 }
 
-/* Icons hover effect */
+/* Icons hover */
 .icon-group {
   display: flex; gap: 16px; margin-bottom: 6px;
 }
