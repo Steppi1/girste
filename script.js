@@ -5,50 +5,48 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
 
 async function loadImages() {
-  const { data, error } = await supabase.storage.from('mosaic').list('', {
-    limit: 100, offset: 0, sortBy: { column: 'name', order: 'asc' }
-  })
-  if (error) console.error('Supabase error', error)
+  const { data, error } = await supabase
+    .storage
+    .from('mosaic')
+    .list('', { limit: 100, offset: 0, sortBy: { column: 'name', order: 'asc' } })
+
+  if (error) {
+    console.error('Errore nel caricamento:', error)
+    return
+  }
 
   const grid = document.getElementById('masonry')
   grid.innerHTML = ''
-  (data || []).sort(() => 0.5 - Math.random()).forEach(item => {
+
+  const shuffled = data.sort(() => 0.5 - Math.random())
+  for (const item of shuffled) {
     const url = `${SUPABASE_URL}/storage/v1/object/public/mosaic/${item.name}`
     const img = document.createElement('img')
     img.src = url
     img.alt = item.name
     img.loading = 'lazy'
     grid.appendChild(img)
-  })
+  }
 }
 
 function initPanzoom() {
   const elem = document.getElementById('panzoom')
-  const pz = panzoom(elem, {
+  const panzoomInstance = panzoom(elem, {
     maxZoom: 4,
     minZoom: 0.2,
     bounds: true,
     boundsPadding: 0.2,
-    beforeWheel: function(e) {
-      // always zoom on wheel, no pan
-      e.preventDefault()
-      return true
-    },
-    smoothScroll: false
+    smoothScroll: true
   })
+
   setTimeout(() => {
-    const grid = document.getElementById('masonry')
-    const rect = grid.getBoundingClientRect()
-    const zoom = 0.4
-    const offsetX = (window.innerWidth - rect.width * zoom) / 2 - rect.left
-    const offsetY = (window.innerHeight - rect.height * zoom) / 2 - rect.top
-    pz.zoomAbs(0, 0, zoom)
-    pz.moveBy(offsetX, offsetY)
+    panzoomInstance.zoomAbs(window.innerWidth / 2, window.innerHeight / 2, 0.4)
   }, 300)
 }
 
 function initThemeToggle() {
-  document.getElementById('toggle-theme').addEventListener('click', () => {
+  const btn = document.getElementById('toggle-theme')
+  btn.addEventListener('click', () => {
     document.body.classList.toggle('dark-mode')
   })
 }
