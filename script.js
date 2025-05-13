@@ -12,9 +12,12 @@ async function loadImages() {
   const { data, error } = await supabase.storage.from('mosaic').list('', {
     limit: 200, offset: 0, sortBy: { column: 'name', order: 'asc' }
   });
-  if (error) { console.error(error); return; }
+  if (error) {
+    console.error(error);
+    return;
+  }
   gridEl.innerHTML = '';
-  data.sort(()=>0.5-Math.random()).forEach(item=>{
+  data.sort(() => 0.5 - Math.random()).forEach(item => {
     const img = document.createElement('img');
     img.src = `${SUPABASE_URL}/storage/v1/object/public/mosaic/${item.name}`;
     img.alt = item.name;
@@ -26,31 +29,35 @@ async function loadImages() {
 function initPanzoom() {
   // disable page scroll
   document.body.style.overflow = 'hidden';
+
   const pz = panzoom(panzoomEl, {
-    maxZoom: 5, minZoom: 0.1,
-    bounds: true, boundsPadding: 0.1,
+    maxZoom: 5,
+    minZoom: 0.1,
+    bounds: true,
+    boundsPadding: 0.1,
     smoothScroll: true,
-    // remove contains check to allow zoom on images
-    beforeWheel: () => true
+    beforeWheel: function(e) {
+      e.preventDefault();
+      return true;
+    }
   });
-  // prevent any page scroll on wheel
-  window.addEventListener('wheel', e=>e.preventDefault(),{passive:false});
+
   // initial fit
-  setTimeout(()=>{
+  setTimeout(() => {
     const rect = panzoomEl.getBoundingClientRect();
-    const scale = Math.min(wrapper.clientWidth/rect.width, wrapper.clientHeight/rect.height);
-    pz.zoomAbs(0,0,scale);
-    const offsetX=(wrapper.clientWidth - rect.width*scale)/2 - rect.left;
-    const offsetY=-rect.top + 20;
-    pz.moveBy(offsetX,offsetY);
-  },300);
+    const scale = Math.min(wrapper.clientWidth / rect.width, wrapper.clientHeight / rect.height);
+    pz.zoomAbs(0, 0, scale);
+    const offsetX = (wrapper.clientWidth - rect.width * scale) / 2 - rect.left;
+    const offsetY = -rect.top + 20;
+    pz.moveBy(offsetX, offsetY);
+  }, 300);
 }
 
-document.getElementById('toggle-theme').addEventListener('click',()=>{
+document.getElementById('toggle-theme').addEventListener('click', () => {
   document.body.classList.toggle('light-mode');
 });
 
-window.addEventListener('DOMContentLoaded',async()=>{
+window.addEventListener('DOMContentLoaded', async () => {
   await loadImages();
   initPanzoom();
 });
