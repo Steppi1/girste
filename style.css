@@ -17,20 +17,24 @@ body.light-mode {
 }
 #panzoom {
   position: absolute; top: 0; left: 0;
-  will-change: transform; transform-origin: 0 0;
+  transform-origin: 0 0; will-change: transform;
   touch-action: none;
-  max-width: 100%; max-height: 100%; overflow: hidden;
+  max-width: 100%; max-height: 100%;
 }
 
-/* Masonry via CSS Grid */
+/* Masonry via CSS Multi-Column */
 .grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px,1fr));
-  gap: 8px; padding: 8px;
+  column-width: 150px;
+  column-gap: 8px;
+  padding: 8px;
+  width: max-content; /* allow overflow for panzoom */
 }
 .grid img {
-  width: 100%; height: auto; display: block;
-  /* pointer-events removed to allow interactions */
+  break-inside: avoid-column;
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-bottom: 8px;
 }
 
 /* Sticky bar */
