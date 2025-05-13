@@ -13,8 +13,7 @@ async function loadImages() {
 
   const grid = document.getElementById('masonry')
   grid.innerHTML = ''
-  const shuffled = (data||[]).sort(() => 0.5 - Math.random())
-  shuffled.forEach(item => {
+  ;(data||[]).sort(() => 0.5 - Math.random()).forEach(item => {
     const url = `${SUPABASE_URL}/storage/v1/object/public/mosaic/${item.name}`
     const img = document.createElement('img')
     img.src = url

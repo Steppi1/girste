@@ -34,22 +34,24 @@ body.dark-mode {
   justify-content: center;
 }
 
-/* mantieni proporzioni originali, limita larghezza */
+/* mantieni proporzioni originali */
 .grid img {
   max-width: 200px;
+  width: auto;
   height: auto;
-  flex: 0 0 auto;
   background: none;
   border: none;
   box-shadow: none;
 }
 
+/* sticky bar con bordo nero */
 #sticky-bar {
   position: fixed;
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
   background: #f2f2f2;
+  border: 1px solid #000;
   border-radius: 100px;
   padding: 8px 24px;
   display: flex;
@@ -58,6 +60,7 @@ body.dark-mode {
   z-index: 9999;
 }
 
+/* icone flat con animazione hover */
 .icon-group {
   display: flex;
   gap: 16px;
@@ -71,18 +74,20 @@ body.dark-mode {
   padding: 0;
 }
 
-.icon-group button:focus {
-  outline: none;
-}
-
 .icon-group img {
   width: 20px;
   height: 20px;
   background: none;
   border: none;
   box-shadow: none;
+  transition: transform 0.2s ease;
 }
 
+.icon-group img:hover {
+  transform: scale(1.2);
+}
+
+/* footer testo */
 .icon-footer {
   font-size: 10px;
   text-align: center;
