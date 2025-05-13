@@ -1,38 +1,36 @@
-import Hammer from 'https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js';
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
 const SUPABASE_URL = 'https://mcvvvhpmpouuupwqlbsn.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jdnZ2aHBtcG91dXVwd3FsYnNuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY5ODY5NzEsImV4cCI6MjA2MjU2Mjk3MX0.bEqtAPxy-fB31FrsIh8Mn240udNrKWAsdv4akpjNg8Q';
 
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
 async function loadImages() {
-  try {
-    const res = await fetch(`${SUPABASE_URL}/storage/v1/object/list/mosaic?limit=100`, {
-      headers: {
-        apikey: SUPABASE_KEY,
-        Authorization: `Bearer ${SUPABASE_KEY}`
-      }
-    });
-    const data = await res.json();
-    const grid = document.getElementById('masonry');
-    grid.innerHTML = '';
-    data.sort(() => 0.5 - Math.random()).forEach(item => {
-      const img = document.createElement('img');
-      img.src = `${SUPABASE_URL}/storage/v1/object/public/mosaic/${item.name}`;
-      img.alt = item.name;
-      img.loading = 'lazy';
-      grid.appendChild(img);
-    });
-  } catch(err) {
-    console.error('Fetch error', err);
+  const { data, error } = await supabase.storage.from('mosaic').list('', {
+    limit: 100, offset: 0, sortBy: { column: 'name', order: 'asc' }
+  });
+  if (error) {
+    console.error('Supabase error', error);
+    return;
   }
+  const grid = document.getElementById('masonry');
+  grid.innerHTML = '';
+  data.sort(() => 0.5 - Math.random()).forEach(item => {
+    const img = document.createElement('img');
+    img.src = `${SUPABASE_URL}/storage/v1/object/public/mosaic/${item.name}`;
+    img.alt = item.name;
+    img.loading = 'lazy';
+    grid.appendChild(img);
+  });
 }
 
-function initGesture() {
+function initInteraction() {
   const container = document.getElementById('panzoom');
   let scale = 1, lastScale = 1;
   let posX = 0, posY = 0, lastX = 0, lastY = 0;
   let initialScale = 1;
 
-  // disable native scroll
+  // disable page scroll
   document.body.style.overflow = 'hidden';
 
   const mc = new Hammer.Manager(container);
@@ -45,7 +43,8 @@ function initGesture() {
     update();
   });
   mc.on('panend', () => {
-    lastX = posX; lastY = posY;
+    lastX = posX;
+    lastY = posY;
   });
 
   mc.on('pinchmove', ev => {
@@ -56,6 +55,7 @@ function initGesture() {
     lastScale = scale;
   });
 
+  // wheel zoom on desktop
   container.addEventListener('wheel', ev => {
     if (!container.contains(ev.target)) return;
     ev.preventDefault();
@@ -67,10 +67,12 @@ function initGesture() {
     lastScale = scale;
     posX = ev.clientX - rect.left - x * scale;
     posY = ev.clientY - rect.top - y * scale;
-    lastX = posX; lastY = posY;
+    lastX = posX;
+    lastY = posY;
     update();
   }, { passive: false });
 
+  // initial fit-to-screen
   setTimeout(() => {
     const grid = document.getElementById('masonry');
     const gb = grid.getBoundingClientRect();
@@ -79,7 +81,8 @@ function initGesture() {
     scale = lastScale = initialScale;
     posX = (pb.width - gb.width * scale) / 2;
     posY = 20;
-    lastX = posX; lastY = posY;
+    lastX = posX;
+    lastY = posY;
     update();
   }, 300);
 
@@ -89,12 +92,13 @@ function initGesture() {
 }
 
 function initThemeToggle() {
-  document.getElementById('toggle-theme')
-    .addEventListener('click', () => document.body.classList.toggle('dark-mode'));
+  document.getElementById('toggle-theme').addEventListener('click', () => {
+    document.body.classList.toggle('dark-mode');
+  });
 }
 
 window.addEventListener('DOMContentLoaded', async () => {
   await loadImages();
-  initGesture();
+  initInteraction();
   initThemeToggle();
 });
