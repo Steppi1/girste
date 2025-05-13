@@ -36,11 +36,11 @@ body.light-mode {
   display: flex;
   flex-direction: column;
   contain: layout style;
-  margin: 5px; /* Margine intorno alle colonne */
+  margin-right: 12px; /* Spaziatura orizzontale tra colonne */
 }
 .tile {
   width: 300px;
-  margin: 10px; /* Margine intorno ai blocchi immagine */
+  margin-bottom: 12px; /* Spaziatura verticale tra immagini */
   pointer-events: none;
 }
 .tile img {
