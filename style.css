@@ -36,10 +36,11 @@ body.light-mode {
   display: flex;
   flex-direction: column;
   contain: layout style;
+  margin: 10px; /* Margine intorno alle colonne */
 }
 .tile {
   width: 300px;
-  margin-bottom: 10px;
+  margin: 10px; /* Margine intorno ai blocchi immagine */
   pointer-events: none;
 }
 .tile img {

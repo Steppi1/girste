@@ -51,14 +51,26 @@ async function fetchImages() {
   )
 
   buildMosaic(urls)
+  setupPanzoom()
 }
 
 function setupPanzoom() {
-  panzoom(panzoomContainer, {
+  const panzoomInstance = panzoom(panzoomContainer, {
     maxZoom: 5,
-    minZoom: 0.3,
+    minZoom: 0.1,
     smoothScroll: false
+  })
+
+  // Applica zoom iniziale e centra la vista
+  panzoomInstance.zoomAbs(0, 0, 1.5)
+
+  // Attendi il rendering completo e poi centra il contenuto
+  requestAnimationFrame(() => {
+    const { width, height } = panzoomContainer.getBoundingClientRect()
+    const centerX = width / 2
+    const centerY = height / 2
+    panzoomInstance.moveTo(window.innerWidth / 2 - centerX * 1.5, window.innerHeight / 2 - centerY * 1.5)
   })
 }
 
-fetchImages().then(setupPanzoom)
+fetchImages()
