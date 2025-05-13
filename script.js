@@ -46,7 +46,6 @@ function buildMosaic(imageUrls) {
 
       tile.appendChild(img)
 
-      // Inserisci nella colonna più corta
       const shortestColumn = columns.reduce((prev, curr) =>
         prev.scrollHeight <= curr.scrollHeight ? prev : curr
       )
@@ -86,16 +85,16 @@ function setupPanzoom() {
 
   panzoomInstance.zoomAbs(0, 0, 1.5)
 
+  // Delay minimo per assicurarsi che tutte le dimensioni siano calcolate
   setTimeout(() => {
-    const bbox = panzoomContainer.getBoundingClientRect()
-    const canvasCenterX = bbox.width / 2
-    const canvasCenterY = bbox.height / 2
+    const canvasWidth = panzoomContainer.scrollWidth
+    const canvasHeight = panzoomContainer.scrollHeight
 
     const viewCenterX = window.innerWidth / 2
     const viewCenterY = window.innerHeight / 2
 
-    const offsetX = viewCenterX - canvasCenterX * 1.5
-    const offsetY = viewCenterY - canvasCenterY * 1.5
+    const offsetX = viewCenterX - (canvasWidth * 1.5) / 2
+    const offsetY = viewCenterY - (canvasHeight * 1.5) / 2
 
     panzoomInstance.moveTo(offsetX, offsetY)
   }, 100)
