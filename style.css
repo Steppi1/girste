@@ -16,6 +16,7 @@ body.dark-mode {
   width: 100%;
   height: 100%;
   position: relative;
+  background: #000; /* initial canvas bg */
   overflow: hidden;
 }
 
@@ -48,7 +49,7 @@ body.dark-mode {
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
-  background: #f2f2f2;
+  background: #f2f2f2; /* grey bg */
   border-radius: 100px;
   padding: 8px 24px;
   display: flex;
@@ -66,7 +67,7 @@ body.dark-mode {
 .icon-group img {
   width: 20px;
   height: 20px;
-  background: none;
+  background: none; /* no bg */
   border: none;
   box-shadow: none;
   padding: 0;
