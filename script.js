@@ -13,7 +13,7 @@ async function loadImages() {
     limit: 200, offset: 0, sortBy: { column: 'name', order: 'asc' }
   });
   if (error) {
-    console.error(error);
+    console.error('Supabase error', error);
     return;
   }
   gridEl.innerHTML = '';
@@ -32,7 +32,7 @@ function initPanzoom() {
 
   const pz = panzoom(panzoomEl, {
     maxZoom: 5,
-    minZoom: 0.1,
+    minZoom: 0.2,
     bounds: true,
     boundsPadding: 0.1,
     smoothScroll: true,
@@ -42,7 +42,10 @@ function initPanzoom() {
     }
   });
 
-  // initial fit
+  // prevent page scroll on wheel inside panzoom
+  panzoomEl.addEventListener('wheel', e => e.preventDefault(), { passive: false });
+
+  // initial fit-to-screen
   setTimeout(() => {
     const rect = panzoomEl.getBoundingClientRect();
     const scale = Math.min(wrapper.clientWidth / rect.width, wrapper.clientHeight / rect.height);
