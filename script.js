@@ -28,25 +28,22 @@ async function loadImages() {
 function initPanzoom() {
   const elem = document.getElementById('panzoom')
   const pz = panzoom(elem, {
-    maxZoom: 4,
-    minZoom: 0.2,
-    bounds: true,
-    boundsPadding: 0.2,
-    smoothScroll: true,
-    beforeWheel: function(e) {
-      // Only zoom when pointer is over the panzoom element
-      if (!elem.contains(e.target)) return false
-      e.preventDefault()
-      return true
-    }
+    maxZoom: 4, minZoom: 0.2,
+    bounds: true, boundsPadding: 0.2,
+    smoothScroll: true
   })
+
+  // Prevent page scrolling when zoom at limits
+  elem.addEventListener('wheel', e => {
+    e.preventDefault()
+  }, { passive: false })
 
   setTimeout(() => {
     const grid = document.getElementById('masonry')
     const rect = grid.getBoundingClientRect()
     const zoom = 0.4
+    // center horizontally, align top 20px
     const offsetX = (window.innerWidth - rect.width * zoom) / 2 - rect.left
-    // align top of grid 20px below the top of viewport
     const offsetY = -rect.top + 20
     pz.zoomAbs(0, 0, zoom)
     pz.moveBy(offsetX, offsetY)
@@ -54,8 +51,7 @@ function initPanzoom() {
 }
 
 function initThemeToggle() {
-  const btn = document.getElementById('toggle-theme')
-  btn.addEventListener('click', () => {
+  document.getElementById('toggle-theme').addEventListener('click', () => {
     document.body.classList.toggle('dark-mode')
   })
 }
