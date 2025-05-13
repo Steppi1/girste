@@ -48,6 +48,7 @@ function initThemeToggle() {
   const btn = document.getElementById('toggle-theme')
   btn.addEventListener('click', () => {
     document.body.classList.toggle('dark-mode')
+    // swap icon if desired
   })
 }
 
