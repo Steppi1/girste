@@ -7,20 +7,20 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 const wrapper = document.getElementById('wrapper');
 const panzoomEl = document.getElementById('panzoom');
 const tileWidth = 300; // px
-const gutter = 10;     // margin between columns
+const gutter = 10;     // px
 
-// shuffle helper
-function shuffle(arr) {
-  for (let i = arr.length - 1; i > 0; i--) {
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
+    [array[i], array[j]] = [array[j], array[i]];
   }
 }
 
-// load images from Supabase and build mosaic
 async function loadImages() {
   const { data, error } = await supabase.storage.from('mosaic').list('', {
-    limit: 100, offset: 0, sortBy: { column: 'name', order: 'asc' }
+    limit: 100,
+    offset: 0,
+    sortBy: { column: 'name', order: 'asc' }
   });
   if (error) {
     console.error('Supabase error', error);
@@ -28,7 +28,7 @@ async function loadImages() {
   }
   const names = data.map(item => item.name);
   shuffle(names);
-  // columns count
+
   const colsCount = Math.max(1, Math.floor(window.innerWidth / (tileWidth + gutter)));
   panzoomEl.innerHTML = '';
   const cols = [];
@@ -38,8 +38,8 @@ async function loadImages() {
     panzoomEl.appendChild(col);
     cols.push(col);
   }
-  names.forEach((name,i) => {
-    const col = cols[i % colsCount];
+
+  names.forEach((name, i) => {
     const tile = document.createElement('div');
     tile.className = 'tile';
     const img = document.createElement('img');
@@ -47,11 +47,10 @@ async function loadImages() {
     img.alt = name;
     img.loading = 'lazy';
     tile.appendChild(img);
-    col.appendChild(tile);
+    cols[i % colsCount].appendChild(tile);
   });
 }
 
-// init panzoom
 function initPanzoom() {
   const pz = panzoom(panzoomEl, {
     maxZoom: 5,
@@ -62,7 +61,6 @@ function initPanzoom() {
     beforeWheel: e => panzoomEl.contains(e.target)
   });
 
-  // initial fit to wrapper
   setTimeout(() => {
     const rect = panzoomEl.getBoundingClientRect();
     const scale = Math.min(wrapper.clientWidth / rect.width, wrapper.clientHeight / rect.height);
@@ -73,7 +71,6 @@ function initPanzoom() {
   }, 300);
 }
 
-// theme toggle
 document.getElementById('toggle-theme').addEventListener('click', () => {
   document.body.classList.toggle('light-mode');
 });

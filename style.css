@@ -1,4 +1,3 @@
-/* Reset & background */
 html, body {
   margin: 0;
   padding: 0;
@@ -8,44 +7,40 @@ html, body {
   font-family: monospace;
   background: #000;
 }
-
-body.dark-mode {
+body.light-mode {
   background: #fff;
 }
-
 #wrapper {
   position: relative;
+  overflow: hidden;
   width: 100%;
   height: 100%;
-  overflow: hidden;
 }
-
 #panzoom {
   position: absolute;
   top: 0;
   left: 0;
+  touch-action: none;
   transform-origin: 0 0;
   will-change: transform;
-  touch-action: none;
-  width: auto;
-  height: auto;
 }
-
-/* Masonry via CSS Grid */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 8px;
-  padding: 8px;
+.column {
+  display: flex;
+  flex-direction: column;
+  margin-right: 10px;
 }
-
-.grid img {
+.column:last-child {
+  margin-right: 0;
+}
+.tile {
+  width: 300px;
+  margin-bottom: 10px;
+}
+.tile img {
   width: 100%;
   height: auto;
   display: block;
 }
-
-/* Sticky bar */
 #sticky-bar {
   position: fixed;
   bottom: 20px;
@@ -61,30 +56,25 @@ body.dark-mode {
   z-index: 9999;
   touch-action: auto;
 }
-
 .icon-group {
   display: flex;
   gap: 16px;
   margin-bottom: 6px;
 }
-
 .icon-group a,
 .icon-group button {
   background: none;
   border: none;
   padding: 0;
 }
-
 .icon-group img {
   width: 20px;
   height: 20px;
   transition: transform 0.2s ease;
 }
-
 .icon-group img:hover {
   transform: scale(1.2);
 }
-
 .icon-footer {
   font-size: 8px;
   white-space: nowrap;
