@@ -6,7 +6,7 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
 
 const panzoomContainer = document.getElementById('panzoom')
-const NUM_COLUMNS = 5
+const NUM_COLUMNS = 6
 
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
@@ -38,6 +38,23 @@ function buildMosaic(imageUrls) {
     tile.appendChild(img)
     columns[index % NUM_COLUMNS].appendChild(tile)
   })
+
+  return new Promise((resolve) => {
+    let loaded = 0
+    const total = imageUrls.length
+    const imgs = panzoomContainer.querySelectorAll('img')
+    imgs.forEach((img) => {
+      if (img.complete) {
+        loaded++
+        if (loaded === total) resolve()
+      } else {
+        img.onload = () => {
+          loaded++
+          if (loaded === total) resolve()
+        }
+      }
+    })
+  })
 }
 
 async function fetchImages() {
@@ -58,7 +75,7 @@ async function fetchImages() {
     })
   )
 
-  buildMosaic(urls)
+  await buildMosaic(urls)
   setupPanzoom()
 }
 
@@ -69,11 +86,10 @@ function setupPanzoom() {
     smoothScroll: false
   })
 
-  // Zoom iniziale
   panzoomInstance.zoomAbs(0, 0, 1.5)
 
-  // Aspetta che il DOM sia completamente renderizzato
-  requestAnimationFrame(() => {
+  // Centra dopo il caricamento effettivo delle immagini
+  setTimeout(() => {
     const bbox = panzoomContainer.getBoundingClientRect()
     const canvasCenterX = bbox.width / 2
     const canvasCenterY = bbox.height / 2
@@ -85,7 +101,7 @@ function setupPanzoom() {
     const offsetY = viewCenterY - canvasCenterY * 1.5
 
     panzoomInstance.moveTo(offsetX, offsetY)
-  })
+  }, 100)
 }
 
 fetchImages()
