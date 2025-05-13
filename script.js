@@ -85,7 +85,7 @@ function setupPanzoom() {
 
   panzoomInstance.zoomAbs(0, 0, 1.5)
 
-  // Aspetta due frame consecutivi con dimensioni stabili prima di centrare
+  // Controlla dimensioni su più frame consecutivi e centra solo quando stabili
   let lastWidth = 0
   let lastHeight = 0
   let stableFrames = 0
