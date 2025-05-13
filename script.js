@@ -6,7 +6,7 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
 
 const panzoomContainer = document.getElementById('panzoom')
-const NUM_COLUMNS = 6
+const NUM_COLUMNS = 5
 
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
@@ -27,32 +27,30 @@ function buildMosaic(imageUrls) {
     panzoomContainer.appendChild(column)
   }
 
-  shuffle(imageUrls).forEach((url, index) => {
-    const tile = document.createElement('div')
-    tile.classList.add('tile')
-
-    const img = document.createElement('img')
-    img.src = url
-    img.alt = `img-${index}`
-
-    tile.appendChild(img)
-    columns[index % NUM_COLUMNS].appendChild(tile)
-  })
-
   return new Promise((resolve) => {
+    const shuffledUrls = shuffle(imageUrls)
     let loaded = 0
-    const total = imageUrls.length
-    const imgs = panzoomContainer.querySelectorAll('img')
-    imgs.forEach((img) => {
-      if (img.complete) {
+
+    shuffledUrls.forEach((url, index) => {
+      const tile = document.createElement('div')
+      tile.classList.add('tile')
+
+      const img = document.createElement('img')
+      img.src = url
+      img.alt = `img-${index}`
+
+      img.onload = () => {
         loaded++
-        if (loaded === total) resolve()
-      } else {
-        img.onload = () => {
-          loaded++
-          if (loaded === total) resolve()
-        }
+        if (loaded === shuffledUrls.length) resolve()
       }
+
+      tile.appendChild(img)
+
+      // Inserisci nella colonna più corta
+      const shortestColumn = columns.reduce((prev, curr) =>
+        prev.scrollHeight <= curr.scrollHeight ? prev : curr
+      )
+      shortestColumn.appendChild(tile)
     })
   })
 }
@@ -88,7 +86,6 @@ function setupPanzoom() {
 
   panzoomInstance.zoomAbs(0, 0, 1.5)
 
-  // Centra dopo il caricamento effettivo delle immagini
   setTimeout(() => {
     const bbox = panzoomContainer.getBoundingClientRect()
     const canvasCenterX = bbox.width / 2
