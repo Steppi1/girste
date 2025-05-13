@@ -8,6 +8,14 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
 const panzoomContainer = document.getElementById('panzoom')
 const NUM_COLUMNS = 5
 
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[array[i], array[j]] = [array[j], array[i]]
+  }
+  return array
+}
+
 function buildMosaic(imageUrls) {
   panzoomContainer.innerHTML = ''
   const columns = []
@@ -19,7 +27,7 @@ function buildMosaic(imageUrls) {
     panzoomContainer.appendChild(column)
   }
 
-  imageUrls.forEach((url, index) => {
+  shuffle(imageUrls).forEach((url, index) => {
     const tile = document.createElement('div')
     tile.classList.add('tile')
 
@@ -61,15 +69,22 @@ function setupPanzoom() {
     smoothScroll: false
   })
 
-  // Applica zoom iniziale e centra la vista
-  panzoomInstance.zoomAbs(0, 0, 0.8)
+  // Zoom iniziale
+  panzoomInstance.zoomAbs(0, 0, 1.5)
 
-  // Attendi il rendering completo e poi centra il contenuto
+  // Aspetta che il DOM sia completamente renderizzato
   requestAnimationFrame(() => {
-    const { width, height } = panzoomContainer.getBoundingClientRect()
-    const centerX = width / 2
-    const centerY = height / 2
-    panzoomInstance.moveTo(window.innerWidth / 2 - centerX * 1.5, window.innerHeight / 2 - centerY * 1.5)
+    const bbox = panzoomContainer.getBoundingClientRect()
+    const canvasCenterX = bbox.width / 2
+    const canvasCenterY = bbox.height / 2
+
+    const viewCenterX = window.innerWidth / 2
+    const viewCenterY = window.innerHeight / 2
+
+    const offsetX = viewCenterX - canvasCenterX * 1.5
+    const offsetY = viewCenterY - canvasCenterY * 1.5
+
+    panzoomInstance.moveTo(offsetX, offsetY)
   })
 }
 
