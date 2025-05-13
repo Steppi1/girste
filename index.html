@@ -2,32 +2,34 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
-  <meta name="description" content="Creative Designer Based in Turin">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>girste's</title>
-  <link rel="icon" href="girstefav.png" type="image/png">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div id="wrapper">
-    <div id="panzoom"></div>
+    <div id="panzoom">
+      <div id="masonry" class="grid"></div>
+    </div>
   </div>
 
+  <!-- Barra Sticky -->
   <div id="sticky-bar">
     <div class="icon-group">
       <a href="mailto:me@girste.com" title="email"><img src="assets/mail-icon.svg" alt="email"></a>
       <a href="tel:+393405445704" title="call"><img src="assets/tel-icon.svg" alt="call"></a>
-      <a href="/pages/sandbox.html" title="surprise"><img src="assets/box-icon.svg" alt="sandbox"></a>
+      <a href="files/" title="files"><img src="assets/files-icon.svg" alt="files"></a>
       <button onclick="window.location.reload()" title="refresh"><img src="assets/ric-icon.svg" alt="refresh"></button>
       <button id="toggle-theme" title="bright/dark"><img src="assets/dark-icon.svg" alt="dark/bright"></button>
     </div>
     <div class="icon-footer">
-      <strong>GIRSTE'S</strong>
-      <small>© S.Girard 2025, design by Creative Unit</small>
+      <strong>© GIRSTE'S</strong>
+      <small>2025, by Creative Unit</small>
     </div>
   </div>
 
-  <script src="https://unpkg.com/panzoom@9.4.3/dist/panzoom.min.js"></script>
+  <!-- Panzoom -->
+  <script src="https://cdn.jsdelivr.net/npm/panzoom@9.4.0/dist/panzoom.min.js"></script>
   <script type="module" src="script.js"></script>
 </body>
 </html>
