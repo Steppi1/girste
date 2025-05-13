@@ -36,7 +36,7 @@ body.light-mode {
   display: flex;
   flex-direction: column;
   contain: layout style;
-  margin: 10px; /* Margine intorno alle colonne */
+  margin: 5px; /* Margine intorno alle colonne */
 }
 .tile {
   width: 300px;
