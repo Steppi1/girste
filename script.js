@@ -24,16 +24,18 @@ async function loadImages() {
 }
 
 function initPanzoom() {
+  // disable page scroll
   document.body.style.overflow = 'hidden';
   const pz = panzoom(panzoomEl, {
     maxZoom: 5, minZoom: 0.1,
     bounds: true, boundsPadding: 0.1,
     smoothScroll: true,
-    beforeWheel: e=> panzoomEl.contains(e.target)
+    // remove contains check to allow zoom on images
+    beforeWheel: () => true
   });
-  window.addEventListener('wheel', e=>{
-    if(panzoomEl.contains(e.target)) e.preventDefault();
-  },{passive:false});
+  // prevent any page scroll on wheel
+  window.addEventListener('wheel', e=>e.preventDefault(),{passive:false});
+  // initial fit
   setTimeout(()=>{
     const rect = panzoomEl.getBoundingClientRect();
     const scale = Math.min(wrapper.clientWidth/rect.width, wrapper.clientHeight/rect.height);
