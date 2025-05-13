@@ -6,14 +6,14 @@ html, body {
   width: 100%;
   overflow: hidden;
   font-family: monospace;
-  background: #000; /* initial black background */
+  background: #000; /* sfondo nero iniziale */
 }
 
 body.dark-mode {
-  background: #fff; /* toggle to white */
+  background: #fff; /* toggle a bianco */
 }
 
-/* Container */
+/* Wrapper trasparente */
 #wrapper {
   width: 100%;
   height: 100%;
@@ -22,45 +22,35 @@ body.dark-mode {
   background: transparent;
 }
 
-/* Panzoom area */
+/* Panzoom occupa tutto, cattura gesture */
 #panzoom {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
   transform-origin: 50% 50%;
   will-change: transform;
   touch-action: none;
 }
 
-/* Masonry via CSS multi-column */
+/* Masonry orizzontale identico desktop/mobile */
 .grid {
-  column-width: 200px;
-  column-gap: 8px;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 200px;
+  gap: 8px;
   padding: 8px;
 }
 
-/* Mobile: force same mosaic */
-@media (max-width: 600px) {
-  .grid {
-    column-width: calc(50% - 8px);
-  }
-}
-
 .grid img {
-  display: inline-block;
   width: 100%;
   height: auto;
-  margin-bottom: 8px;
-  break-inside: avoid;
+  display: block;
 }
 
-/* Sticky bar (unchanged) */
+/* Sticky bar (invariata) */
 #sticky-bar {
   position: fixed;
-  bottom: 20px;
-  left: 50%;
+  bottom: 20px; left: 50%;
   transform: translateX(-50%);
   background: #f2f2f2;
   border: 1px solid #000;
@@ -73,26 +63,22 @@ body.dark-mode {
   touch-action: auto;
 }
 
-/* Icons */
+/* Icone con hover */
 .icon-group {
   display: flex;
   gap: 16px;
   margin-bottom: 6px;
 }
-
 .icon-group a,
 .icon-group button {
   background: none;
   border: none;
   padding: 0;
 }
-
 .icon-group img {
-  width: 20px;
-  height: 20px;
+  width: 20px; height: 20px;
   transition: transform 0.2s ease;
 }
-
 .icon-group img:hover {
   transform: scale(1.2);
 }
