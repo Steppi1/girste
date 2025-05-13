@@ -6,11 +6,11 @@ html, body {
   width: 100%;
   overflow: hidden;
   font-family: monospace;
-  background: #fff;
+  background: #000; /* initial black background */
 }
 
 body.dark-mode {
-  background: #000;
+  background: #fff; /* toggle to white */
 }
 
 /* Container */
@@ -19,6 +19,7 @@ body.dark-mode {
   height: 100%;
   position: relative;
   overflow: hidden;
+  background: #000;
 }
 
 /* Panzoom area */
@@ -33,21 +34,22 @@ body.dark-mode {
   touch-action: none;
 }
 
-/* Masonry via CSS Grid */
+/* Masonry via CSS multi-column */
 .grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 8px;
+  column-width: 200px;
+  column-gap: 8px;
   padding: 8px;
 }
 
 .grid img {
+  display: inline-block;
   width: 100%;
   height: auto;
-  display: block;
+  margin-bottom: 8px;
+  break-inside: avoid;
 }
 
-/* Sticky bar */
+/* Sticky bar (unchanged) */
 #sticky-bar {
   position: fixed;
   bottom: 20px;
