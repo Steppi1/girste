@@ -2,64 +2,53 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 
 const SUPABASE_URL = 'https://mcvvvhpmpouuupwqlbsn.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jdnZ2aHBtcG91dXVwd3FsYnNuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY5ODY5NzEsImV4cCI6MjA2MjU2Mjk3MX0.bEqtAPxy-fB31FrsIh8Mn240udNrKWAsdv4akpjNg8Q';
-
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
 const wrapper = document.getElementById('wrapper');
 const panzoomEl = document.getElementById('panzoom');
+const gridEl = document.getElementById('masonry');
 
 async function loadImages() {
   const { data, error } = await supabase.storage.from('mosaic').list('', {
-    limit: 100, offset: 0, sortBy: { column: 'name', order: 'asc' }
+    limit: 200, offset: 0, sortBy: { column: 'name', order: 'asc' }
   });
-  if (error) {
-    console.error('Supabase error', error);
-    return;
-  }
-  const grid = document.getElementById('masonry');
-  if (!grid) return console.error('#masonry element missing');
-  grid.innerHTML = '';
-  data.sort(() => 0.5 - Math.random()).forEach(item => {
+  if (error) { console.error(error); return; }
+  gridEl.innerHTML = '';
+  data.sort(()=>0.5-Math.random()).forEach(item=>{
     const img = document.createElement('img');
     img.src = `${SUPABASE_URL}/storage/v1/object/public/mosaic/${item.name}`;
     img.alt = item.name;
     img.loading = 'lazy';
-    grid.appendChild(img);
+    gridEl.appendChild(img);
   });
 }
 
 function initPanzoom() {
-  // disable native scroll
   document.body.style.overflow = 'hidden';
-
   const pz = panzoom(panzoomEl, {
-    maxZoom: 5,
-    minZoom: 0.1,
-    bounds: true,
-    boundsPadding: 0.1,
+    maxZoom: 5, minZoom: 0.1,
+    bounds: true, boundsPadding: 0.1,
     smoothScroll: true,
-    beforeWheel: e => panzoomEl.contains(e.target)
+    beforeWheel: e=> panzoomEl.contains(e.target)
   });
-
-  // prevent any page scroll on wheel
-  window.addEventListener('wheel', e => e.preventDefault(), { passive: false });
-
-  // initial fit
-  setTimeout(() => {
+  window.addEventListener('wheel', e=>{
+    if(panzoomEl.contains(e.target)) e.preventDefault();
+  },{passive:false});
+  setTimeout(()=>{
     const rect = panzoomEl.getBoundingClientRect();
-    const scale = Math.min(wrapper.clientWidth / rect.width, wrapper.clientHeight / rect.height);
-    pz.zoomAbs(0, 0, scale);
-    const offsetX = (wrapper.clientWidth - rect.width * scale) / 2 - rect.left;
-    const offsetY = -rect.top + 20;
-    pz.moveBy(offsetX, offsetY);
-  }, 300);
+    const scale = Math.min(wrapper.clientWidth/rect.width, wrapper.clientHeight/rect.height);
+    pz.zoomAbs(0,0,scale);
+    const offsetX=(wrapper.clientWidth - rect.width*scale)/2 - rect.left;
+    const offsetY=-rect.top + 20;
+    pz.moveBy(offsetX,offsetY);
+  },300);
 }
 
-// theme toggle
-document.getElementById('toggle-theme').addEventListener('click', () => {
+document.getElementById('toggle-theme').addEventListener('click',()=>{
   document.body.classList.toggle('light-mode');
 });
 
-window.addEventListener('DOMContentLoaded', async () => {
+window.addEventListener('DOMContentLoaded',async()=>{
   await loadImages();
   initPanzoom();
 });
