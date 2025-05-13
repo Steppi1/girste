@@ -1,9 +1,7 @@
 /* Reset & background */
 html, body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  width: 100%;
+  margin: 0; padding: 0;
+  height: 100%; width: 100%;
   overflow: hidden;
   font-family: monospace;
   background: #000;
@@ -13,81 +11,38 @@ body.dark-mode {
   background: #fff;
 }
 
-/* Wrapper */
 #wrapper {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  position: relative;
+  width: 100%; height: 100%;
+  overflow: hidden; position: relative;
 }
 
-/* Panzoom area */
 #panzoom {
-  position: absolute;
-  top: 0;
-  left: 0;
+  position: absolute; top:0; left:0;
   transform-origin: 0 0;
   will-change: transform;
   touch-action: none;
-  width: auto;
-  height: auto;
+  width: auto; height: auto;
 }
 
-/* Masonry via CSS multi-column */
 .grid {
-  column-width: 200px;
-  column-gap: 8px;
-  padding: 8px;
+  position: relative;
 }
 
 .grid img {
-  display: block;
-  width: 100%;
+  width: 200px;
   height: auto;
   margin-bottom: 8px;
-  break-inside: avoid-column;
+  display: block;
 }
 
-/* Sticky bar */
-#sticky-bar {
-  position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #f2f2f2;
-  border: 1px solid #000;
-  border-radius: 100px;
-  padding: 8px 24px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  z-index: 9999;
+/* Sticky bar unchanged */
+#sticky-bar { position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
+  background:#f2f2f2; border:1px solid #000; border-radius:100px;
+  padding:8px 24px; display:flex; flex-direction:column; align-items:center;
+  z-index:9999; touch-action:auto;
 }
-
-/* Icons */
-.icon-group {
-  display: flex;
-  gap: 16px;
-  margin-bottom: 6px;
-}
-.icon-group a,
-.icon-group button {
-  background: none;
-  border: none;
-  padding: 0;
-}
-.icon-group img {
-  width: 20px;
-  height: 20px;
-  transition: transform 0.2s ease;
-}
-.icon-group img:hover {
-  transform: scale(1.2);
-}
-
-/* Footer */
-.icon-footer {
-  font-size: 8px;
-  white-space: nowrap;
-  text-align: center;
-}
+.icon-group { display:flex; gap:16px; margin-bottom:6px; }
+.icon-group a, .icon-group button { background:none; border:none; padding:0; }
+.icon-group img { width:20px; height:20px; transition: transform 0.2s ease; }
+.icon-group img:hover { transform: scale(1.2); }
+.icon-footer { font-size:8px; white-space:nowrap; text-align:center; }
