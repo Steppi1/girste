@@ -4,7 +4,6 @@ const SUPABASE_URL = 'https://mcvvvhpmpouuupwqlbsn.supabase.co'
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jdnZ2aHBtcG91dXVwd3FsYnNuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY5ODY5NzEsImV4cCI6MjA2MjU2Mjk3MX0.bEqtAPxy-fB31FrsIh8Mn240udNrKWAsdv4akpjNg8Q'
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
 
-
 async function loadImages() {
   const { data, error } = await supabase.storage.from('mosaic').list('', {
     limit: 100, offset: 0, sortBy: { column: 'name', order: 'asc' }
@@ -28,15 +27,20 @@ async function loadImages() {
 function initPanzoom() {
   const elem = document.getElementById('panzoom')
   const pz = panzoom(elem, {
-    maxZoom: 4, minZoom: 0.2,
-    bounds: true, boundsPadding: 0.2,
-    smoothScroll: true
+    maxZoom: 4,
+    minZoom: 0.2,
+    bounds: true,
+    boundsPadding: 0.1,
+    smoothScroll: true,
+    beforeWheel: (e) => {
+      if (!elem.contains(e.target)) return false
+      return true
+    }
   })
 
-  // Prevent page scroll except when interacting with panzoom
+  // Prevent page scroll if wheel event on panzoom
   window.addEventListener('wheel', e => {
-    if (!elem.contains(e.target)) return
-    e.preventDefault()
+    if (elem.contains(e.target)) e.preventDefault()
   }, { passive: false })
 
   setTimeout(() => {
