@@ -41,7 +41,6 @@ function initPanzoom() {
     smoothScroll: true
   })
 
-  // dopo il rendering delle img, centra e dezoom
   setTimeout(() => {
     const grid = document.getElementById('masonry')
     const rect = grid.getBoundingClientRect()
@@ -69,7 +68,6 @@ function initThemeToggle() {
   })
 }
 
-// al caricamento
 window.addEventListener('DOMContentLoaded', async () => {
   await loadImages()
   initPanzoom()
