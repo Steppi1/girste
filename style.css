@@ -21,19 +21,28 @@ html, body {
   left: 0;
   transform-origin: 0 0;
   will-change: transform;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
 }
 
 .grid {
-  width: max-content;
-  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
 }
 
 .grid img {
   display: block;
-  max-width: 100%;
+  width: 200px;
   height: auto;
-  margin-bottom: 10px;
-  border-radius: 4px;
+  margin: 0;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
 }
 
 /* Barra Sticky */
@@ -42,16 +51,15 @@ html, body {
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
-  background: #f2f2f2;
-  border: 1px solid black;
-  border-radius: 100px;
-  padding: 8px 24px;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   font-family: monospace;
   z-index: 9999;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
 }
 
 .icon-group {
@@ -63,7 +71,11 @@ html, body {
 .icon-group img {
   width: 20px;
   height: 20px;
-  opacity: 0.9;
+  opacity: 1;
+  border: none;
+  background: none;
+  box-shadow: none;
+  padding: 0;
 }
 
 .icon-footer {
