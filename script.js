@@ -5,9 +5,11 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
 
 async function loadImages() {
-  const { data, error } = await supabase.storage.from('mosaic').list('', {
-    limit: 100, offset: 0, sortBy: { column: 'name', order: 'asc' }
-  })
+  const { data, error } = await supabase
+    .storage
+    .from('mosaic')
+    .list('', { limit: 100, offset: 0, sortBy: { column: 'name', order: 'asc' } })
+
   if (error) {
     console.error('Supabase error', error)
     return
@@ -33,8 +35,8 @@ function initPanzoom() {
     smoothScroll: true
   })
 
-  // Prevent page scrolling when zoom at limits
-  elem.addEventListener('wheel', e => {
+  // Prevent page scroll on wheel anywhere
+  window.addEventListener('wheel', e => {
     e.preventDefault()
   }, { passive: false })
 
@@ -42,7 +44,6 @@ function initPanzoom() {
     const grid = document.getElementById('masonry')
     const rect = grid.getBoundingClientRect()
     const zoom = 0.4
-    // center horizontally, align top 20px
     const offsetX = (window.innerWidth - rect.width * zoom) / 2 - rect.left
     const offsetY = -rect.top + 20
     pz.zoomAbs(0, 0, zoom)
