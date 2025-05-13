@@ -16,7 +16,6 @@ body.dark-mode {
   width: 100%;
   height: 100%;
   position: relative;
-  background: #000; /* initial canvas bg */
   overflow: hidden;
 }
 
@@ -35,8 +34,9 @@ body.dark-mode {
   justify-content: center;
 }
 
+/* mantieni proporzioni originali, limita larghezza */
 .grid img {
-  width: 200px;
+  max-width: 200px;
   height: auto;
   flex: 0 0 auto;
   background: none;
@@ -49,7 +49,7 @@ body.dark-mode {
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
-  background: #f2f2f2; /* grey bg */
+  background: #f2f2f2;
   border-radius: 100px;
   padding: 8px 24px;
   display: flex;
@@ -64,13 +64,23 @@ body.dark-mode {
   margin-bottom: 6px;
 }
 
+.icon-group a,
+.icon-group button {
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.icon-group button:focus {
+  outline: none;
+}
+
 .icon-group img {
   width: 20px;
   height: 20px;
-  background: none; /* no bg */
+  background: none;
   border: none;
   box-shadow: none;
-  padding: 0;
 }
 
 .icon-footer {
