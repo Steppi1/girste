@@ -85,19 +85,38 @@ function setupPanzoom() {
 
   panzoomInstance.zoomAbs(0, 0, 1.5)
 
-  // Delay minimo per assicurarsi che tutte le dimensioni siano calcolate
-  setTimeout(() => {
-    const canvasWidth = panzoomContainer.scrollWidth
-    const canvasHeight = panzoomContainer.scrollHeight
+  // Aspetta due frame consecutivi con dimensioni stabili prima di centrare
+  let lastWidth = 0
+  let lastHeight = 0
+  let stableFrames = 0
 
-    const viewCenterX = window.innerWidth / 2
-    const viewCenterY = window.innerHeight / 2
+  function checkAndCenter() {
+    const width = panzoomContainer.scrollWidth
+    const height = panzoomContainer.scrollHeight
 
-    const offsetX = viewCenterX - (canvasWidth * 1.5) / 2
-    const offsetY = viewCenterY - (canvasHeight * 1.5) / 2
+    if (width === lastWidth && height === lastHeight) {
+      stableFrames++
+    } else {
+      stableFrames = 0
+    }
 
-    panzoomInstance.moveTo(offsetX, offsetY)
-  }, 100)
+    lastWidth = width
+    lastHeight = height
+
+    if (stableFrames >= 2) {
+      const viewCenterX = window.innerWidth / 2
+      const viewCenterY = window.innerHeight / 2
+
+      const offsetX = viewCenterX - (width * 1.5) / 2
+      const offsetY = viewCenterY - (height * 1.5) / 2
+
+      panzoomInstance.moveTo(offsetX, offsetY)
+    } else {
+      requestAnimationFrame(checkAndCenter)
+    }
+  }
+
+  requestAnimationFrame(checkAndCenter)
 }
 
 fetchImages()
