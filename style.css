@@ -1,3 +1,4 @@
+/* Reset & background */
 html, body {
   margin: 0;
   padding: 0;
@@ -12,6 +13,7 @@ body.dark-mode {
   background: #000;
 }
 
+/* Container */
 #wrapper {
   width: 100%;
   height: 100%;
@@ -19,7 +21,7 @@ body.dark-mode {
   overflow: hidden;
 }
 
-/* Disabilita pinch-to-zoom browser, lascia panzoom intercettare */
+/* Panzoom area */
 #panzoom {
   position: absolute;
   top: 0;
@@ -31,9 +33,22 @@ body.dark-mode {
   touch-action: none;
 }
 
-/* Sticky-bar rimane indipendente dai gesti di panzoom */
+/* Masonry via CSS Grid */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 8px;
+  padding: 8px;
+}
+
+.grid img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Sticky bar */
 #sticky-bar {
-  touch-action: auto;
   position: fixed;
   bottom: 20px;
   left: 50%;
@@ -46,26 +61,10 @@ body.dark-mode {
   flex-direction: column;
   align-items: center;
   z-index: 9999;
+  touch-action: auto;
 }
 
-/* Masonry multi-column layout */
-.grid {
-  column-width: 200px;
-  column-gap: 8px;
-  width: 100%;
-  padding: 8px;
-}
-
-/* Immagini width-fixed, height auto */
-.grid img {
-  display: inline-block;
-  width: 100%;
-  height: auto;
-  margin-bottom: 8px;
-  break-inside: avoid;
-}
-
-/* Icone flat con hover */
+/* Icons */
 .icon-group {
   display: flex;
   gap: 16px;
@@ -89,8 +88,9 @@ body.dark-mode {
   transform: scale(1.2);
 }
 
-/* Footer */
+/* Footer text */
 .icon-footer {
-  font-size: 10px;
+  font-size: 8px;
+  white-space: nowrap;
   text-align: center;
 }
