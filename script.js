@@ -62,7 +62,7 @@ function setupPanzoom() {
   })
 
   // Applica zoom iniziale e centra la vista
-  panzoomInstance.zoomAbs(0, 0, 1.5)
+  panzoomInstance.zoomAbs(0, 0, 0.8)
 
   // Attendi il rendering completo e poi centra il contenuto
   requestAnimationFrame(() => {
