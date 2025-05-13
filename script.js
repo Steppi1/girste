@@ -1,24 +1,23 @@
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
+// Supabase
 const SUPABASE_URL = 'https://mcvvvhpmpouuupwqlbsn.supabase.co'
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jdnZ2aHBtcG91dXVwd3FsYnNuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY5ODY5NzEsImV4cCI6MjA2MjU2Mjk3MX0.bEqtAPxy-fB31FrsIh8Mn240udNrKWAsdv4akpjNg8Q'
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
 
+// carica e monta immagini in ordine random
 async function loadImages() {
-  const { data, error } = await supabase.storage.from('mosaic').list('', {
-    limit: 100,
-    offset: 0,
-    sortBy: { column: 'name', order: 'asc' }
-  })
+  const { data, error } = await supabase
+    .storage
+    .from('mosaic')
+    .list('', { limit: 100, offset: 0, sortBy: { column: 'name', order: 'asc' } })
 
-  if (error) {
-    console.error('Errore nel caricamento:', error)
-    return
-  }
+  if (error) return console.error('Supabase error', error)
 
   const grid = document.getElementById('masonry')
   grid.innerHTML = ''
 
+  // random shuffle
   const shuffled = data.sort(() => 0.5 - Math.random())
 
   for (const item of shuffled) {
@@ -31,21 +30,48 @@ async function loadImages() {
   }
 }
 
+// inizializza panzoom con limiti e inerzia
 function initPanzoom() {
   const elem = document.getElementById('panzoom')
-  const panzoomInstance = panzoom(elem, {
+  const pz = panzoom(elem, {
     maxZoom: 4,
     minZoom: 0.2,
-    bounds: false,
+    bounds: true,
+    boundsPadding: 0.2,
     smoothScroll: true
   })
 
+  // dopo il rendering delle img, centra e dezoom
   setTimeout(() => {
-    panzoomInstance.zoomAbs(window.innerWidth / 2, window.innerHeight / 2, 0.4)
-  }, 100)
+    const grid = document.getElementById('masonry')
+    const rect = grid.getBoundingClientRect()
+
+    const targetZoom = 0.4
+    const offsetX = (window.innerWidth - rect.width * targetZoom) / 2 - rect.left
+    const offsetY = (window.innerHeight - rect.height * targetZoom) / 2 - rect.top
+
+    pz.zoomAbs(0, 0, targetZoom)
+    pz.moveBy(offsetX, offsetY)
+  }, 300)
 }
 
+// toggle light/dark
+function initThemeToggle() {
+  const btn = document.getElementById('toggle-theme')
+  btn.addEventListener('click', () => {
+    document.body.classList.toggle('dark-mode')
+    const img = btn.querySelector('img')
+    if (document.body.classList.contains('dark-mode')) {
+      img.src = 'assets/bright-icon.svg'
+    } else {
+      img.src = 'assets/dark-icon.svg'
+    }
+  })
+}
+
+// al caricamento
 window.addEventListener('DOMContentLoaded', async () => {
   await loadImages()
   initPanzoom()
+  initThemeToggle()
 })
