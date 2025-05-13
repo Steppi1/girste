@@ -12,37 +12,57 @@ body.dark-mode {
 }
 
 #wrapper {
+  position: relative;
   width: 100%; height: 100%;
-  overflow: hidden; position: relative;
+  overflow: hidden;
 }
 
 #panzoom {
-  position: absolute; top:0; left:0;
+  position: absolute; top: 0; left: 0;
   transform-origin: 0 0;
   will-change: transform;
   touch-action: none;
-  width: auto; height: auto;
 }
 
+/* Grid Masonry */
 .grid {
-  position: relative;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 8px;
+  padding: 8px;
 }
 
 .grid img {
-  width: 200px;
+  width: 100%;
   height: auto;
-  margin-bottom: 8px;
   display: block;
 }
 
-/* Sticky bar unchanged */
-#sticky-bar { position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
-  background:#f2f2f2; border:1px solid #000; border-radius:100px;
-  padding:8px 24px; display:flex; flex-direction:column; align-items:center;
-  z-index:9999; touch-action:auto;
+/* Sticky bar */
+#sticky-bar {
+  position: fixed; bottom: 20px; left: 50%;
+  transform: translateX(-50%);
+  background: #f2f2f2;
+  border: 1px solid #000; border-radius: 100px;
+  padding: 8px 24px; display: flex;
+  flex-direction: column; align-items: center;
+  z-index: 9999; touch-action: auto;
 }
-.icon-group { display:flex; gap:16px; margin-bottom:6px; }
-.icon-group a, .icon-group button { background:none; border:none; padding:0; }
-.icon-group img { width:20px; height:20px; transition: transform 0.2s ease; }
-.icon-group img:hover { transform: scale(1.2); }
-.icon-footer { font-size:8px; white-space:nowrap; text-align:center; }
+
+.icon-group {
+  display: flex; gap: 16px; margin-bottom: 6px;
+}
+.icon-group a, .icon-group button {
+  background: none; border: none; padding: 0;
+}
+.icon-group img {
+  width: 20px; height: 20px;
+  transition: transform 0.2s ease;
+}
+.icon-group img:hover {
+  transform: scale(1.2);
+}
+
+.icon-footer {
+  font-size: 8px; white-space: nowrap; text-align: center;
+}
