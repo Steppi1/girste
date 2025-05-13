@@ -19,6 +19,7 @@ body.dark-mode {
   overflow: hidden;
 }
 
+/* Disabilita pinch-to-zoom browser, lascia panzoom intercettare */
 #panzoom {
   position: absolute;
   top: 0;
@@ -27,27 +28,12 @@ body.dark-mode {
   height: 100%;
   transform-origin: 0 0;
   will-change: transform;
+  touch-action: none;
 }
 
-.grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  justify-content: center;
-  align-content: flex-start;
-  width: 100%;
-}
-
-.grid img {
-  width: 200px;
-  height: auto;
-  flex: 0 0 auto;
-  background: none;
-  border: none;
-  box-shadow: none;
-}
-
+/* Sticky-bar rimane indipendente dai gesti di panzoom */
 #sticky-bar {
+  touch-action: auto;
   position: fixed;
   bottom: 20px;
   left: 50%;
@@ -62,6 +48,24 @@ body.dark-mode {
   z-index: 9999;
 }
 
+/* Masonry multi-column layout */
+.grid {
+  column-width: 200px;
+  column-gap: 8px;
+  width: 100%;
+  padding: 8px;
+}
+
+/* Immagini width-fixed, height auto */
+.grid img {
+  display: inline-block;
+  width: 100%;
+  height: auto;
+  margin-bottom: 8px;
+  break-inside: avoid;
+}
+
+/* Icone flat con hover */
 .icon-group {
   display: flex;
   gap: 16px;
@@ -85,6 +89,7 @@ body.dark-mode {
   transform: scale(1.2);
 }
 
+/* Footer */
 .icon-footer {
   font-size: 10px;
   text-align: center;

@@ -5,10 +5,9 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
 
 async function loadImages() {
-  const { data, error } = await supabase
-    .storage
-    .from('mosaic')
-    .list('', { limit: 100, offset: 0, sortBy: { column: 'name', order: 'asc' } })
+  const { data, error } = await supabase.storage.from('mosaic').list('', {
+    limit: 100, offset: 0, sortBy: { column: 'name', order: 'asc' }
+  })
   if (error) console.error('Supabase error', error)
 
   const grid = document.getElementById('masonry')
@@ -26,11 +25,7 @@ async function loadImages() {
 function initPanzoom() {
   const elem = document.getElementById('panzoom')
   const pz = panzoom(elem, {
-    maxZoom: 4,
-    minZoom: 0.2,
-    bounds: true,
-    boundsPadding: 0.2,
-    smoothScroll: true
+    maxZoom: 4, minZoom: 0.2, bounds: true, boundsPadding: 0.2, smoothScroll: true
   })
   setTimeout(() => {
     const grid = document.getElementById('masonry')
