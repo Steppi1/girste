@@ -56,3 +56,6 @@ export function setupPanzoom(container, startFactor = 1, minColWidth = 200) {
 
   return pz;
 }
+
+
+
