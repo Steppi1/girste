@@ -77,20 +77,29 @@ async function fetchImages() {
 }
 
 function setupPanzoom() {
-  // Inizializza Panzoom
   const panzoomInstance = panzoom(panzoomContainer, {
     maxZoom: 5,
     minZoom: 0.1,
     smoothScroll: false
   })
 
-  // Calcola il centro del container
-  const rect = panzoomContainer.getBoundingClientRect()
-  const centerX = rect.width / 2
-  const centerY = rect.height / 2
+  const initialScale = 1.2
 
-  // Fai subito zoom 1.2× dal punto centrale
-  panzoomInstance.zoomAbs(centerX, centerY, 1.2)
+  // 1) Zoom attorno al centro del container
+  const rect = panzoomContainer.getBoundingClientRect()
+  const centerX = rect.width  / 2
+  const centerY = rect.height / 2
+  panzoomInstance.zoomAbs(centerX, centerY, initialScale)
+
+  // 2) Calcola dimensioni del contenuto scalato e centralo
+  //    scrollWidth/Height sono le dimensioni originali (prima della trasformazione)
+  const contentWidth  = panzoomContainer.scrollWidth  * initialScale
+  const contentHeight = panzoomContainer.scrollHeight * initialScale
+
+  const offsetX = (rect.width  - contentWidth ) / 2
+  const offsetY = (rect.height - contentHeight) / 2
+
+  panzoomInstance.moveTo(offsetX, offsetY)
 }
 
 fetchImages()
