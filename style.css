@@ -1,4 +1,18 @@
-/* container full-viewport */
+/* 1) reset e nascondi TUTTE le scrollbar della pagina */
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;               /* elimina scrolling nativo */
+  scrollbar-width: none;          /* FF */
+  -ms-overflow-style: none;       /* IE10+ */
+}
+::-webkit-scrollbar {
+  display: none;                  /* Chrome, Safari, Opera */
+}
+
+/* 2) wrapper a tutta viewport, overflow nascosto */
 #wrapper {
   width: 100vw;
   height: 100vh;
@@ -6,33 +20,27 @@
   position: relative;
 }
 
-/* grid “quadrato” */
+/* 3) il contenitore pan-zoom è un grid che
+      • parte sempre occupando esattamente lo schermo
+      • ha tante colonne quante ne entrano */
 #panzoom {
-  display: grid;
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
-  box-sizing: border-box;
+  
+  display: grid;
   gap: 12px;
-  transform-origin: center center;
-
-   /* crea tante colonne quante ne entrano, min 200px e max 1fr */
+  /* auto-riempie tante colonne minime da 200px,
+     che si espandono per dividere lo spazio restante */
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-
-  /* se il contenuto supera l’altezza, scroll verticale */
-  overflow-y: auto;
-  align-content: start;
 }
 
-/* ogni tile mantiene il rapporto 1:1 */
-.tile {
-  width: 100%;
- 
- 
-}
+/* 4) le immagini mantengono il loro aspect ratio */
 .tile img {
-   display: block;
+  display: block;
   width: 100%;
   height: auto;
-  object-fit: contain;
- 
+  object-fit: contain;  /* o cover, a seconda dell’effetto che preferisci */
 }
