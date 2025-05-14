@@ -3,32 +3,27 @@ import panzoom from 'https://esm.sh/panzoom@9.4.3';
 export function setupPanzoom(container) {
   const pz = panzoom(container, { maxZoom: 5, minZoom: 0.1 });
 
-  function fitAndCenter() {
-    const wrapper   = document.getElementById('wrapper');
-    const vw        = wrapper.clientWidth;
-    const vh        = wrapper.clientHeight;
-    const contentW  = container.scrollWidth;
-    const contentH  = container.scrollHeight;
+  function updateZoom() {
+    const wrapper  = document.getElementById('wrapper');
+    const vw       = wrapper.clientWidth;
+    const vh       = wrapper.clientHeight;
+    const contentW = container.scrollWidth;
+    const contentH = container.scrollHeight;
 
-    // Zoom per far entrare TUTTO: full-fit su entrambe le dimensioni
-    const scale = Math.min(vw / contentW, vh / contentH);
+    // 1) scale “full-fit” per far entrare TUTTO, poi ridotto da un factor (<1)
+    let scale = Math.min(vw / contentW, vh / contentH);
+    scale *= 0.8; // ===> prova a variare 0.7–0.9 fino al livello di zoom che ti piace
 
-    // 1) zoom dal punto (0,0)
-    pz.zoomAbs(0, 0, scale);
-    // 2) translate per centrare il bounding-box ridotto
-    const dx = (vw - contentW * scale) / 2;
-    const dy = (vh - contentH * scale) / 2;
-    pz.moveTo(dx, dy);
+    // 2) inietta in CSS
+    container.style.setProperty('--zoom', scale);
   }
 
-  // Applica all’avvio (dopo che le immagini sono caricate)
+  // attendi load e resize
   window.addEventListener('load', () => {
-    fitAndCenter();
-    // un doppio call con timeout aiuta se alcune img impiegano a caricarsi
-    setTimeout(fitAndCenter, 100);
+    updateZoom();
+    setTimeout(updateZoom, 100);
   });
-  // E dopo ogni resize
-  window.addEventListener('resize', fitAndCenter);
+  window.addEventListener('resize', updateZoom);
 
   return pz;
 }

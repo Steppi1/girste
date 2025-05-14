@@ -1,4 +1,4 @@
-/* 1) reset & hide native scrollbars */
+/* 1) reset + no scrollbar */
 html, body, #wrapper {
   margin: 0;
   padding: 0;
@@ -7,24 +7,33 @@ html, body, #wrapper {
   overflow: hidden;
 }
 
-/* 2) grid-mosaic: #panzoom è sempre 100%×100% della viewport */
+/* 2) #panzoom prende la misura del mosaico e viene centrato+scalato */
 #panzoom {
   position: absolute;
-  top: 0; left: 0;
-  width: 100vw;
-  height: 100vh;
+  top: 50%;
+  left: 50%;
+  /* misura intrinseca pari al contenuto */
+  width: max-content;
+  height: max-content;
 
-  display: grid;
-  gap: 12px;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  /* il “centramento” puro */
+  transform-origin: center center;
+  transform: translate(-50%, -50%) scale(var(--zoom, 1));
+
+  /* layout a colonne “masonry” */
+  column-width: 250px;
+  column-gap: 12px;
 }
 
-/* 3) tiles che riempiono ogni cella */
+/* 3) le .tile non si spezzano, occupano tutta la colonna */
 .tile {
+  display: inline-block;
   width: 100%;
+  margin-bottom: 12px;
+  break-inside: avoid-column;
 }
 
-/* 4) immagini proporzionali */
+/* 4) immagini sempre proporzionate */
 .tile img {
   display: block;
   width: 100%;
