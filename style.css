@@ -7,7 +7,7 @@ html, body {
   overflow: hidden;
 }
 
-/* wrapper quadrato 100vmin centrato */
+/* il tuo frame quadrato */
 #wrapper {
   position: absolute;
   top: 50%; left: 50%;
@@ -16,17 +16,18 @@ html, body {
   overflow: hidden;
 }
 
-/* il “contenitore” panzoom diventa un masonry via colonne */
+/* PANZOOM: adesso usa column-count dinamico */
 #panzoom {
   position: absolute;
   top: 0; left: 0;
   width: 100%;  height: 100%;
-  
-  column-width: 200px;   /* larghezza minima di ogni colonna */
+
+  /* usiamo --cols settato da JS */
+  column-count: var(--cols, 3);
   column-gap: 12px;
 }
 
-/* ogni tile si adatta alla colonna e mantiene l’altezza proporzionale */
+/* tiles naturali, altezza in base alla larghezza di colonna */
 .tile {
   display: inline-block;
   width: 100%;
@@ -34,10 +35,10 @@ html, body {
   break-inside: avoid-column;
 }
 
-/* le immagini scalano in base alla larghezza, mantenendo proporzioni */
+/* immagini sempre proporzionate */
 .tile img {
   display: block;
   width: 100%;
   height: auto;
-  object-fit: contain;  /* contiene interamente l’immagine senza ritagli */
+  object-fit: contain;
 }
