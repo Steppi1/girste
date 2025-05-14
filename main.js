@@ -1,13 +1,13 @@
 // main.js
-import { getPhotoList }   from './photos.js';
-import { buildGrid }      from './grid.js';
-import { initPanzoom }    from './panzoom-init.js';
-import { initThemeToggle }from './theme.js';
+import { getImageUrls } from './supabase.js';
+import { buildMosaic } from './grid.js';
+import { setupPanzoom } from './panzoom-init.js';
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   const container = document.getElementById('panzoom');
-  const photos    = getPhotoList();
-  buildGrid(container, photos);
-  initPanzoom(container);
-  initThemeToggle();
+  // Recupera gli URL dal bucket 'mosaic'
+  const urls = await getImageUrls('mosaic');
+  // Costruisce il mosaico e poi abilita pan/zoom
+  await buildMosaic(container, urls);
+  setupPanzoom(container);
 });
