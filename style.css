@@ -1,4 +1,4 @@
-/* 1) reset + body nero */
+/* 1) reset + sfondo nero pieno */
 html, body {
   margin: 0;
   padding: 0;
@@ -9,42 +9,42 @@ html, body {
   position: relative;
 }
 
-/* 2) wrapper = quadrato 100vmin x 100vmin, centrato */
+/* 2) il quadrato wrapper, centrato */
 #wrapper {
   position: absolute;
-  top: 50%; left: 50%;
+  top: 50%;
+  left: 50%;
   width: 100vmin;
   height: 100vmin;
   transform: translate(-50%, -50%);
   background: #000;
-  overflow: hidden;
+  overflow: hidden;       /* clip-pa tutto ciò che esce dal quadrato */
 }
 
-/* 3) panzoom = 100% del quadrato e griglia */
+/* 3) #panzoom riempie il quadrato e diventa Grid */
 #panzoom {
-  position: absolute;
-  top: 0; left: 0;
   width: 100%;
   height: 100%;
   display: grid;
   gap: 8px;
 
-  /* cambia 128px con la misura minima tile che preferisci */
-  grid-template-columns: repeat(auto-fill, minmax(128px, 1fr));
-  grid-auto-rows: 1fr;     /* righe uguali alle colonne */
+  /* quante tile ci stanno orizzontalmente? minima 120px, poi frazioniamo */
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  /* righe con la stessa misura delle colonne */
+  grid-auto-rows: 0;         /* nulla, useremo aspect-ratio sulle tile */
 }
 
-/* 4) ogni tile è un quadrato pieno */
+/* 4) tile quadrata, mantiene proporzioni */
 .tile {
   width: 100%;
-  height: 100%;
+  aspect-ratio: 1 / 1;       /* ogni tile è un quadrato perfetto */
   overflow: hidden;
 }
 
-/* 5) l’immagine riempie il quadrato */
+/* 5) l’immagine riempie il quadrato e copre */
 .tile img {
-  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
 }

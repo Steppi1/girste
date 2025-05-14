@@ -1,37 +1,69 @@
+// main.js
 import panzoom from 'https://esm.sh/panzoom@9.4.3';
 
-export function setupPanzoom(container) {
-  // 1) inizializza
-  const pz = panzoom(container, { maxZoom: 5, minZoom: 0.1 });
+const wrapper   = document.getElementById('wrapper');
+const container = document.getElementById('panzoom');
 
-  function initView() {
-    const wrapper   = document.getElementById('wrapper');
-    const W         = wrapper.clientWidth;   // = 100vmin in px
-    const H         = wrapper.clientHeight;  // = 100vmin in px
-    const contentW  = container.scrollWidth; // larghezza intero mosaico
-    const contentH  = container.scrollHeight;// altezza intero mosaico
+// ——————————————————————
+// 1) ELENCO DELLE IMMAGINI
+// ——————————————————————
+// Qui ci metti i tuoi src (relativi o assoluti)
+const imageUrls = [
+  '/images/1.jpg',
+  '/images/2.jpg',
+  '/images/3.jpg',
+  // …eccetera…
+];
 
-    // 2) calcola zoom per far star tutto dentro il quadrato
-    let scale = Math.min(W / contentW, H / contentH);
-    // se vuoi partire meno zoommato, moltiplica per un fattore < 1:
-    // scale *= 0.8;
+// ——————————————————————
+// 2) POPOLA IL CONTENITORE
+// ——————————————————————
+imageUrls.forEach(src => {
+  const tile = document.createElement('div');
+  tile.className = 'tile';
+  const img = document.createElement('img');
+  img.src = src;
+  img.alt = '';
+  tile.appendChild(img);
+  container.appendChild(tile);
+});
 
-    // 3) applica lo zoom dal punto (0,0) in alto a sinistra
-    pz.zoomAbs(0, 0, scale);
+// ——————————————————————
+// 3) INIZIALIZZA PANZOOM
+// ——————————————————————
+const pz = panzoom(container, {
+  maxZoom: 5,
+  minZoom: 0.1,
+  contain: 'outside'
+});
 
-    // 4) calcola gli offset per centrare il centro del mosaico
-    //    vogliamo: (contentW·scale)/2 + dx = W/2  ⇒ dx = W/2 – (contentW·scale)/2
-    const dx = (W - contentW * scale) / 2;
-    const dy = (H - contentH * scale) / 2;
-    pz.moveTo(dx, dy);
-  }
+// ——————————————————————
+// 4) FUNZIONE DI FIT & CENTER
+// ——————————————————————
+function fitAndCenter() {
+  const W         = wrapper.clientWidth;    // larghezza quadrato (100vmin)
+  const H         = wrapper.clientHeight;   // altezza quadrato (100vmin)
+  const contentW  = container.scrollWidth;  // larghezza reale del mosaico
+  const contentH  = container.scrollHeight; // altezza reale del mosaico
 
-  // 5) attendi che tutto sia caricato e poi inizializza, anche dopo resize
-  window.addEventListener('load', () => {
-    initView();
-    setTimeout(initView, 100);
-  });
-  window.addEventListener('resize', initView);
+  // zoom “full-fit” ridotto dal fattore 0.8 (modificalo se vuoi)
+  let scale = Math.min(W / contentW, H / contentH) * 0.8;
 
-  return pz;
+  // applica lo zoom dall’angolo in alto a sinistra
+  pz.zoomAbs(0, 0, scale);
+
+  // calcola gli offset per portare il CENTRO del mosaico al CENTRO del quadrato
+  const dx = (W - contentW * scale) / 2;
+  const dy = (H - contentH * scale) / 2;
+  pz.moveTo(dx, dy);
 }
+
+// ——————————————————————
+// 5) ESEGUI AL LOAD E AL RESIZE
+// ——————————————————————
+window.addEventListener('load', () => {
+  fitAndCenter();
+  // un ritardo aiuta se qualche immagine è lenta a caricarsi
+  setTimeout(fitAndCenter, 100);
+});
+window.addEventListener('resize', fitAndCenter);
