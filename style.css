@@ -1,50 +1,43 @@
-/* 1) reset + sfondo nero pieno */
+/* reset + sfondo nero */
 html, body {
   margin: 0;
   padding: 0;
-  width: 100vw;
-  height: 100vh;
+  width: 100vw;  height: 100vh;
   background: #000;
   overflow: hidden;
-  position: relative;
 }
 
-/* 2) il quadrato wrapper, centrato */
+/* wrapper quadrato 100vmin centrato */
 #wrapper {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 100vmin;
-  height: 100vmin;
+  top: 50%; left: 50%;
+  width: 100vmin;  height: 100vmin;
   transform: translate(-50%, -50%);
-  background: #000;
-  overflow: hidden;       /* clip-pa tutto ciò che esce dal quadrato */
-}
-
-/* 3) #panzoom riempie il quadrato e diventa Grid */
-#panzoom {
-  width: 100%;
-  height: 100%;
-  display: grid;
-  gap: 8px;
-
-  /* quante tile ci stanno orizzontalmente? minima 120px, poi frazioniamo */
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  /* righe con la stessa misura delle colonne */
-  grid-auto-rows: 0;         /* nulla, useremo aspect-ratio sulle tile */
-}
-
-/* 4) tile quadrata, mantiene proporzioni */
-.tile {
-  width: 100%;
-  aspect-ratio: 1 / 1;       /* ogni tile è un quadrato perfetto */
   overflow: hidden;
 }
 
-/* 5) l’immagine riempie il quadrato e copre */
-.tile img {
+/* il “contenitore” panzoom diventa un masonry via colonne */
+#panzoom {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;  height: 100%;
+  
+  column-width: 200px;   /* larghezza minima di ogni colonna */
+  column-gap: 12px;
+}
+
+/* ogni tile si adatta alla colonna e mantiene l’altezza proporzionale */
+.tile {
+  display: inline-block;
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  margin-bottom: 12px;
+  break-inside: avoid-column;
+}
+
+/* le immagini scalano in base alla larghezza, mantenendo proporzioni */
+.tile img {
   display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;  /* contiene interamente l’immagine senza ritagli */
 }
