@@ -1,46 +1,39 @@
-/* 1) reset e nascondi TUTTE le scrollbar della pagina */
-html, body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;               /* elimina scrolling nativo */
-  scrollbar-width: none;          /* FF */
-  -ms-overflow-style: none;       /* IE10+ */
-}
-::-webkit-scrollbar {
-  display: none;                  /* Chrome, Safari, Opera */
-}
-
-/* 2) wrapper a tutta viewport, overflow nascosto */
-#wrapper {
-  width: 100vw;
-  height: 100vh;
+/* wrapper e scroll già nascosti come prima */
+html, body, #wrapper {
+  margin: 0; padding: 0;
+  width: 100vw; height: 100vh;
   overflow: hidden;
-  position: relative;
 }
 
-/* 3) il contenitore pan-zoom è un grid che
-      • parte sempre occupando esattamente lo schermo
-      • ha tante colonne quante ne entrano */
+/* 1) trasforma il contenitore in un layout a colonne */
 #panzoom {
   position: absolute;
-  top: 0;
-  left: 0;
+  top: 0; left: 0;
   width: 100%;
-  height: 100%;
+  /* imposta la larghezza minima di ogni colonna
+     e lascia che il browser ne crei quante ne entrano */
+  column-width: 250px;
+  column-gap: 12px;
   
-  display: grid;
-  gap: 12px;
-  /* auto-riempie tante colonne minime da 200px,
-     che si espandono per dividere lo spazio restante */
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  /* “clippa” tutto ciò che esce (ma su pan/zoom navigherai via JS) */
+  height: 100%;
+  overflow: hidden;
 }
 
-/* 4) le immagini mantengono il loro aspect ratio */
+/* 2) ogni tile dentro le colonne */
+.tile {
+  /* inline-block per rispettare le colonne */
+  display: inline-block;
+  width: 100%;
+  margin: 0 0 12px;
+  /* evita che il box si spezzi tra due colonne */
+  break-inside: avoid;
+}
+
+/* 3) l’immagine scala mantenendo proporzioni */
 .tile img {
   display: block;
   width: 100%;
   height: auto;
-  object-fit: contain;  /* o cover, a seconda dell’effetto che preferisci */
+  object-fit: contain;
 }
