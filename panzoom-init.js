@@ -1,5 +1,6 @@
 // panzoom-init.js
-import panzoom from 'https://cdn.jsdelivr.net/npm/panzoom@9.4.0/dist/panzoom.es.js';
+// Usa l'ES module build corretto di Panzoom da jsDelivr
+import panzoom from 'https://cdn.jsdelivr.net/npm/panzoom@9.4.3/dist/panzoom.es.js';
 
 /**
  * Inizializza Panzoom sul container specificato e centra/scala il contenuto.
