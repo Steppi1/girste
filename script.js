@@ -1,4 +1,3 @@
-
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
 const SUPABASE_URL = 'https://mcvvvhpmpouuupwqlbsn.supabase.co'
@@ -19,7 +18,6 @@ function shuffle(array) {
 function buildMosaic(imageUrls) {
   panzoomContainer.innerHTML = ''
   const columns = []
-
   for (let i = 0; i < NUM_COLUMNS; i++) {
     const column = document.createElement('div')
     column.classList.add('column')
@@ -45,7 +43,6 @@ function buildMosaic(imageUrls) {
       }
 
       tile.appendChild(img)
-
       const shortestColumn = columns.reduce((prev, curr) =>
         prev.scrollHeight <= curr.scrollHeight ? prev : curr
       )
@@ -55,10 +52,10 @@ function buildMosaic(imageUrls) {
 }
 
 async function fetchImages() {
-  const { data, error } = await supabase.storage.from('mosaic').list('', {
-    limit: 100,
-    sortBy: { column: 'name', order: 'asc' }
-  })
+  const { data, error } = await supabase
+    .storage
+    .from('mosaic')
+    .list('', { limit: 100, sortBy: { column: 'name', order: 'asc' } })
 
   if (error) {
     console.error('Errore nel caricamento immagini:', error)
@@ -67,7 +64,10 @@ async function fetchImages() {
 
   const urls = await Promise.all(
     data.map(async file => {
-      const { data: urlData } = await supabase.storage.from('mosaic').getPublicUrl(file.name)
+      const { data: urlData } = await supabase
+        .storage
+        .from('mosaic')
+        .getPublicUrl(file.name)
       return urlData.publicUrl
     })
   )
@@ -77,46 +77,20 @@ async function fetchImages() {
 }
 
 function setupPanzoom() {
+  // Inizializza Panzoom
   const panzoomInstance = panzoom(panzoomContainer, {
     maxZoom: 5,
     minZoom: 0.1,
     smoothScroll: false
   })
 
-  panzoomInstance.zoomAbs(0, 0, 1.2)
+  // Calcola il centro del container
+  const rect = panzoomContainer.getBoundingClientRect()
+  const centerX = rect.width / 2
+  const centerY = rect.height / 2
 
-  // Controlla dimensioni su più frame consecutivi e centra solo quando stabili
-  let lastWidth = 0
-  let lastHeight = 0
-  let stableFrames = 0
-
-  function checkAndCenter() {
-    const width = panzoomContainer.scrollWidth
-    const height = panzoomContainer.scrollHeight
-
-    if (width === lastWidth && height === lastHeight) {
-      stableFrames++
-    } else {
-      stableFrames = 0
-    }
-
-    lastWidth = width
-    lastHeight = height
-
-    if (stableFrames >= 2) {
-      const viewCenterX = window.innerWidth / 2
-      const viewCenterY = window.innerHeight / 2
-
-      const offsetX = viewCenterX - (width * 1.5) / 2
-      const offsetY = viewCenterY - (height * 1.5) / 2
-
-      panzoomInstance.moveTo(offsetX, offsetY)
-    } else {
-      requestAnimationFrame(checkAndCenter)
-    }
-  }
-
-  requestAnimationFrame(checkAndCenter)
+  // Fai subito zoom 1.2× dal punto centrale
+  panzoomInstance.zoomAbs(centerX, centerY, 1.2)
 }
 
 fetchImages()
