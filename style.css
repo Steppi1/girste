@@ -1,34 +1,42 @@
+/* wrapper e reset rimangono uguali */
 html, body, #wrapper {
-  margin:0; padding:0;
-  width:100vw; height:100vh;
-  overflow:hidden;
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
 }
 
+/* ---- il quadrato vero e proprio ---- */
 #panzoom {
-  position:absolute;
-  top:0; left:0;
-  /* wrap‐content */
-  width: max-content;
-  height: max-content;
+  position: absolute;
+  /* centro perfetto */
+  top: 50%;
+  left: 50%;
+  /* larghezza = altezza = vmin => quadrato massimo che ci sta nella viewport */
+  width: 100vmin;
+  height: 100vmin;
 
-  /* lascia a JS il solo job di trasformare */
+  /* JS gestirà scale+pan via inline transform */
   transform-origin: 0 0;
+  transform: translate(-50%, -50%) scale(var(--zoom, 1));
 
-  /* masonry con CSS columns */
+  /* layout a colonne “masonry” */
   column-width: 250px;
   column-gap: 12px;
 }
 
+/* tiles + immagini come prima */
 .tile {
-  display:inline-block;
-  width:100%;
-  margin-bottom:12px;
+  display: inline-block;
+  width: 100%;
+  margin-bottom: 12px;
   break-inside: avoid-column;
 }
-
 .tile img {
-  display:block;
-  width:100%;
-  height:auto;
-  object-fit:contain;
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
 }
+
