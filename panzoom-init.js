@@ -2,6 +2,7 @@
 // Import ES-module build da jsDelivr
 import panzoom from 'https://cdn.jsdelivr.net/npm/panzoom@9.4.3/dist/panzoom.js';
 
+
 /**
  * Inizializza Panzoom sul container specificato e centra/scala il contenuto.
  * @param {HTMLElement} container - L'elemento da pan-zoomare.
