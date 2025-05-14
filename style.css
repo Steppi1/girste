@@ -1,32 +1,37 @@
-/* wrapper e reset rimangono uguali */
-html, body, #wrapper {
-  margin: 0;
-  padding: 0;
-  width: 100vw;
-  height: 100vh;
+/* 1) reset & nascondi scrollbar */
+html, body {
+  margin: 0; padding: 0;
+  width: 100vw; height: 100vh;
   overflow: hidden;
+  position: relative;
 }
 
-/* ---- il quadrato vero e proprio ---- */
-#panzoom {
+/* 2) il wrapper è il quadrato massimo che ci sta nella viewport, sempre al centro */
+#wrapper {
   position: absolute;
-  /* centro perfetto */
-  top: 50%;
-  left: 50%;
-  /* larghezza = altezza = vmin => quadrato massimo che ci sta nella viewport */
   width: 100vmin;
   height: 100vmin;
-
-  /* JS gestirà scale+pan via inline transform */
-  transform-origin: 0 0;
-  transform: translate(-50%, -50%) scale(var(--zoom, 1));
-
-  /* layout a colonne “masonry” */
-  column-width: 250px;
-  column-gap: 12px;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  overflow: hidden;   /* clip-pa tutto ciò che esce dal quadrato */
 }
 
-/* tiles + immagini come prima */
+/* 3) #panzoom si dimensiona al suo contenuto vero */
+#panzoom {
+  position: absolute;
+  top: 0; left: 0;
+  width: max-content;
+  height: max-content;
+  
+  /* layout “masonry” con CSS Columns */
+  column-width: 250px;
+  column-gap: 12px;
+
+  /* lascia a JS tutti i transform */
+  transform-origin: 0 0;
+}
+
+/* 4) tiles e immagini come prima */
 .tile {
   display: inline-block;
   width: 100%;
@@ -39,4 +44,3 @@ html, body, #wrapper {
   height: auto;
   object-fit: contain;
 }
-
