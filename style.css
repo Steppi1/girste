@@ -14,17 +14,25 @@
   box-sizing: border-box;
   gap: 12px;
   transform-origin: center center;
+
+   /* crea tante colonne quante ne entrano, min 200px e max 1fr */
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+
+  /* se il contenuto supera l’altezza, scroll verticale */
+  overflow-y: auto;
+  align-content: start;
 }
 
 /* ogni tile mantiene il rapporto 1:1 */
 .tile {
   width: 100%;
  
-  overflow: hidden;
+ 
 }
 .tile img {
+   display: block;
   width: 100%;
   height: auto;
   object-fit: contain;
-  display: block;
+ 
 }
