@@ -1,34 +1,30 @@
-/* === reset & nascondi scrollbar === */
+/* 1) reset & hide native scrollbars */
 html, body, #wrapper {
   margin: 0;
   padding: 0;
   width: 100vw;
   height: 100vh;
-  overflow: hidden;             /* nessuna scrollbar nativa */
+  overflow: hidden;
 }
 
-/* === contenitore “mosaico” === */
+/* 2) grid-mosaic: #panzoom è sempre 100%×100% della viewport */
 #panzoom {
   position: absolute;
-  top: 0; 
-  left: 0;
+  top: 0; left: 0;
   width: 100vw;
   height: 100vh;
-  
-  /* layout a colonne “Pinterest‐style” */
-  column-width: 250px;          /* larghezza minima colonna */
-  column-gap: 12px;
+
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
 }
 
-/* ogni tile in colonna, senza spezzarsi */
+/* 3) tiles che riempiono ogni cella */
 .tile {
-  display: inline-block;
   width: 100%;
-  margin-bottom: 12px;
-  break-inside: avoid-column;
 }
 
-/* immagini che mantengono proporzioni */
+/* 4) immagini proporzionali */
 .tile img {
   display: block;
   width: 100%;
