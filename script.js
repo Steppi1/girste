@@ -83,7 +83,7 @@ function setupPanzoom() {
     smoothScroll: false
   })
 
-  panzoomInstance.zoomAbs(0, 0, 1.5)
+  panzoomInstance.zoomAbs(0, 0, 0.8)
 
   // Controlla dimensioni su più frame consecutivi e centra solo quando stabili
   let lastWidth = 0
