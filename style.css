@@ -1,12 +1,12 @@
-/* reset & sfondo nero */
+/* 1) reset + sfondo nero */
 html, body {
   margin: 0; padding: 0;
-  width: 100vw; height: 100vh;
+  width: 100vw;  height: 100vh;
   background: #000;
   overflow: hidden;
 }
 
-/* il wrapper quadrato 100vmin centrato */
+/* 2) wrapper quadrato 100vmin, centrato */
 #wrapper {
   position: absolute;
   top: 50%; left: 50%;
@@ -16,20 +16,18 @@ html, body {
   background: #000;
 }
 
-/* panzoom diventa grid con var(--cols) colonne */
+/* 3) panzoom = griglia piena del wrapper */
 #panzoom {
-  width: 100%;
-  height: 100%;
+  width: 100%; height: 100%;
   display: grid;
   gap: 12px;
+  /* usiamo --cols per il numero di colonne */
   grid-template-columns: repeat(var(--cols, 1), 1fr);
-  align-content: start;
+  /* inserimento per riga, poi su nuova riga */
+  grid-auto-flow: row;
 }
 
-/* ogni tile mantiene l’aspect ratio naturale */
-.tile {
-  overflow: hidden;
-}
+/* 4) tiles mantengono proporzioni naturali */
 .tile img {
   display: block;
   width: 100%;
