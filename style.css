@@ -1,36 +1,36 @@
-/* wrapper e scroll già nascosti come prima */
+/* 1) reset & no scrollbar */
 html, body, #wrapper {
-  margin: 0; padding: 0;
-  width: 100vw; height: 100vh;
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
   overflow: hidden;
 }
 
-/* 1) trasforma il contenitore in un layout a colonne */
+/* 2) grid‐mosaico, centrato e scalato via transform */
+/*    --zoom è lo zoom iniziale che JS andrà a settare */
 #panzoom {
   position: absolute;
-  top: 0; left: 0;
-  width: 100%;
-  /* imposta la larghezza minima di ogni colonna
-     e lascia che il browser ne crei quante ne entrano */
-  column-width: 250px;
-  column-gap: 12px;
-  
-  /* “clippa” tutto ciò che esce (ma su pan/zoom navigherai via JS) */
-  height: 100%;
-  overflow: hidden;
+  top: 50%;
+  left: 50%;
+  /* centro il centro del container */
+  transform-origin: center center;
+  transform: translate(-50%, -50%) scale(var(--zoom, 1));
+
+  display: grid;
+  gap: 12px;
+  /* tante colonne quante ne entrano, min 250px ciascuna */
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
 }
 
-/* 2) ogni tile dentro le colonne */
+/* 3) ogni tile occupa tutta la colonna, evitando di spezzarsi */
 .tile {
-  /* inline-block per rispettare le colonne */
   display: inline-block;
   width: 100%;
-  margin: 0 0 12px;
-  /* evita che il box si spezzi tra due colonne */
   break-inside: avoid;
 }
 
-/* 3) l’immagine scala mantenendo proporzioni */
+/* 4) l’immagine mantiene proporzioni */
 .tile img {
   display: block;
   width: 100%;
