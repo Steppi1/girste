@@ -2,31 +2,26 @@
 import panzoom from 'https://esm.sh/panzoom@9.4.3';
 
 /**
- * Inizializza Panzoom sul container “masonry” e
- * applica inizialmente fit-&-center + calcola dinamicamente il numero di colonne.
- *
- * @param {HTMLElement} container  l’elemento #panzoom
- * @param {number}      startFactor  [0…1] moltiplicatore per “meno zoom” iniziale (default 1 = full-fit)
- * @param {number}      minColWidth  larghezza minima desiderata per ogni colonna in px (default 200)
- * @returns {Panzoom}  l’istanza Panzoom
+ * @param {HTMLElement} container  elemento #panzoom
+ * @param {number}      startFactor  fattore <1 per “meno zoom” iniziale
  */
-export function setupPanzoom(container, startFactor = 1, minColWidth = 200) {
-  // 1) crea l’istanza Panzoom
+export function setupPanzoom(container, startFactor = 1) {
+  // 1) crea Panzoom
   const pz = panzoom(container, {
     maxZoom: 5,
     minZoom: 0.1,
     contain: 'outside'
   });
 
-  // 2) aggiorna il numero di colonne via CSS var(--cols)
+  // 2) calcola quante colonne per avere sqrt(n) ~ quadrato
   function updateCols() {
-    const wrapper = document.getElementById('wrapper');
-    const W       = wrapper.clientWidth;          // larghezza del quadrato (100vmin)
-    const cols    = Math.max(1, Math.floor(W / minColWidth));
+    const nTiles = container.querySelectorAll('.tile').length;
+    // almeno 1 colonna, arrotondamento a intero
+    const cols = Math.max(1, Math.round(Math.sqrt(nTiles)));
     container.style.setProperty('--cols', cols);
   }
 
-  // 3) calcola fit & center
+  // 3) zoom full-fit + centering del centro del mosaico
   function fitAndCenter() {
     const wrapper  = document.getElementById('wrapper');
     const W        = wrapper.clientWidth;
@@ -36,29 +31,23 @@ export function setupPanzoom(container, startFactor = 1, minColWidth = 200) {
 
     // full-fit scale
     let scale = Math.min(W / contentW, H / contentH);
-    // applica il fattore di “meno zoom”
+    // applica fattore “meno zoom”
     scale *= startFactor;
 
-    // esegui zoom dal top-left
+    // zoom da 0,0
     pz.zoomAbs(0, 0, scale);
-
-    // calcola offset per centrare il centro del contenuto sul wrapper
+    // centra il centro del contenuto nella viewport
     const dx = (W - contentW * scale) / 2;
     const dy = (H - contentH * scale) / 2;
     pz.moveTo(dx, dy);
   }
 
-  // 4) on load: aggiorna colonne + fit&center (e di nuovo dopo 100ms per immagini lente)
+  // 4) all’avvio e al resize: aggiorna colonne e fit&center
   window.addEventListener('load', () => {
     updateCols();
     fitAndCenter();
-    setTimeout(() => {
-      updateCols();
-      fitAndCenter();
-    }, 100);
+    setTimeout(() => { updateCols(); fitAndCenter(); }, 100);
   });
-
-  // 5) on resize: aggiorna colonne + fit&center
   window.addEventListener('resize', () => {
     updateCols();
     fitAndCenter();
