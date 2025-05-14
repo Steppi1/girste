@@ -7,30 +7,34 @@ html, body, #wrapper {
   overflow: hidden;
 }
 
-/* 2) grid‐mosaico, centrato e scalato via transform */
-/*    --zoom è lo zoom iniziale che JS andrà a settare */
+/* 2) il container prende la misura del suo contenuto */
 #panzoom {
   position: absolute;
   top: 50%;
   left: 50%;
-  /* centro il centro del container */
+  /* prende lo zoom da --zoom e si centra */
   transform-origin: center center;
   transform: translate(-50%, -50%) scale(var(--zoom, 1));
+  
+  /* IMPORTANT: width/height auto per wrap-content */
+  width: max-content;
+  height: max-content;
 
-  display: grid;
-  gap: 12px;
-  /* tante colonne quante ne entrano, min 250px ciascuna */
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  /* mosaico con CSS Columns */
+  column-width: 250px;
+  column-gap: 12px;
 }
 
-/* 3) ogni tile occupa tutta la colonna, evitando di spezzarsi */
+/* 3) ogni tile diventa un blocco “nella colonna” */
 .tile {
   display: inline-block;
   width: 100%;
-  break-inside: avoid;
+  margin-bottom: 12px;
+  /* evita di spezzare la tile su due colonne */
+  break-inside: avoid-column;
 }
 
-/* 4) l’immagine mantiene proporzioni */
+/* 4) l’immagine scala mantenendo il suo aspect-ratio */
 .tile img {
   display: block;
   width: 100%;
