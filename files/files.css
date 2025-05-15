@@ -457,3 +457,17 @@ body.dark .arrow-icon, body.dark .contrast-icon{filter:brightness(0) saturate(10
 .articles .article {
   padding-bottom: 1rem !important;
 }
+
+
+/* MOBILE: Restore swipe-back navigation from article to sidebar */
+@media (max-width: 600px) {
+  .container {
+    overscroll-behavior-x: auto !important;
+    scroll-snap-type: x mandatory !important;
+    touch-action: pan-x !important;
+  }
+  .main-content {
+    overscroll-behavior-x: auto !important;
+    touch-action: pan-x !important;
+  }
+}
