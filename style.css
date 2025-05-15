@@ -1,7 +1,6 @@
 @font-face {
   font-family: 'AkkuratMono';
-  src: 
-       url('../fonts/Akkurat-Mono.woff') format('woff');
+  src: url('fonts/Akkurat-Mono.woff') format('woff');
   font-weight: normal;
   font-style: normal;
 }
@@ -32,9 +31,19 @@ body {
   line-height: 1.4;
 }
 
+@keyframes breath {
+  0%, 100% {
+    transform: scaleX(-1) scale(1);
+  }
+  50% {
+    transform: scaleX(-1) scale(1.2);
+  }
+}
+
 .arrow-link img {
-  width: 30px;
-  transform: scaleX(-1);
+  width: 80px;
+  animation: breath 2s ease-in-out infinite;
+  transform-origin: center center;
 }
 
 main {
