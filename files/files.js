@@ -1,4 +1,4 @@
-import { getPosts } from './supabase.js';
+import { getPosts } from '../supabase.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   // Contrast toggle
@@ -22,13 +22,13 @@ document.addEventListener('DOMContentLoaded', () => {
       li.addEventListener('click', () => {
         // Deselect previous
         if (selectedId) {
-          document.querySelector(`.article[data-id="${selectedId}"]`).classList.remove('selected');
+          document.querySelector(\`.article[data-id="\${selectedId}"]\`).classList.remove('selected');
         }
         // Select new
         li.classList.add('selected');
         selectedId = post.id;
         // Render content
-        content.innerHTML = `<h2>${post.title}</h2>${post.content}`;
+        content.innerHTML = \`<h2>\${post.title}</h2>\${post.content}\`;
       });
       li.setAttribute('data-id', post.id);
       list.appendChild(li);
