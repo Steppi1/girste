@@ -367,3 +367,14 @@ body.dark .arrow-icon, body.dark .contrast-icon{filter:brightness(0) saturate(10
     overscroll-behavior: contain !important;
   }
 }
+
+
+/* MOBILE: Enable swipe-back to sidebar by resetting overscroll behavior */
+@media (max-width: 600px) {
+  .container {
+    overscroll-behavior-x: auto !important;
+  }
+  .main-content {
+    overscroll-behavior-x: auto !important;
+  }
+}
