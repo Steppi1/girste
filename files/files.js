@@ -5,7 +5,13 @@ document.addEventListener('DOMContentLoaded', () => {
     .addEventListener('click', () => document.body.classList.toggle('dark'));
   (async () => {
     const txts = await getSplashTxts();
-    document.querySelector('.breathing-text').textContent = txts[Math.floor(Math.random()*txts.length)] || '';
+    const splashEl = document.querySelector('.breathing-text');
+    if (!splashEl) return;
+    function updateSplash() {
+      splashEl.textContent = txts[Math.floor(Math.random() * txts.length)] || '';
+    }
+    updateSplash();
+    setInterval(updateSplash, 4000);
   })();
   (async () => {
     const posts = await getPosts();
