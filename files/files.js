@@ -1,52 +1,39 @@
 import { getPosts, getSplashTxts } from '../supabase.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Contrast toggle
-  const contrastToggle = document.getElementById('contrast-toggle');
-  contrastToggle.addEventListener('click', () => {
-    document.body.classList.toggle('dark');
-  });
-
-  // Load splash texts
+  document.getElementById('contrast-toggle')
+    .addEventListener('click', () => document.body.classList.toggle('dark'));
   (async () => {
     const txts = await getSplashTxts();
-    const idx = Math.floor(Math.random() * txts.length);
-    document.querySelector('.breathing-text').textContent = txts[idx] || '';
+    document.querySelector('.breathing-text').textContent = txts[Math.floor(Math.random()*txts.length)] || '';
   })();
-
-  // Load posts, start in 'all' and select latest
   (async () => {
     const posts = await getPosts();
     const list = document.getElementById('article-list');
     const content = document.querySelector('.article-content');
-    const filters = document.querySelectorAll('.filter-pill');
-
-    // Setup filter buttons
-    filters.forEach(btn => {
-      btn.addEventListener('click', () => {
-        filters.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        const filter = btn.getAttribute('data-filter');
-        document.querySelectorAll('.article').forEach(li => {
-          li.style.display = (filter === 'all' || li.dataset.filter === filter) ? '' : 'none';
-        });
-      });
-    });
-
+    const filters = Array.from(document.querySelectorAll('.filter-pill'));
     posts.forEach((post, idx) => {
       const li = document.createElement('li');
-      li.textContent = post.title;
-      li.className = 'article';
-      li.dataset.id = post.id;
-      li.dataset.filter = post.category; // ensure posts have "category" field
+      li.textContent = post.title; li.className = 'article';
+      li.dataset.filter = post.tag;
       li.addEventListener('click', () => {
-        document.querySelectorAll('.article.selected').forEach(el => el.classList.remove('selected'));
+        document.querySelectorAll('.article.selected').forEach(el=>el.classList.remove('selected'));
         li.classList.add('selected');
         content.innerHTML = `<h2>${post.title}</h2>${post.content}`;
       });
-      list.appendChild(li);
-      // Auto-select latest
-      if (idx === 0) li.click();
+      list.appendChild(li); if(idx===0) li.click();
     });
+    filters.forEach(btn => btn.addEventListener('click',() => {
+      filters.forEach(b=>b.classList.toggle('active',b===btn));
+      const f = btn.getAttribute('data-filter');
+      document.querySelectorAll('.article').forEach(li => {
+        li.style.display=(f==='all'||li.dataset.filter===f)?'':'none';
+      });
+      const first=Array.from(document.querySelectorAll('.article'))
+        .find(li=>li.style.display!=='none');
+      if(first) first.click();
+    }));
+    const all = filters.find(b=>b.dataset.filter==='all');
+    if(all) all.click();
   })();
 });
