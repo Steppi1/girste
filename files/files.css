@@ -42,8 +42,14 @@ body.dark {
 /* Icon row under title */
 .icon-row { display:flex; align-items:center; gap:0.5rem; margin-top:0.5rem; }
 .home-icon, .contrast-icon { width:55px; height:auto; cursor:pointer; }
-/* pure black in light, invert in dark */
-.contrast-icon { filter: none; }
+/* pure black in light */
+.contrast-icon {
+  filter: none;
+  /* ensure SVG takes currentColor fill: */
+  color: #000;
+  /* for inline SVG this works; if external, ensure filter */
+}
+/* invert icon in dark */
 body.dark .contrast-icon,
 body.dark .home-icon {
   filter: invert(1);

@@ -19,15 +19,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const posts = await getPosts();
     const list = document.getElementById('article-list');
     const content = document.querySelector('.article-content');
-    // Filter functionality
     const filters = document.querySelectorAll('.filter-pill');
+
+    // Setup filter buttons
     filters.forEach(btn => {
       btn.addEventListener('click', () => {
         filters.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         const filter = btn.getAttribute('data-filter');
         document.querySelectorAll('.article').forEach(li => {
-          li.style.display = filter === 'all' ? '' : (li.getAttribute('data-filter') === filter ? '' : 'none');
+          li.style.display = (filter === 'all' || li.dataset.filter === filter) ? '' : 'none';
         });
       });
     });
@@ -37,13 +38,14 @@ document.addEventListener('DOMContentLoaded', () => {
       li.textContent = post.title;
       li.className = 'article';
       li.dataset.id = post.id;
-      li.dataset.filter = post.type || post.category || 'all';
+      li.dataset.filter = post.category; // ensure posts have "category" field
       li.addEventListener('click', () => {
         document.querySelectorAll('.article.selected').forEach(el => el.classList.remove('selected'));
         li.classList.add('selected');
         content.innerHTML = `<h2>${post.title}</h2>${post.content}`;
       });
       list.appendChild(li);
+      // Auto-select latest
       if (idx === 0) li.click();
     });
   })();
