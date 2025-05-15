@@ -48,7 +48,14 @@ body.dark .arrow-icon, body.dark .contrast-icon{filter:brightness(0) saturate(10
 /* responsive */
 @media(max-width:600px){.icon{width:30px;} .filters-static{gap:0.6rem;}}
 
-/* Override solo per l'articolo aperto a destra, mantenendo intatta la lista titoli */
+/* Sidebar titles wrapping */
+.articles .article {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-all;
+}
+
+/* Article content full width on desktop */
 @media (min-width: 600px) {
   .article-content {
     max-width: none;
