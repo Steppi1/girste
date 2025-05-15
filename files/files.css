@@ -378,3 +378,15 @@ body.dark .arrow-icon, body.dark .contrast-icon{filter:brightness(0) saturate(10
     overscroll-behavior-x: auto !important;
   }
 }
+
+/* MOBILE: Final swipe-back fix - remove overscroll restrictions and enforce snap stop */
+@media (max-width: 600px) {
+  .container {
+    overscroll-behavior: auto !important;
+    scroll-snap-type: x mandatory !important;
+  }
+  .sidebar, .main-content {
+    overscroll-behavior: auto !important;
+    scroll-snap-stop: always !important;
+  }
+}
