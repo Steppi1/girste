@@ -26,15 +26,8 @@ body.dark{background:#000;color:#fff;}
 body.dark .arrow-icon, body.dark .contrast-icon{filter:brightness(0) saturate(100%) invert(1);}
 
 /* filters */
-.filters-accordion{margin:0 1rem;text-align:left;}
-.filters-summary{font-family:'AkkuratMono',monospace;font-size:0.9rem;cursor:pointer;list-style:none;}
-.filters-summary::-webkit-details-marker{display:none;}
-.filters-summary::after{content:'▼';margin-left:0.3rem;}
-.filters-accordion[open] .filters-summary::after{content:'▲';}
-.filters-list{display:flex;flex-direction:column;gap:1rem;padding:0.5rem 0 0 1rem;font-family:'AkkuratLight',monospace;}
-
-/* pills */
-.filter-pill{font-size:0.85rem;text-transform:uppercase;cursor:pointer;color:inherit;text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px;font-weight:300;}
+.filters-static{display:flex;justify-content:center;gap:1.5rem;font-family:'AkkuratLight',monospace;font-size:0.85rem;text-transform:uppercase;}
+.filter-pill{cursor:pointer;color:inherit;text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px;font-weight:300;}
 .filter-pill.active{font-family:'AkkuratMono',monospace;font-weight:700;}
 .filter-pill:hover{opacity:0.7;}
 
@@ -47,10 +40,10 @@ body.dark .arrow-icon, body.dark .contrast-icon{filter:brightness(0) saturate(10
 .article{padding:0.5rem 0;cursor:pointer;font-family:'AkkuratLight',monospace;font-weight:300;color:inherit;}
 .article.selected{font-family:'AkkuratMono',monospace;font-weight:700;}
 
-/* content */
+/* article content */
 .article-content{padding:2rem;max-width:700px;margin:0 auto;font-family:'AkkuratLight',monospace;}
 .article-content h2{font-family:'AkkuratMono',monospace;font-size:1.2rem;margin-bottom:1rem;}
 .article-content p{line-height:1.5;margin-bottom:1rem;}
 
 /* responsive */
-@media(max-width:600px){.icon{width:50px;gap:2rem;}}
+@media(max-width:600px){.icon{width:30px;gap:2rem;}}
