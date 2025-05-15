@@ -126,3 +126,13 @@ body.dark .arrow-icon, body.dark .contrast-icon{filter:brightness(0) saturate(10
     overflow-y: auto;
   }
 }
+
+
+/* Mobile: force wrapping of sidebar titles as on desktop */
+@media (max-width: 600px) {
+  .articles .article {
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    word-break: break-all !important;
+  }
+}
