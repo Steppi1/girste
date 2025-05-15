@@ -1,37 +1,229 @@
-@font-face{font-family:'AkkuratMono';src:url('../fonts/Akkurat-Mono.woff') format('woff');}
-@font-face{font-family:'AkkuratLight';src:url('../fonts/Akkurat-Light.woff') format('woff');}
-*{margin:0;padding:0;box-sizing:border-box;}
-html,body{width:100%;height:100%;font-family:'AkkuratLight',monospace;font-size:15px;overflow:hidden;background:#fff;color:#000;}
-body.dark{background:#000;color:#fff;}
-.container{display:flex;height:100%;overflow-x:auto;overflow-y:hidden;}
-.sidebar{flex:0 0 220px;height:100vh;display:flex;flex-direction:column;border-right:1px solid rgba(255,255,255,0.1);background:inherit;position:sticky;top:0;}
-.title-block{display:flex;justify-content:space-between;align-items:center;padding:0.8rem 1rem;}
-.site-title{font-family:'AkkuratMono',monospace;font-size:1.35rem;font-weight:400;}
-.icon-row{display:flex;gap:1rem;}
-.icon{width:40px;cursor:pointer;transition:transform .2s;filter:brightness(0) saturate(100%);}
-.icon:hover{transform:scale(1.1) rotate(5deg);}
-body.dark .icon.arrow-icon{filter:brightness(0) saturate(100%) invert(1);}
-body.dark .icon.contrast-icon{filter:brightness(0) saturate(100%) invert(1);}
-.header-phrase{text-align:center;margin:0.25rem 0;font-family:'AkkuratLight',monospace;font-size:0.9rem;}
-.breathing-text{display:inline-block;font-weight:300;animation:breathe 1.5s ease-in-out infinite;color:inherit;}
-@keyframes breathe{0%,100%{transform:scale(1);}50%{transform:scale(1.05);}}
-.separator.filters-separator{width:60%;margin:0.5rem auto 0 auto;border:none;border-top:1px solid rgba(255,255,255,0.3);}
-html:not(.dark) .separator.filters-separator{border-top-color:rgba(0,0,0,0.3);}
-.filters-accordion{margin:0.5rem 0.8rem;text-align:left;}
-.filters-summary{font-family:'AkkuratMono',monospace;font-size:0.9rem;cursor:pointer;list-style:none;}
-.filters-summary::-webkit-details-marker{display:none;}
-.filters-summary::after{content:'▼';margin-left:0.3rem;}
-.filters-accordion[open] .filters-summary::after{content:'▲';}
-.filters-list{display:flex;flex-direction:column;gap:1rem;padding:0.6rem 0 0 1rem;}
-.filter-pill{font-family:'AkkuratLight',monospace;font-size:0.85rem;text-transform:uppercase;cursor:pointer;color:inherit;text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px;font-weight:300;}
-.filter-pill.active{font-family:'AkkuratMono',monospace;font-weight:700;}
-.filter-pill:hover{opacity:0.7;}
-.articles{flex:1;overflow-y:auto;list-style:none;padding:0 0.8rem 6rem 0.8rem;}
-.articles::-webkit-scrollbar{display:none;}
-.article{padding:0.5rem 0;cursor:pointer;font-family:'AkkuratLight',monospace;font-weight:300;color:inherit;}
-.article.selected{font-family:'AkkuratMono',monospace;font-weight:700;}
-.main-content{flex:1;overflow-y:auto;background:inherit;}
-.article-content{padding:2.6rem 1.8rem 8rem 1.8rem;max-width:720px;margin:0 auto;}
-.article-content h2{font-family:'AkkuratMono',monospace;font-size:1.2rem;margin:1.2rem 0;}
-.article-content p{margin-bottom:1.4rem;line-height:1.55;font-family:'AkkuratLight',monospace;font-weight:300;}
-@media(max-width:600px){.icon{width:50px;}}
+/*--------------------------------------------------
+  fonts
+--------------------------------------------------*/
+@font-face {
+  font-family: 'AkkuratMono';
+  src: url('../fonts/Akkurat-Mono.woff') format('woff');
+}
+@font-face {
+  font-family: 'AkkuratLight';
+  src: url('../fonts/Akkurat-Light.woff') format('woff');
+}
+
+/*--------------------------------------------------
+  base styles & dark mode
+--------------------------------------------------*/
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+html, body {
+  width: 100%;
+  height: 100%;
+  font-family: 'AkkuratLight', monospace;
+  font-size: 15px;
+  overflow: hidden;
+  background: #fff;
+  color: #000;
+}
+body.dark {
+  background: #000;
+  color: #fff;
+}
+
+/*--------------------------------------------------
+  layout
+--------------------------------------------------*/
+.container {
+  display: flex;
+  height: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+.sidebar {
+  flex: 0 0 220px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid rgba(0,0,0,0.2);
+  background: inherit;
+  position: sticky;
+  top: 0;
+}
+.main-content {
+  flex: 1;
+  overflow-y: auto;
+  background: inherit;
+}
+
+/*--------------------------------------------------
+  title & icons
+--------------------------------------------------*/
+.title-block {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8rem 1rem;
+}
+.site-title {
+  font-family: 'AkkuratMono', monospace;
+  font-size: 1.35rem;
+  font-weight: 400;
+}
+.icon-row {
+  display: flex;
+  gap: 1rem;
+}
+.icon {
+  width: 40px;
+  cursor: pointer;
+  transition: transform .2s;
+  filter: brightness(0) saturate(100%);
+}
+.icon:hover {
+  transform: scale(1.1) rotate(5deg);
+}
+body.dark .arrow-icon {
+  filter: brightness(0) saturate(100%) invert(1);
+}
+body.dark .contrast-icon {
+  filter: brightness(0) saturate(100%) invert(1);
+}
+
+/*--------------------------------------------------
+  splash text
+--------------------------------------------------*/
+.header-phrase {
+  text-align: center;
+  margin: 0.25rem 0;
+  font-family: 'AkkuratLight', monospace;
+  font-size: 0.9rem;
+}
+.breathing-text {
+  display: inline-block;
+  font-weight: 300;
+  animation: breathe 1.5s ease-in-out infinite;
+  color: inherit;
+}
+@keyframes breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+/*--------------------------------------------------
+  separator
+--------------------------------------------------*/
+.separator {
+  width: 80%;
+  margin: 0.5rem auto;
+  border: none;
+  border-top: 1px solid rgba(0,0,0,0.2);
+}
+html:not(.dark) .separator {
+  border-top-color: rgba(0,0,0,0.2);
+}
+body.dark .separator {
+  border-top-color: rgba(255,255,255,0.2);
+}
+
+/*--------------------------------------------------
+  filters accordion
+--------------------------------------------------*/
+.filters-accordion {
+  margin: 0.5rem 0.8rem;
+  text-align: left;
+}
+.filters-summary {
+  font-family: 'AkkuratMono', monospace;
+  font-size: 0.9rem;
+  cursor: pointer;
+  list-style: none;
+}
+.filters-summary::-webkit-details-marker {
+  display: none;
+}
+.filters-summary::after {
+  content: '▼';
+  margin-left: 0.3rem;
+}
+.filters-accordion[open] .filters-summary::after {
+  content: '▲';
+}
+.filters-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 0.6rem 0 0 1rem;
+}
+.filter-pill {
+  font-family: 'AkkuratLight', monospace;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  cursor: pointer;
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  font-weight: 300;
+}
+.filter-pill.active {
+  font-family: 'AkkuratMono', monospace;
+  font-weight: 700;
+}
+.filter-pill:hover {
+  opacity: 0.7;
+}
+
+/*--------------------------------------------------
+  articles list
+--------------------------------------------------*/
+.articles {
+  flex: 1;
+  overflow-y: auto;
+  list-style: none;
+  padding: 0 0.8rem 6rem 0.8rem;
+}
+.articles::-webkit-scrollbar {
+  display: none;
+}
+.article {
+  padding: 0.5rem 0;
+  cursor: pointer;
+  font-family: 'AkkuratLight', monospace;
+  font-weight: 300;
+  color: inherit;
+}
+.article.selected {
+  font-family: 'AkkuratMono', monospace;
+  font-weight: 700;
+}
+
+/*--------------------------------------------------  
+  article content
+--------------------------------------------------*/
+.article-content {
+  padding: 2.6rem 1.8rem 8rem 1.8rem;
+  max-width: 720px;
+  margin: 0 auto;
+}
+.article-content h2 {
+  font-family: 'AkkuratMono', monospace;
+  font-size: 1.2rem;
+  margin: 1.2rem 0;
+}
+.article-content p {
+  margin-bottom: 1.4rem;
+  line-height: 1.55;
+  font-family: 'AkkuratLight', monospace;
+  font-weight: 300;
+}
+
+/*--------------------------------------------------
+  responsive
+--------------------------------------------------*/
+@media (max-width: 600px) {
+  .icon {
+    width: 50px;
+  }
+}
