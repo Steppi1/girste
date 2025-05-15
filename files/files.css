@@ -38,17 +38,18 @@ body.dark {
 .title-block .title-text strong { font-weight:700; }
 
 /* Icon row under title */
-.icon-row { display:flex; align-items:center; gap:0.5rem; margin-top:0.5rem; }
-/* Home arrow always inverted in dark */
+.icon-row { display:flex; align-items:center; gap:1rem; margin-top:0.5rem; } /* increased gap */
 .home-icon { width:55px; height:auto; cursor:pointer; }
 body.dark .home-icon { filter: invert(1); }
 
-/* Contrast icon styled via brightness */
+/* Contrast icon */
 .contrast-icon {
   width:55px; height:auto; cursor:pointer;
   filter: brightness(0) saturate(100%); /* solid black */
 }
-body.dark .contrast-icon {
+/* In dark mode, invert both icons */
+body.dark .contrast-icon,
+body.dark .home-icon {
   filter: brightness(0) saturate(100%) invert(1); /* solid white */
 }
 
@@ -74,12 +75,9 @@ body.dark .contrast-icon {
   color:inherit; border:1px solid currentColor; background:transparent;
   padding:0.4rem 0.8rem; cursor:pointer; border-radius:999px;
 }
-.filter-pill:hover {
-  background: rgba(0,0,0,0.05);
-}
-body.dark .filter-pill {
-  color: #fff; border-color: #fff; background: transparent;
-}
+.filter-pill:hover { background: rgba(0,0,0,0.05); }
+/* Dark mode: invert border/text, no fill */
+body.dark .filter-pill { color: #fff; border-color: #fff; background: transparent; }
 .filter-pill.active { font-weight:700; }
 
 /* Articles list */
@@ -96,9 +94,7 @@ body.dark .filter-pill {
 
 /* Main content */
 .main-content { flex:1; overflow-y:auto; background:inherit; }
-.article-content {
-  padding:2.6rem 1.8rem 8rem 1.8rem; max-width:720px; margin:0 auto;
-}
+.article-content { padding:2.6rem 1.8rem 8rem 1.8rem; max-width:720px; margin:0 auto; }
 .article-content h2 {
   font-family: 'AkkuratMono', monospace; font-size:1.2rem; margin:1.2rem 0;
 }

@@ -2,16 +2,14 @@ import { getPosts, getSplashTxts } from '../supabase.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   // Contrast toggle
-  const contrastToggle = document.getElementById('contrast-toggle');
-  contrastToggle.addEventListener('click', () => {
+  document.getElementById('contrast-toggle').addEventListener('click', () => {
     document.body.classList.toggle('dark');
   });
 
   // Load splash texts
   (async () => {
     const txts = await getSplashTxts();
-    const idx = Math.floor(Math.random() * txts.length);
-    document.querySelector('.breathing-text').textContent = txts[idx] || '';
+    document.querySelector('.breathing-text').textContent = txts[Math.floor(Math.random() * txts.length)] || '';
   })();
 
   // Load posts, start in 'all' and select latest
@@ -21,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const content = document.querySelector('.article-content');
     const filters = document.querySelectorAll('.filter-pill');
 
-    // Setup filter buttons
+    // Setup filter buttons from initial working file
     filters.forEach(btn => {
       btn.addEventListener('click', () => {
         filters.forEach(b => b.classList.remove('active'));
@@ -38,14 +36,13 @@ document.addEventListener('DOMContentLoaded', () => {
       li.textContent = post.title;
       li.className = 'article';
       li.dataset.id = post.id;
-      li.dataset.filter = post.category; // ensure posts have "category" field
+      li.dataset.filter = post.category || 'all';
       li.addEventListener('click', () => {
         document.querySelectorAll('.article.selected').forEach(el => el.classList.remove('selected'));
         li.classList.add('selected');
         content.innerHTML = `<h2>${post.title}</h2>${post.content}`;
       });
       list.appendChild(li);
-      // Auto-select latest
       if (idx === 0) li.click();
     });
   })();
