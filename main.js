@@ -1,5 +1,5 @@
 import { supabase } from './supabase.js';
-import { zoom, select } from 'https://cdn.jsdelivr.net/npm/d3@7/+esm';
+import { zoom, select, zoomIdentity } from 'https://cdn.jsdelivr.net/npm/d3@7/+esm';
 
 async function init() {
   const { data: files, error } = await supabase
@@ -17,11 +17,9 @@ async function init() {
   const height = rows * cell + (rows + 1) * gap;
 
   const svg = select('#svg-canvas');
-  // Set viewBox to include full grid with border
   svg.attr('viewBox', [0, 0, width, height]);
 
-  const container = svg.append('g')
-    .attr('transform', `translate(0,0)`);
+  const container = svg.append('g');
 
   files.forEach((file, i) => {
     const col = i % cols, row = Math.floor(i / cols);
@@ -42,14 +40,14 @@ async function init() {
       container.attr('transform', event.transform);
     });
 
-  svg.call(zoomBehavior);
+  svg.call(zoomBehavior)
+     .call(zoomBehavior.transform, zoomIdentity.translate((svg.node().clientWidth - width) / 2,
+                                                        (svg.node().clientHeight - height) / 2)
+                                              .scale(Math.min(svg.node().clientWidth / width,
+                                                              svg.node().clientHeight / height)));
 
-  // Initialize zoom so that entire grid fits and is centered
-  const vp = document.getElementById('viewport').getBoundingClientRect();
-  const initialScale = Math.min(vp.width / width, vp.height / height);
-  const tx = (vp.width - width * initialScale) / 2;
-  const ty = (vp.height - height * initialScale) / 2;
-  svg.call(zoomBehavior.transform, select.zoomIdentity.translate(tx, ty).scale(initialScale));
+  // Ensure pan on mouse drag works without prior zoom
+  svg.on("dblclick.zoom", null); // disable dblclick zoom if undesired
 }
 
 window.addEventListener('DOMContentLoaded', init);
