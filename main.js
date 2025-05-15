@@ -1,5 +1,5 @@
 import { supabase } from './supabase.js';
-import panzoom from '@panzoom/panzoom';
+import panzoom from 'https://cdn.jsdelivr.net/npm/@panzoom/panzoom@9.4.0/dist/panzoom.es.js';
 
 const viewport = document.getElementById('viewport');
 const imageGrid = document.getElementById('image-grid');
@@ -23,6 +23,7 @@ async function init() {
   // Configure grid layout
   imageGrid.style.gridTemplateColumns = `repeat(${columns}, ${cellSize}px)`;
   imageGrid.style.gridAutoRows = `${cellSize}px`;
+  imageGrid.style.gap = `${gap}px`;
 
   // Calculate full grid size
   const gridWidth = columns * cellSize + (columns - 1) * gap;
