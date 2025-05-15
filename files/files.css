@@ -545,3 +545,27 @@ body.dark .arrow-icon, body.dark .contrast-icon{filter:brightness(0) saturate(10
     overscroll-behavior: contain !important;
   }
 }
+
+
+/* Increase bottom spacing for lists and articles */
+.articles {
+  padding-bottom: 5rem !important;
+}
+.articles .article {
+  margin-bottom: 3rem !important;
+}
+.article-content {
+  padding-bottom: 5rem !important;
+}
+
+/* Reduce vertical bounce and restore horizontal swipe-back on mobile */
+@media (max-width: 600px) {
+  .main-content {
+    overscroll-behavior-y: contain !important;
+    overscroll-behavior-x: auto !important;
+  }
+  .container {
+    overscroll-behavior-x: auto !important;
+    overscroll-behavior-y: contain !important;
+  }
+}
