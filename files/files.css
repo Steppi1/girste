@@ -44,9 +44,17 @@ body.dark .home-icon { filter: invert(1); }
 .contrast-icon { filter: brightness(0) saturate(100%); }
 body.dark .contrast-icon { filter: brightness(0) saturate(100%) invert(1); }
 
-/* Separators */
-.separator { width:80%; margin:0.5rem auto; border:none; border-top:1px solid #ddd; }
-body.dark .separator { border-top-color: rgba(255,255,255,0.2); } /* less visible in dark */
+/* Separators: uniform, less visible in both modes */
+.separator {
+  width:80%; margin:0.5rem auto;
+  border:none; border-top:1px solid rgba(255,255,255,0.2);
+}
+/* For light mode override to a light-gray */
+html:not(.dark) .separator {
+  border-top-color: rgba(0,0,0,0.2);
+}
+/* extra spacing for filters bottom separator */
+.filters-sep { margin-top:1rem; }
 
 /* Splash text */
 .header-phrase { text-align:center; margin:0.4rem 0; }
@@ -57,27 +65,21 @@ body.dark .separator { border-top-color: rgba(255,255,255,0.2); } /* less visibl
 @keyframes breathe {0%,100%{transform:scale(1);}50%{transform:scale(1.05);}}
 
 /* Filters accordion */
-.filters-accordion {
-  margin:0 0.8rem; 
-  text-align: center; /* center summary + list */
-}
+.filters-accordion { margin:0 0.8rem; text-align:center; }
 .filters-summary {
   font-family:'AkkuratMono', monospace; font-size:0.9rem; cursor:pointer;
-  list-style:none; outline:none; display:inline-block; position:relative;
+  list-style:none; outline:none; display:inline-block;
 }
 .filters-summary::-webkit-details-marker { display:none; }
-.filters-summary::after {
-  content: '▼'; margin-left:0.3rem;
-}
-.filters-accordion[open] .filters-summary::after {
-  content: '▲';
+.filters-summary::after { content:'▼'; margin-left:0.3rem; }
+.filters-accordion[open] .filters-summary::after { content:'▲'; }
+
+/* Filters list centered */
+.filters-list {
+  display:inline-flex; flex-direction:column; gap:0.4rem; padding:0.6rem 0 0 0;
 }
 
-/* Filters list centered under summary */
-.filters-list {
-  display:flex; flex-direction:column; gap:0.4rem;
-  padding:0.6rem 0 0 0; display:inline-flex; align-items:center;
-}
+/* Filter-pill text style */
 .filter-pill {
   font-family:'AkkuratLight', monospace; font-size:0.85rem;
   text-transform:uppercase; cursor:pointer; color:inherit;

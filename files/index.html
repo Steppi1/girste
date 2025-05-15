@@ -7,12 +7,12 @@
   <link rel="icon" href="/assets/girstefav.png">
   <link rel="stylesheet" href="files.css">
 </head>
-<body class="dark">  <!-- Start in dark mode -->
+<body class="dark"> <!-- Always start in dark -->
   <div class="container">
     <nav class="sidebar">
       <div class="title-block">
         <h1 class="site-title">
-          <span class="title-text"><strong>GIRSTE’S</strong>files</span>
+          <span class="title-text"><strong>GIRSTE’S</strong> files</span>
         </h1>
         <div class="icon-row">
           <a href="/"><img src="/assets/arrow.svg" alt="Home" class="home-icon"></a>
@@ -22,7 +22,7 @@
       <hr class="separator">
       <p class="header-phrase"><span class="breathing-text"></span></p>
       <hr class="separator">
-      <details class="filters-accordion" open>
+      <details class="filters-accordion"> <!-- start closed -->
         <summary class="filters-summary">FILTERS</summary>
         <div class="filters-list">
           <span class="filter-pill active" data-filter="all">ALL</span>
@@ -31,7 +31,7 @@
           <span class="filter-pill" data-filter="blog">NOTES</span>
         </div>
       </details>
-      <hr class="separator">
+      <hr class="separator filters-sep"> <!-- adjust spacing -->
       <ul class="articles" id="article-list"></ul>
     </nav>
     <main class="main-content">
