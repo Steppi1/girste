@@ -498,3 +498,9 @@ body.dark .arrow-icon, body.dark .contrast-icon{filter:brightness(0) saturate(10
 .article-content {
   padding-bottom: 2rem !important;
 }
+
+
+/* Restore vertical scrolling for article panel */
+.main-content, .article-content {
+  overflow-y: auto !important;
+}
