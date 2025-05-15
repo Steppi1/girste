@@ -1,15 +1,42 @@
+<!--
+Project: Mosaic Portfolio Index
+Files:
+  index.html
+  css/style.css
+  js/app.js
+
+Uses:
+  - Akkurat-Mono.otf in /fonts/
+  - arrow.svg in /assets/
+  - supabase.js client in project root
+-->
 <!DOCTYPE html>
-<html lang="it">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Mosaico Immagini</title>
-  <link rel="stylesheet" href="./style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mosaic Portfolio</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <div id="viewport">
-    <svg id="svg-canvas"></svg>
-  </div>
-  <script type="module" src="./main.js"></script>
+  <header class="top-bar">
+    <div class="intro">
+      <h1>Carlos Bocai</h1>
+      <p>is a brazilian graphic designer based in Brooklyn, NY.<br>
+      associate design director <a href="#">Base</a>, teacher <a href="#">Aprender Design</a>,<br>
+      half of <a href="#">cbjbworks</a><br>
+      previously <a href="#">JKR</a>, <a href="#">&Walsh</a>, <a href="#">Gretel</a>, <a href="#">Atolón de Mororoa</a></p>
+    </div>
+    <a href="files.html" class="arrow-link">
+      <img src="assets/arrow.svg" alt="Go to files">
+    </a>
+  </header>
+
+  <main>
+    <section id="mosaic" class="mosaic-container"></section>
+  </main>
+
+  <script src="supabase.js"></script>
+  <script src="js/app.js"></script>
 </body>
 </html>
