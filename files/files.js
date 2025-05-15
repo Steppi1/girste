@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
       li.textContent = post.title;
       li.className = 'article';
       li.dataset.id = post.id;
-      li.dataset.filter = post.type; // use the 'type' field
+      li.dataset.filter = post.tag; // use the 'tag' field for filtering
       li.addEventListener('click', () => {
         document.querySelectorAll('.article.selected').forEach(el => el.classList.remove('selected'));
         li.classList.add('selected');
