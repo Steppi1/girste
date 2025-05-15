@@ -90,3 +90,17 @@ body.dark .arrow-icon, body.dark .contrast-icon{filter:brightness(0) saturate(10
     box-sizing: border-box !important;
   }
 }
+
+/* FINAL OVERRIDE FOR ARTICLE CONTENT TO FIT VIEWPORT */
+/* Sidebar width is 220px, so content fills remainder */
+@media (min-width: 600px) {
+  .article-content {
+    max-width: none !important;
+    width: calc(100vw - 220px) !important;
+    margin: 0 !important;
+    padding: 2rem !important;
+    box-sizing: border-box !important;
+    overflow-wrap: break-word !important;
+    word-break: break-word !important;
+  }
+}
