@@ -1,3 +1,5 @@
+import { supabase } from '../supabase.js';
+
 (async () => {
   const { data, error } = await supabase.storage
     .from('mosaic')
@@ -17,7 +19,7 @@
     })
   );
 
-  // Fisher–Yates shuffle
+  // Shuffle URLs
   for (let i = urls.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [urls[i], urls[j]] = [urls[j], urls[i]];

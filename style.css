@@ -1,6 +1,7 @@
 @font-face {
   font-family: 'AkkuratMono';
   src: url('../fonts/Akkurat-Mono.woff2') format('woff2'),
+       url('../fonts/Akkurat-Mono.woff') format('woff'),
        url('../fonts/Akkurat-Mono.otf') format('opentype');
   font-weight: normal;
   font-style: normal;
@@ -24,7 +25,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1.5rem;
+  padding: 1rem 2rem;
 }
 
 .intro p {
@@ -32,36 +33,25 @@ body {
   line-height: 1.4;
 }
 
-.intro a {
-  text-decoration: underline;
-}
-
 .arrow-link img {
-  width: 40px;
+  width: 30px;
+  transform: scaleX(-1);
 }
 
 main {
   flex: 1;
-  padding: 1rem;
+  padding: 1rem 2rem;
+  overflow-y: auto;
 }
 
 .mosaic-container {
-  display: flex;
-  overflow-x: auto;
-  gap: 0.5rem;
-  padding-bottom: 1rem;
+  column-count: 3;
+  column-gap: 1rem;
 }
 
 .mosaic-container img {
-  flex: 0 0 auto;
-  max-height: 180px;
-  border-radius: 4px;
-}
-
-.mosaic-container::-webkit-scrollbar {
-  display: none;
-}
-.mosaic-container {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+  width: 100%;
+  display: block;
+  margin-bottom: 1rem;
+  break-inside: avoid;
 }
