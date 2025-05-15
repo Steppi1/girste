@@ -390,3 +390,25 @@ body.dark .arrow-icon, body.dark .contrast-icon{filter:brightness(0) saturate(10
     scroll-snap-stop: always !important;
   }
 }
+
+
+/* MOBILE REFINED NAVIGATION: allow swipe from article to sidebar and prevenire bounce */
+@media (max-width: 600px) {
+  .container {
+    display: flex !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  .sidebar,
+  .main-content {
+    scroll-snap-align: start !important;
+  }
+  .main-content {
+    flex: 0 0 100vw !important;
+    overflow-y: auto !important;
+    touch-action: pan-y !important;         /* only vertical scroll inside article */
+    overscroll-behavior-x: contain !important; /* prevent bounce */
+  }
+}
