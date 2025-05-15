@@ -220,3 +220,23 @@ body.dark .arrow-icon, body.dark .contrast-icon{filter:brightness(0) saturate(10
     word-break: break-all !important;
   }
 }
+
+
+/* MOBILE: Reimposta la larghezza fissa della sidebar e forza wrapping dei titoli */
+@media (max-width: 600px) {
+  .sidebar {
+    flex: 0 0 var(--sidebar-width) !important;
+    max-width: var(--sidebar-width) !important;
+    min-width: var(--sidebar-width) !important;
+  }
+  .articles .article {
+    white-space: normal !important;
+    overflow-wrap: break-word !important;
+    word-break: break-all !important;
+  }
+  /* Assicurati che il container scrolli orizzontalmente */
+  .container {
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+  }
+}
