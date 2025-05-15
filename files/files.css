@@ -25,10 +25,8 @@ body.dark {
 
 /* Layout */
 .container { display:flex; height:100%; overflow-x:auto; overflow-y:hidden; }
-.sidebar {
-  flex:0 0 220px; height:100vh; display:flex; flex-direction:column;
-  border-right:1px solid #ddd; background:inherit; position:sticky; top:0;
-}
+.sidebar { flex:0 0 220px; height:100vh; display:flex; flex-direction:column;
+  border-right:1px solid #ddd; background:inherit; position:sticky; top:0; }
 
 /* Title block */
 .title-block { padding:0.8rem 1rem; }
@@ -41,18 +39,17 @@ body.dark {
 
 /* Icon row under title */
 .icon-row { display:flex; align-items:center; gap:0.5rem; margin-top:0.5rem; }
-.home-icon, .contrast-icon { width:55px; height:auto; cursor:pointer; }
-/* pure black in light */
+/* Home arrow always inverted in dark */
+.home-icon { width:55px; height:auto; cursor:pointer; }
+body.dark .home-icon { filter: invert(1); }
+
+/* Contrast icon styled via brightness */
 .contrast-icon {
-  filter: none;
-  /* ensure SVG takes currentColor fill: */
-  color: #000;
-  /* for inline SVG this works; if external, ensure filter */
+  width:55px; height:auto; cursor:pointer;
+  filter: brightness(0) saturate(100%); /* solid black */
 }
-/* invert icon in dark */
-body.dark .contrast-icon,
-body.dark .home-icon {
-  filter: invert(1);
+body.dark .contrast-icon {
+  filter: brightness(0) saturate(100%) invert(1); /* solid white */
 }
 
 /* Separators and splash */
@@ -70,10 +67,7 @@ body.dark .home-icon {
 
 /* Filters */
 /* Buttons font in Light */
-.filters {
-  display:flex; flex-direction:column; gap:0.4rem;
-  margin:0.6rem 0; padding:0 0.8rem;
-}
+.filters { display:flex; flex-direction:column; gap:0.4rem; margin:0.6rem 0; padding:0 0.8rem; }
 .filter-pill {
   font-family: 'AkkuratLight', monospace;
   font-size:0.85rem;
@@ -83,13 +77,10 @@ body.dark .home-icon {
 .filter-pill:hover {
   background: rgba(0,0,0,0.05);
 }
-/* Dark mode: invert border/text, no fill */
 body.dark .filter-pill {
   color: #fff; border-color: #fff; background: transparent;
 }
-.filter-pill.active {
-  font-weight:700;
-}
+.filter-pill.active { font-weight:700; }
 
 /* Articles list */
 .articles { flex:1; overflow-y:auto; list-style:none; padding:0 0.8rem 6rem 0.8rem; }
