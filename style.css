@@ -1,30 +1,32 @@
-/* Reset margini e padding */
+/* Reset margins and padding, set background to black */
 html, body {
   margin: 0;
   padding: 0;
   height: 100%;
   overflow: hidden;
+  background-color: #000;
 }
 
-/* Contenitore fisso (viewport) */
+/* Fixed viewport covering full screen */
 #viewport {
   position: fixed;
   top: 0;
   left: 0;
-  /* dimensioni fissate al caricamento via JS */
+  width: 100vw;
+  height: 100vh;
   overflow: hidden;
 }
 
-/* Griglia interna più grande del viewport */
+/* Grid container; layout controlled via JS */
 #image-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 12px;
 }
 
-/* Immagini alla massima qualità e riempiono la cella */
+/* Images fill their cells */
 #image-grid img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
 }
