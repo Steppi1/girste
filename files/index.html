@@ -7,29 +7,28 @@
   <link rel="icon" href="/assets/girstefav.png">
   <link rel="stylesheet" href="files.css">
 </head>
-<body class="dark">
+<body>
   <div class="container">
     <nav class="sidebar">
-      <!-- Title and splash -->
       <div class="title-block">
-        <h1 class="site-title">GIRSTE’S files</h1>
-        <p class="header-phrase"><span class="breathing-text"></span></p>
+        <h1 class="site-title">
+          <span class="title-text"><strong>GIRSTE’S</strong> files</span>
+        </h1>
+        <div class="icon-row">
+          <a href="/"><img src="/assets/arrow.svg" alt="Home" class="home-icon"></a>
+          <img src="/assets/contrast.svg" alt="Toggle contrast" class="contrast-icon" id="contrast-toggle">
+        </div>
       </div>
-      <!-- Icons -->
-      <div class="icon-row">
-        <a href="/" class="icon-link"><img src="/assets/arrow.svg" alt="Home" class="icon arrow-icon"></a>
-        <img src="/assets/contrast.svg" alt="Toggle contrast" class="icon contrast-icon" id="contrast-toggle">
-      </div>
-      <!-- Filters static -->
-      <div class="filters-static">
-        <span class="filter-pill active" data-filter="all">ALL</span>
-        <span class="filter-pill" data-filter="stories">CASES</span>
-        <span class="filter-pill" data-filter="tools">TOOLS</span>
-        <span class="filter-pill" data-filter="blog">NOTES</span>
-      </div>
-      <!-- Separator -->
       <hr class="separator">
-      <!-- Articles list -->
+      <p class="header-phrase"><span class="breathing-text">— splash frase qui —</span></p>
+      <hr class="separator">
+      <div class="filters">
+        <button class="filter-pill" data-filter="stories">cases</button>
+        <button class="filter-pill" data-filter="tools">tools</button>
+        <button class="filter-pill" data-filter="blog">notes</button>
+        <button class="filter-pill active" data-filter="all">all</button>
+      </div>
+      <hr class="separator">
       <ul class="articles" id="article-list"></ul>
     </nav>
     <main class="main-content">

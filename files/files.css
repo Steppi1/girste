@@ -26,7 +26,7 @@ body.dark{background:#000;color:#fff;}
 body.dark .arrow-icon, body.dark .contrast-icon{filter:brightness(0) saturate(100%) invert(1);}
 
 /* filters */
-.filters-static{display:flex;justify-content:center;gap:1.5rem;font-family:'AkkuratLight',monospace;font-size:0.85rem;text-transform:uppercase;}
+.filters-static{display:flex;justify-content:center;gap:1rem;font-family:'AkkuratLight',monospace;font-size:0.8rem;text-transform:uppercase;}
 .filter-pill{cursor:pointer;color:inherit;text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px;font-weight:300;}
 .filter-pill.active{font-family:'AkkuratMono',monospace;font-weight:700;}
 .filter-pill:hover{opacity:0.7;}
