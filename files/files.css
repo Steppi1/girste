@@ -276,3 +276,27 @@ body.dark .arrow-icon, body.dark .contrast-icon{filter:brightness(0) saturate(10
     overflow-y: auto !important;
   }
 }
+
+
+/* MOBILE NAVIGATION FINAL FIX: enable proper horizontal swipe and block vertical overflow */
+@media (max-width: 600px) {
+  .container {
+    display: flex !important;
+    flex-direction: row !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch !important;
+    width: 100vw !important;
+    height: 100vh !important;
+  }
+  .sidebar {
+    flex: 0 0 var(--sidebar-width) !important;
+    scroll-snap-align: start !important;
+  }
+  .main-content {
+    flex: 0 0 100vw !important;
+    scroll-snap-align: start !important;
+    overflow-y: auto !important;
+  }
+}
