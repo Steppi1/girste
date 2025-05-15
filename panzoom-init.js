@@ -1,5 +1,5 @@
-// Correct ES module import path for panzoom
-import panzoom from 'https://cdn.jsdelivr.net/npm/@panzoom/panzoom@9.4.0/dist/panzoom.esm.js';
+// Reverted to original working CDN path
+import panzoom from 'https://cdn.jsdelivr.net/npm/@panzoom/panzoom@9.4.0/dist/panzoom.es.js';
 
 export function initPanzoom() {
   const grid = document.getElementById('image-grid');
