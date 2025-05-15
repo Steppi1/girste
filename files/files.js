@@ -2,41 +2,29 @@ import { getPosts } from '../supabase.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   // Contrast toggle
-  const contrastToggle = document.getElementById('contrast-toggle');
-  contrastToggle.addEventListener('click', () => {
+  document.getElementById('contrast-toggle').addEventListener('click', () => {
     document.body.classList.toggle('dark');
   });
 
-  // Load posts
+  // Load posts, start in 'all' and select latest
   (async () => {
     const posts = await getPosts();
     const list = document.getElementById('article-list');
     const content = document.querySelector('.article-content');
-
-    let selectedId = null;
-
-    posts.forEach(post => {
+    // sort by date descending already done by supabase
+    posts.forEach((post, idx) => {
       const li = document.createElement('li');
       li.textContent = post.title;
       li.className = 'article';
+      li.dataset.id = post.id;
       li.addEventListener('click', () => {
-        // Deselect previous
-        if (selectedId) {
-          document.querySelector(\`.article[data-id="\${selectedId}"]\`).classList.remove('selected');
-        }
-        // Select new
+        document.querySelectorAll('.article.selected').forEach(el => el.classList.remove('selected'));
         li.classList.add('selected');
-        selectedId = post.id;
-        // Render content
-        content.innerHTML = \`<h2>\${post.title}</h2>\${post.content}\`;
+        content.innerHTML = `<h2>${post.title}</h2>${post.content}`;
       });
-      li.setAttribute('data-id', post.id);
       list.appendChild(li);
+      // auto-select first (latest)
+      if (idx === 0) li.click();
     });
-
-    // Automatically select first
-    if (posts.length) {
-      list.querySelector('.article').click();
-    }
   })();
 });

@@ -9,125 +9,91 @@
   font-weight: 300;
 }
 
-/* Base reset */
+/* Reset */
 * { margin:0; padding:0; box-sizing:border-box; }
 
-/* Default = Light */
+/* Light mode default */
 html, body {
   width:100%; height:100%;
   font-family: 'AkkuratLight', monospace;
   font-size:15px; overflow:hidden;
   background:#fff; color:#000;
 }
-
-/* Dark mode */
 body.dark {
   background:#000; color:#fff;
 }
 
-/* container */
-.container {
-  display:flex; height:100%;
-  overflow-x:auto; overflow-y:hidden;
-}
-
-/* sidebar */
+/* Layout */
+.container { display:flex; height:100%; overflow-x:auto; overflow-y:hidden; }
 .sidebar {
-  flex:0 0 220px; height:100vh;
-  display:flex; flex-direction:column;
-  border-right:1px solid #ddd;
-  background:inherit; position:sticky; top:0;
+  flex:0 0 220px; height:100vh; display:flex; flex-direction:column;
+  border-right:1px solid #ddd; background:inherit; position:sticky; top:0;
 }
 
-/* title row */
-.title-row.stacked-title {
-  display:flex; align-items:center;
-  padding:0.8rem 1rem 0.4rem 1rem;
-  gap:0.5rem;
-}
-.home-icon {
-  width:55px; height:auto; display:block;
-  margin-right:1rem;
-}
-.title-text {
+/* Title block */
+.title-block { padding:0.8rem 1rem; }
+.site-title {
   font-family: 'AkkuratMono', monospace;
   font-size:1.35rem; font-weight:400;
   white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
 }
+.title-block .title-text strong { font-weight:700; }
+
+/* Icon row under title */
+.icon-row { display:flex; align-items:center; gap:0.5rem; margin-top:0.5rem; }
+.home-icon { width:55px; height:auto; }
 .contrast-icon {
-  width:24px; height:auto; cursor:pointer;
-  filter: none; /* ensure pure black */
+  width:24px; height:auto; cursor:pointer; filter:none;
 }
 
-/* separators and splash */
-.separator {
-  border:none; border-top:1px solid #ddd;
-  margin:0.4rem 0;
-}
-.header-phrase {
-  text-align:center; margin:0.4rem 0;
-}
+/* Separators and splash */
+.separator { border:none; border-top:1px solid #ddd; margin:0.4rem 0; }
+.header-phrase { text-align:center; margin:0.4rem 0; }
 .breathing-text {
-  display:inline-block;
-  font-family: 'AkkuratLight', monospace;
-  animation: breathe 1.5s ease-in-out infinite;
+  display:inline-block; font-family: 'AkkuratLight', monospace;
+  animation:breathe 1.5s ease-in-out infinite;
 }
-@keyframes breathe {
-  0%,100% { transform:scale(1); }
-  50%   { transform:scale(1.05); }
-}
+@keyframes breathe { 0%,100%{transform:scale(1);}50%{transform:scale(1.05);} }
 
-/* filters */
+/* Filters */
 .filters {
-  display:flex; flex-direction:column;
-  gap:0.4rem; margin:0.6rem 0; padding:0 0.8rem;
+  display:flex; flex-direction:column; gap:0.4rem;
+  margin:0.6rem 0; padding:0 0.8rem;
 }
 .filter-pill {
-  font-family: 'AkkuratMono', monospace;
-  font-size:0.85rem; color:inherit;
+  font-family: 'AkkuratMono', monospace; font-size:0.85rem;
   border:1px solid currentColor; background:transparent;
-  padding:0.4rem 0.8rem; cursor:pointer;
-  border-radius:999px;
+  padding:0.4rem 0.8rem; cursor:pointer; border-radius:999px;
 }
-.filter-pill:hover {
-  background:rgba(0,0,0,0.05);
-}
+.filter-pill.active { font-weight:700; }
+.filter-pill:hover { background:rgba(0,0,0,0.05); }
 
-/* articles list */
+/* Article list */
 .articles {
   flex:1; overflow-y:auto; list-style:none;
   padding:0 0.8rem 6rem 0.8rem;
 }
 .articles::-webkit-scrollbar { display:none; }
-
-/* article items */
 .article {
   padding:0.5rem 0; cursor:pointer;
-  font-family: 'AkkuratLight', monospace;
-  font-weight:300;
+  font-family: 'AkkuratLight', monospace; font-weight:300;
 }
 .article.selected {
-  font-family: 'AkkuratMono', monospace;
-  font-weight:700;
+  font-family:'AkkuratMono', monospace; font-weight:700;
 }
 
-/* main content */
-.main-content {
-  flex:1; overflow-y:auto; background:inherit;
-}
+/* Main content */
+.main-content { flex:1; overflow-y:auto; background:inherit; }
 .article-content {
   padding:2.6rem 1.8rem 8rem 1.8rem;
   max-width:720px; margin:0 auto;
 }
 .article-content h2 {
-  font-family: 'AkkuratMono', monospace;
-  font-size:1.2rem; margin:1.2rem 0;
+  font-family: 'AkkuratMono', monospace; font-size:1.2rem; margin:1.2rem 0;
 }
-.article-content p {
-  margin-bottom:1.4rem; line-height:1.55;
-}
+.article-content p { margin-bottom:1.4rem; line-height:1.55; }
 
-/* mobile adjustments */
+/* Responsive */
 @media (max-width:600px) {
-  .title-row.stacked-title .home-icon { width:72px; }
+  .home-icon { width:72px; }
 }

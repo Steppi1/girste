@@ -10,14 +10,14 @@
 <body>
   <div class="container">
     <nav class="sidebar">
-      <div class="title-row stacked-title">
-        <a href="/">
-          <img src="/assets/arrow.svg" alt="Home" class="home-icon">
-        </a>
+      <div class="title-block">
         <h1 class="site-title">
           <span class="title-text"><strong>GIRSTE’S</strong> files</span>
         </h1>
-        <img src="/assets/contrast.svg" alt="Toggle contrast" class="contrast-icon" id="contrast-toggle">
+        <div class="icon-row">
+          <a href="/"><img src="/assets/arrow.svg" alt="Home" class="home-icon"></a>
+          <img src="/assets/contrast.svg" alt="Toggle contrast" class="contrast-icon" id="contrast-toggle">
+        </div>
       </div>
       <hr class="separator">
       <p class="header-phrase"><span class="breathing-text">— splash frase qui —</span></p>
@@ -35,6 +35,7 @@
       <div class="article-content"></div>
     </main>
   </div>
+  <script type="module" src="../supabase.js"></script>
   <script type="module" src="files.js"></script>
 </body>
 </html>
