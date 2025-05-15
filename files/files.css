@@ -136,3 +136,20 @@ body.dark .arrow-icon, body.dark .contrast-icon{filter:brightness(0) saturate(10
     word-break: break-all !important;
   }
 }
+
+
+/* Mobile: force wrapping of article text and titles, ensure no overflow */
+@media (max-width: 600px) {
+  .articles .article {
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    word-break: break-all !important;
+  }
+
+  .main-content .article-content, 
+  .main-content .article-content * {
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    word-break: break-all !important;
+  }
+}
