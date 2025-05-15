@@ -1,29 +1,30 @@
 /* 1) reset + sfondo nero */
 html, body {
-  margin: 0; padding: 0;
-  width: 100vw;  height: 100vh;
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
   background: #000;
   overflow: hidden;
 }
 
-/* 2) wrapper quadrato 100vmin, centrato */
+/* 2) wrapper full viewport */
 #wrapper {
   position: absolute;
-  top: 50%; left: 50%;
-  width: 100vmin; height: 100vmin;
-  transform: translate(-50%, -50%);
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
   overflow: hidden;
   background: #000;
 }
 
-/* 3) panzoom = griglia piena del wrapper */
+/* 3) panzoom container grid */
 #panzoom {
-  width: 100%; height: 100%;
   display: grid;
   gap: 12px;
-  /* usiamo --cols per il numero di colonne */
-  grid-template-columns: repeat(var(--cols, 1), 1fr);
-  /* inserimento per riga, poi su nuova riga */
+  /* colonne responsive senza JS */
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   grid-auto-flow: row;
 }
 
