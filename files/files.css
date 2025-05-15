@@ -423,3 +423,25 @@ body.dark .arrow-icon, body.dark .contrast-icon{filter:brightness(0) saturate(10
     overscroll-behavior-x: auto !important;
   }
 }
+
+/* MOBILE ULTIMATE NAVIGATION FIX: enable smooth swipe-back and forward */
+@media (max-width: 600px) {
+  .container {
+    display: flex !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
+    scroll-snap-type: x proximity !important;
+    touch-action: pan-x !important;
+  }
+  .sidebar, 
+  .main-content {
+    flex-shrink: 0 !important;
+    scroll-snap-align: start !important;
+    scroll-snap-stop: always !important;
+  }
+  .main-content {
+    overscroll-behavior-x: contain !important;
+    touch-action: pan-x pan-y !important;
+  }
+}
