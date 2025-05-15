@@ -52,21 +52,25 @@ body.dark .home-icon {
 /* Separators and splash */
 .separator { border:none; border-top:1px solid #ddd; margin:0.4rem 0; }
 .header-phrase { text-align:center; margin:0.4rem 0; }
+/* Splash text in Light */
 .breathing-text {
-  display:inline-block; font-family: 'AkkuratMono', monospace;
-  font-weight:400;
+  display:inline-block;
+  font-family: 'AkkuratLight', monospace;
+  font-weight:300;
   animation:breathe 1.5s ease-in-out infinite;
   color: inherit;
 }
 @keyframes breathe { 0%,100%{transform:scale(1);}50%{transform:scale(1.05);} }
 
 /* Filters */
+/* Buttons font in Light */
 .filters {
   display:flex; flex-direction:column; gap:0.4rem;
   margin:0.6rem 0; padding:0 0.8rem;
 }
 .filter-pill {
-  font-family: 'AkkuratMono', monospace; font-size:0.85rem;
+  font-family: 'AkkuratLight', monospace;
+  font-size:0.85rem;
   color:inherit; border:1px solid currentColor; background:transparent;
   padding:0.4rem 0.8rem; cursor:pointer; border-radius:999px;
 }
