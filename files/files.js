@@ -3,14 +3,12 @@ import { getPosts, getSplashTxts } from '../supabase.js';
 document.addEventListener('DOMContentLoaded', () => {
   // Contrast toggle
   const contrastToggle = document.getElementById('contrast-toggle');
-  contrastToggle.addEventListener('click', () => {
-    document.body.classList.toggle('dark');
-  });
+  contrastToggle.addEventListener('click', () => document.body.classList.toggle('dark'));
 
-  // Load splash texts
+  // Splash text
   (async () => {
     const txts = await getSplashTxts();
-    document.querySelector('.breathing-text').textContent = txts[Math.floor(Math.random() * txts.length)] || '';
+    document.querySelector('.breathing-text').textContent = txts[Math.floor(Math.random()*txts.length)] || '';
   })();
 
   // Load posts and setup filtering
@@ -36,23 +34,20 @@ document.addEventListener('DOMContentLoaded', () => {
       if (idx === 0) li.click();
     });
 
-    // Setup filter buttons
-    filters.forEach(btn => {
-      btn.addEventListener('click', () => {
-        filters.forEach(b => b.classList.toggle('active', b === btn));
-        const filterVal = btn.getAttribute('data-filter');
-        document.querySelectorAll('.article').forEach(li => {
-          li.style.display = (filterVal === 'all' || li.dataset.filter === filterVal) ? '' : 'none';
-        });
-        // After filtering, open first visible article
-        const firstVisible = Array.from(document.querySelectorAll('.article'))
-          .find(li => li.style.display !== 'none');
-        if (firstVisible) firstVisible.click();
+    // Setup filter click logic
+    filters.forEach(btn => btn.addEventListener('click', () => {
+      filters.forEach(b => b.classList.toggle('active', b===btn));
+      const f = btn.dataset.filter;
+      document.querySelectorAll('.article').forEach(li => {
+        li.style.display = (f==='all'||li.dataset.filter===f)?'':'none';
       });
-    });
+      // open first visible
+      const first = Array.from(document.querySelectorAll('.article')).find(li=>li.style.display!=='none');
+      if(first) first.click();
+    }));
 
-    // Activate 'all' filter by default
-    const allBtn = filters.find(b => b.getAttribute('data-filter') === 'all');
-    if (allBtn) allBtn.click();
+    // Activate 'all'
+    const allBtn = filters.find(b=>b.dataset.filter==='all');
+    if(allBtn) allBtn.click();
   })();
 });

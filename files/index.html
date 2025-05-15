@@ -22,12 +22,15 @@
       <hr class="separator">
       <p class="header-phrase"><span class="breathing-text">— splash frase qui —</span></p>
       <hr class="separator">
-      <div class="filters">
-        <button class="filter-pill" data-filter="stories">cases</button>
-        <button class="filter-pill" data-filter="tools">tools</button>
-        <button class="filter-pill" data-filter="blog">notes</button>
-        <button class="filter-pill active" data-filter="all">all</button>
-      </div>
+      <details class="filters-accordion" open>
+        <summary class="filters-summary">Filters</summary>
+        <div class="filters-list">
+          <span class="filter-pill" data-filter="cases">CASES</span>
+          <span class="filter-pill" data-filter="tools">TOOLS</span>
+          <span class="filter-pill" data-filter="notes">NOTES</span>
+          <span class="filter-pill active" data-filter="all">ALL</span>
+        </div>
+      </details>
       <hr class="separator">
       <ul class="articles" id="article-list"></ul>
     </nav>
