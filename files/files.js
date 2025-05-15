@@ -11,20 +11,20 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelector('.breathing-text').textContent = txts[Math.floor(Math.random() * txts.length)] || '';
   })();
 
-  // Load posts and filtering
+  // Load posts and setup filtering
   (async () => {
     const posts = await getPosts();
     const list = document.getElementById('article-list');
     const content = document.querySelector('.article-content');
     const filters = Array.from(document.querySelectorAll('.filter-pill'));
 
-    // Render articles
+    // Render articles with tag dataset
     posts.forEach((post, idx) => {
       const li = document.createElement('li');
       li.textContent = post.title;
       li.className = 'article';
       li.dataset.id = post.id;
-      li.dataset.filter = post.tag;
+      li.dataset.filter = post.tag; // reconnect to tag
       li.addEventListener('click', () => {
         document.querySelectorAll('.article.selected').forEach(el => el.classList.remove('selected'));
         li.classList.add('selected');
@@ -34,13 +34,14 @@ document.addEventListener('DOMContentLoaded', () => {
       if (idx === 0) li.click();
     });
 
-    // Setup filters
+    // Filter button logic
     filters.forEach(btn => {
       btn.addEventListener('click', () => {
-        filters.forEach(b => b.classList.toggle('active', b === btn));
-        const f = btn.getAttribute('data-filter');
+        filters.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active'); // active font-weight:700 per CSS
+        const filterVal = btn.getAttribute('data-filter');
         document.querySelectorAll('.article').forEach(li => {
-          li.style.display = (f === 'all' || li.dataset.filter === f) ? '' : 'none';
+          li.style.display = (filterVal === 'all' || li.dataset.filter === filterVal) ? '' : 'none';
         });
         // open first visible
         const first = Array.from(document.querySelectorAll('.article'))
@@ -49,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // Open all by default
+    // Activate 'all' by default
     const allBtn = filters.find(b => b.getAttribute('data-filter') === 'all');
     if (allBtn) allBtn.click();
   })();
