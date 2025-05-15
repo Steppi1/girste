@@ -569,3 +569,34 @@ body.dark .arrow-icon, body.dark .contrast-icon{filter:brightness(0) saturate(10
     overscroll-behavior-y: contain !important;
   }
 }
+
+
+/* Remove bottom margin from individual article list items */
+.articles .article {
+  margin-bottom: 0 !important;
+}
+
+/* Ensure only the end of the article list has bottom padding */
+.articles {
+  padding-bottom: 6rem !important;
+}
+
+/* Increase bottom padding of article content for safety */
+.article-content {
+  padding-bottom: 6rem !important;
+}
+
+/* MOBILE: Refine overscroll to reduce bounce and restore smooth swipe-back */
+@media (max-width: 600px) {
+  .container {
+    /* Prevent vertical bounce while allowing horizontal swipe */
+    overscroll-behavior-y: contain !important;
+    overscroll-behavior-x: auto !important;
+  }
+  .main-content {
+    /* Keep horizontal swipe active and reduce vertical bounce */
+    overscroll-behavior-y: contain !important;
+    overscroll-behavior-x: auto !important;
+    touch-action: pan-x pan-y !important;
+  }
+}
