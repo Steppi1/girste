@@ -482,3 +482,19 @@ body.dark .arrow-icon, body.dark .contrast-icon{filter:brightness(0) saturate(10
 .article-content {
   padding-bottom: 2rem !important;
 }
+
+
+/* Ensure bottom space for the entire article list container */
+.articles {
+  padding-bottom: 2rem !important;
+}
+
+/* Ensure space after each article item in the list */
+.articles .article {
+  margin-bottom: 1rem !important;
+}
+
+/* Ensure bottom spacing at the end of article content */
+.article-content {
+  padding-bottom: 2rem !important;
+}
