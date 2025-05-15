@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>girste’s</title>
-   <link rel="icon" href="girstefav.png" type="image/x-icon">
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Image Mosaic</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div id="wrapper">
-    <div id="panzoom"></div>
+  <div id="viewport">
+    <div id="image-grid"></div>
   </div>
-  
-  <script type="module" src="main.js"></script>
+
+  <script type="module" src="./supabase.js"></script>
+  <script type="module" src="./panzoom-init.js"></script>
+  <script type="module" src="./main.js"></script>
 </body>
 </html>

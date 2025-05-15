@@ -1,16 +1,16 @@
-// panzoom-init.js
-import panzoom from 'https://esm.sh/panzoom@9.4.3';
+import panzoom from 'panzoom';
 
-/**
- * Inizializza Panzoom senza calcoli di layout JS (layout gestito in CSS).
- *
- * @param {HTMLElement} container   il #panzoom
- * @returns {Panzoom} l’istanza Panzoom
- */
-export function setupPanzoom(container) {
-  // Crea l’istanza Panzoom con contenimento del panning all’interno del wrapper
-  return panzoom(container, {
+export function initPanzoom() {
+  const grid = document.getElementById('image-grid');
+  panzoom(grid, {
+    bounds: true,              // vincolo ai limiti del genitore
+    boundsPadding: 0,
     maxZoom: 5,
-    contain: 'outside'
+    minZoom: 1,
+    smoothScroll: false,
+    zoomDoubleClickSpeed: 1
   });
 }
+
+// inizializzo subito
+initPanzoom();
