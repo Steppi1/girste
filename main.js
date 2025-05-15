@@ -9,25 +9,25 @@ async function init() {
   const count = files.length;
   if (!count) return;
 
-  // 2. Calcola dimensioni griglia
+  // 2. Calcola dimensioni griglia con padding uniforme (gap su tutti i lati)
   const cols = Math.ceil(Math.sqrt(count));
   const rows = Math.ceil(count / cols);
   const cell = 200; // px
   const gap = 12;
 
-  const width  = cols * cell + (cols - 1) * gap;
-  const height = rows * cell + (rows - 1) * gap;
+  const width  = cols * cell + (cols + 1) * gap;
+  const height = rows * cell + (rows + 1) * gap;
 
   // 3. Crea SVG e <g> per zoom/pan
   const svg = select('#svg-canvas')
     .attr('viewBox', [0, 0, width, height]);
   const container = svg.append('g');
 
-  // 4. Inserisci immagini dal bucket 'mosaic'
+  // 4. Inserisci immagini con gap uniforme
   files.forEach((file, i) => {
     const col = i % cols, row = Math.floor(i / cols);
-    const x = col * (cell + gap);
-    const y = row * (cell + gap);
+    const x = gap + col * (cell + gap);
+    const y = gap + row * (cell + gap);
     const url = supabase
       .storage.from('mosaic').getPublicUrl(file.name).data.publicUrl;
     container.append('image')
@@ -36,19 +36,21 @@ async function init() {
       .attr('href', url);
   });
 
-  // 5. Configura zoom con bound ampio
+  // 5. Configura zoom (drag, pinch, dblclick) con bound ampio
   svg.call(zoom()
     .scaleExtent([0.1, 4])
-    .translateExtent([[-width, -height], [2*width, 2*height]])
+    .translateExtent([[-width, -height], [2 * width, 2 * height]])
     .on('zoom', (event) => {
       container.attr('transform', event.transform);
     })
   );
 
-  // 6. De-zoom iniziale per fit-to-screen
+  // 6. De-zoom iniziale al centro del viewport
   const vp = document.getElementById('viewport').getBoundingClientRect();
-  const initScale = Math.min(vp.width/width, vp.height/height);
-  container.attr('transform', `translate(${(vp.width-width*initScale)/2},${(vp.height-height*initScale)/2}) scale(${initScale})`);
+  const initScale = Math.min(vp.width / width, vp.height / height);
+  const offsetX = vp.width / 2 - (width * initScale) / 2;
+  const offsetY = vp.height / 2 - (height * initScale) / 2;
+  container.attr('transform', `translate(${offsetX},${offsetY}) scale(${initScale})`);
 }
 
 window.addEventListener('DOMContentLoaded', init);
