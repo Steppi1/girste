@@ -21,11 +21,6 @@ body {
   transition: background 0.3s, color 0.3s;
 }
 
-body.dark {
-  background: #000;
-  color: #fff;
-}
-
 .top-bar {
   display: flex;
   justify-content: space-between;
@@ -40,7 +35,7 @@ body.dark {
 }
 
 .intro h1 {
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem; /* icons closer */
 }
 
 .icon-group {
@@ -49,10 +44,14 @@ body.dark {
 }
 
 .icon {
-  width: 24px;
-  margin-right: 0.5rem;
+  width: 20px; /* smaller icons */
+  margin-right: 1rem; /* more separation */
   cursor: pointer;
   transition: transform 0.2s, filter 0.3s;
+}
+
+.icon:last-child {
+  margin-right: 0;
 }
 
 .icon:hover {
@@ -64,7 +63,7 @@ body.dark .icon {
 }
 
 .arrow-link img {
-  width: 60px; /* reduced size */
+  width: 80px; /* restore original size */
   animation: breath 2s ease-in-out infinite;
   transform-origin: center center;
 }
