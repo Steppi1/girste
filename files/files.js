@@ -11,7 +11,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const posts = await getPosts();
     const list = document.getElementById('article-list');
     const content = document.querySelector('.article-content');
-    // sort by date descending already done by supabase
     posts.forEach((post, idx) => {
       const li = document.createElement('li');
       li.textContent = post.title;
@@ -23,7 +22,6 @@ document.addEventListener('DOMContentLoaded', () => {
         content.innerHTML = `<h2>${post.title}</h2>${post.content}`;
       });
       list.appendChild(li);
-      // auto-select first (latest)
       if (idx === 0) li.click();
     });
   })();

@@ -19,6 +19,7 @@ html, body {
   font-size:15px; overflow:hidden;
   background:#fff; color:#000;
 }
+/* Dark mode */
 body.dark {
   background:#000; color:#fff;
 }
@@ -41,9 +42,13 @@ body.dark {
 
 /* Icon row under title */
 .icon-row { display:flex; align-items:center; gap:0.5rem; margin-top:0.5rem; }
-.home-icon { width:55px; height:auto; }
-.contrast-icon {
-  width:24px; height:auto; cursor:pointer; filter:none;
+.home-icon, .contrast-icon { width:55px; height:auto; cursor:pointer; }
+/* Ensure pure black in light */
+.contrast-icon { filter:none; }
+/* In dark mode, icons invert */
+body.dark .home-icon,
+body.dark .contrast-icon {
+  filter: invert(1);
 }
 
 /* Separators and splash */
@@ -65,14 +70,15 @@ body.dark {
   border:1px solid currentColor; background:transparent;
   padding:0.4rem 0.8rem; cursor:pointer; border-radius:999px;
 }
+/* Dark mode buttons white background and white text */
+body.dark .filter-pill {
+  background:#fff; color:#fff; border-color:#fff;
+}
 .filter-pill.active { font-weight:700; }
 .filter-pill:hover { background:rgba(0,0,0,0.05); }
 
 /* Article list */
-.articles {
-  flex:1; overflow-y:auto; list-style:none;
-  padding:0 0.8rem 6rem 0.8rem;
-}
+.articles { flex:1; overflow-y:auto; list-style:none; padding:0 0.8rem 6rem 0.8rem; }
 .articles::-webkit-scrollbar { display:none; }
 .article {
   padding:0.5rem 0; cursor:pointer;
