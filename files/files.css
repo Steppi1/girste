@@ -412,3 +412,14 @@ body.dark .arrow-icon, body.dark .contrast-icon{filter:brightness(0) saturate(10
     overscroll-behavior-x: contain !important; /* prevent bounce */
   }
 }
+
+
+/* MOBILE SWIPE-BACK REFINED: allow horizontal swipe on article to return */
+@media (max-width: 600px) {
+  .main-content {
+    /* Allow horizontal swipes to navigate between panels */
+    touch-action: pan-x pan-y !important;
+    /* Allow overscroll to reach the container for swipe-back */
+    overscroll-behavior-x: auto !important;
+  }
+}
