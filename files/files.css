@@ -355,3 +355,15 @@ body.dark .arrow-icon, body.dark .contrast-icon{filter:brightness(0) saturate(10
     -webkit-overflow-scrolling: touch !important;
   }
 }
+
+
+/* MOBILE TOUCH BEHAVIOR: disable bounce on article, allow swipe from article to sidebar */
+@media (max-width: 600px) {
+  .main-content {
+    overscroll-behavior-x: none !important;
+    touch-action: pan-x pan-y !important;
+  }
+  .container {
+    overscroll-behavior: contain !important;
+  }
+}
