@@ -19,7 +19,6 @@ html, body {
   font-size:15px; overflow:hidden;
   background:#fff; color:#000;
 }
-/* Dark mode */
 body.dark {
   background:#000; color:#fff;
 }
@@ -43,11 +42,10 @@ body.dark {
 /* Icon row under title */
 .icon-row { display:flex; align-items:center; gap:0.5rem; margin-top:0.5rem; }
 .home-icon, .contrast-icon { width:55px; height:auto; cursor:pointer; }
-/* Ensure pure black in light */
+/* pure black in light, invert in dark */
 .contrast-icon { filter:none; }
-/* In dark mode, icons invert */
-body.dark .home-icon,
-body.dark .contrast-icon {
+body.dark .contrast-icon,
+body.dark .home-icon {
   filter: invert(1);
 }
 
@@ -55,8 +53,10 @@ body.dark .contrast-icon {
 .separator { border:none; border-top:1px solid #ddd; margin:0.4rem 0; }
 .header-phrase { text-align:center; margin:0.4rem 0; }
 .breathing-text {
-  display:inline-block; font-family: 'AkkuratLight', monospace;
+  display:inline-block; font-family: 'AkkuratMono', monospace;
+  font-weight:400;
   animation:breathe 1.5s ease-in-out infinite;
+  color: inherit;
 }
 @keyframes breathe { 0%,100%{transform:scale(1);}50%{transform:scale(1.05);} }
 
@@ -67,22 +67,28 @@ body.dark .contrast-icon {
 }
 .filter-pill {
   font-family: 'AkkuratMono', monospace; font-size:0.85rem;
-  border:1px solid currentColor; background:transparent;
+  color:inherit; border:1px solid currentColor; background:transparent;
   padding:0.4rem 0.8rem; cursor:pointer; border-radius:999px;
 }
-/* Dark mode buttons white background and white text */
-body.dark .filter-pill {
-  background:#fff; color:#fff; border-color:#fff;
+.filter-pill:hover {
+  background: rgba(0,0,0,0.05);
 }
-.filter-pill.active { font-weight:700; }
-.filter-pill:hover { background:rgba(0,0,0,0.05); }
+/* Dark mode: invert border/text, no fill */
+body.dark .filter-pill {
+  color: #fff; border-color: #fff; background: transparent;
+}
 
-/* Article list */
+.filter-pill.active {
+  font-weight:700;
+}
+
+/* Articles list */
 .articles { flex:1; overflow-y:auto; list-style:none; padding:0 0.8rem 6rem 0.8rem; }
 .articles::-webkit-scrollbar { display:none; }
 .article {
   padding:0.5rem 0; cursor:pointer;
   font-family: 'AkkuratLight', monospace; font-weight:300;
+  color: inherit;
 }
 .article.selected {
   font-family:'AkkuratMono', monospace; font-weight:700;
@@ -91,15 +97,17 @@ body.dark .filter-pill {
 /* Main content */
 .main-content { flex:1; overflow-y:auto; background:inherit; }
 .article-content {
-  padding:2.6rem 1.8rem 8rem 1.8rem;
-  max-width:720px; margin:0 auto;
+  padding:2.6rem 1.8rem 8rem 1.8rem; max-width:720px; margin:0 auto;
 }
 .article-content h2 {
   font-family: 'AkkuratMono', monospace; font-size:1.2rem; margin:1.2rem 0;
 }
-.article-content p { margin-bottom:1.4rem; line-height:1.55; }
+.article-content p {
+  margin-bottom:1.4rem; line-height:1.55;
+  font-family: 'AkkuratLight', monospace; font-weight:300;
+}
 
 /* Responsive */
 @media (max-width:600px) {
-  .home-icon { width:72px; }
+  .home-icon, .contrast-icon { width:72px; }
 }

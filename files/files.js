@@ -1,10 +1,17 @@
-import { getPosts } from '../supabase.js';
+import { getPosts, getSplashTxts } from '../supabase.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   // Contrast toggle
   document.getElementById('contrast-toggle').addEventListener('click', () => {
     document.body.classList.toggle('dark');
   });
+
+  // Load splash texts
+  (async () => {
+    const txts = await getSplashTxts();
+    const idx = Math.floor(Math.random() * txts.length);
+    document.querySelector('.breathing-text').textContent = txts[idx] || '';
+  })();
 
   // Load posts, start in 'all' and select latest
   (async () => {
