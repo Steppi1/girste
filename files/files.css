@@ -449,5 +449,5 @@ body.dark .arrow-icon, body.dark .contrast-icon{filter:brightness(0) saturate(10
 
 /* Add bottom spacing to article content to prevent text clipping on mobile browsers */
 .article-content {
-  padding-bottom: 2rem !important;
+  padding-bottom: 4rem !important;
 }
