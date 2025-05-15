@@ -1,214 +1,131 @@
-/* carica i tuoi Akkurat-Mono e Akkurat-Light da /fonts */
+/* font-face */
 @font-face {
   font-family: 'AkkuratMono';
   src: url('../fonts/Akkurat-Mono.woff') format('woff');
   font-weight: 400;
-  font-style: normal;
 }
 @font-face {
   font-family: 'AkkuratLight';
   src: url('../fonts/Akkurat-Light.woff') format('woff');
   font-weight: 300;
-  font-style: normal;
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+/* base reset */
+* { margin:0; padding:0; box-sizing:border-box; }
 
-/* default body font = Light */
+/* Default = Light text */
 html, body {
-  width: 100%;
-  height: 100%;
+  width:100%; height:100%;
   font-family: 'AkkuratLight', monospace;
-  font-size: 15px;
-  overflow: hidden;
-  background: white;
-  color: #000;
-}
-
-/* dark mode support */
-body.dark {
-  background: #000;
-  color: #fff;
+  font-size:15px; overflow:hidden;
+  background:#fff; color:#000;
 }
 
 /* container */
 .container {
-  display: flex;
-  height: 100%;
-  overflow-x: auto;
-  overflow-y: hidden;
-  -webkit-overflow-scrolling: touch;
-  overscroll-behavior-x: contain;
+  display:flex; height:100%;
+  overflow-x:auto; overflow-y:hidden;
 }
 
 /* sidebar */
 .sidebar {
-  flex: 0 0 220px;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  border-right: 1px solid #ddd;
-  background: inherit;
-  position: sticky;
-  top: 0;
-  overflow: hidden;
+  flex:0 0 220px; height:100vh;
+  display:flex; flex-direction:column;
+  border-right:1px solid #ddd;
+  background:inherit; position:sticky; top:0;
 }
 
-/* titolo e freccia */
-.title-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.4rem;
-  padding: 0.8rem 1rem 0.4rem 1rem;
+/* title + arrow + contrast icon */
+.title-row.stacked-title {
+  display:flex; align-items:center;
+  padding:0.8rem 1rem 0.4rem 1rem;
+  gap:0.5rem;
 }
 .home-icon {
-  width: 36px;
-  transform: translateY(-8px);
-  flex-shrink: 0;
-  height: auto;
-  display: block;
-  margin: 0;
+  width:55px; height:auto; display:block;
 }
-/* titolo in AkkuratMono */
 .title-text {
   font-family: 'AkkuratMono', monospace;
-  font-size: 1.4rem;
-  font-weight: 400;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: calc(100% - 48px);
+  font-size:1.35rem; font-weight:400;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
 }
-.title-text strong {
-  font-weight: 700;
+.contrast-icon {
+  width:24px; height:auto;
+  cursor:pointer;
 }
 
-/* separatori e splash-text */
+/* spacing: arrow più separata dal titolo */
+.title-row .home-icon { margin-right:1rem; }
+
+/* separator */
 .separator {
-  border: none;
-  border-top: 1px solid #ddd;
-  margin: 0.4rem 0;
+  border:none; border-top:1px solid #ddd;
+  margin:0.4rem 0;
 }
+
+/* splash-text */
 .header-phrase {
-  text-align: center;
-  margin: 0.4rem 0;
-  font-size: 0.8rem;
-  /* splash-text uses Mono */
+  text-align:center; margin:0.4rem 0;
 }
 .breathing-text {
-  display: inline-block;
-  font-family: 'AkkuratMono', monospace;
-  font-size: 0.9rem;
+  display:inline-block;
+  font-family: 'AkkuratLight', monospace;
   animation: breathe 1.5s ease-in-out infinite;
 }
 @keyframes breathe {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
+  0%,100% { transform:scale(1); }
+  50%   { transform:scale(1.05); }
 }
 
-/* pulsanti filtro */
+/* filters (titles in Mono) */
 .filters {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-  margin: 0.6rem 0;
-  padding: 0 0.8rem;
+  display:flex; flex-direction:column;
+  gap:0.4rem; margin:0.6rem 0; padding:0 0.8rem;
 }
 .filter-pill {
   font-family: 'AkkuratMono', monospace;
-  font-size: 0.85rem;
-  color: inherit;
-  border: 1px solid currentColor;
-  background: transparent;
-  border-radius: 999px;
-  padding: 0.4rem 0.8rem;
-  cursor: pointer;
+  font-size:0.85rem; color:inherit;
+  border:1px solid currentColor; background:transparent;
+  padding:0.4rem 0.8rem; cursor:pointer;
+  border-radius:999px;
 }
-.filter-pill.active,
-.filter-pill:hover {
-  background: rgba(0, 0, 0, 0.05);
-}
+.filter-pill:hover { background:rgba(0,0,0,0.05); }
 
-/* lista articoli */
+/* article list */
 .articles {
-  flex: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
-  list-style: none;
-  padding: 0 0.8rem 6rem 0.8rem;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+  flex:1; overflow-y:auto; list-style:none;
+  padding:0 0.8rem 6rem 0.8rem;
 }
-.articles::-webkit-scrollbar {
-  display: none;
-}
+.articles::-webkit-scrollbar { display:none; }
+
+/* article item */
 .article {
-  padding: 0.5rem 0;
-  border-bottom: 1px solid #eee;
-  cursor: pointer;
-  font-family: 'AkkuratLight', monospace;
+  padding:0.5rem 0; border-bottom:1px solid #eee;
+  cursor:pointer; font-family: 'AkkuratLight', monospace;
 }
+/* selected indicator: light background, non-bold */
 .article.selected {
-  font-weight: 700;
+  background: rgba(0,0,0,0.05);
 }
 
-/* contenuto articolo */
+/* main content */
 .main-content {
-  flex: 1;
-  overflow-y: auto;
-  background: inherit;
+  flex:1; overflow-y:auto; background:inherit;
 }
 .article-content {
-  padding: 2.6rem 1.8rem 8rem 1.8rem;
-  max-width: 720px;
-  width: 100%;
-  margin: 0 auto;
+  padding:2.6rem 1.8rem 8rem 1.8rem;
+  max-width:720px; margin:0 auto;
 }
 .article-content h2 {
   font-family: 'AkkuratMono', monospace;
-  font-size: 1.2rem;
-  margin: 1.2rem 0;
+  font-size:1.2rem; margin:1.2rem 0;
 }
 .article-content p {
-  margin-bottom: 1.4rem;
-  line-height: 1.55;
-}
-.article-content img {
-  max-width: 100%;
-  height: auto;
-  display: block;
-  margin: 1.2rem auto 2rem;
+  margin-bottom:1.4rem; line-height:1.55;
 }
 
-/* mobile adjustments */
-/* ... mantieni media queries come in precedenza ... */
-
-/* stacked title */
-.title-row.stacked-title {
-  flex-direction: column;
-  align-items: flex-start;
-  padding: 0.8rem 1rem 0.4rem 1rem;
-}
-.title-row.stacked-title .home-icon {
-  width: 55px;
-  margin-bottom: -0.2rem;
-  transform: none;
-}
-@media (max-width: 600px) {
-  .title-row.stacked-title .home-icon {
-    width: 72px;
-    margin-bottom: -1rem;
-  }
-}
-.title-row.stacked-title .title-text {
-  font-size: 1.35rem;
-  font-family: 'AkkuratMono', monospace;
-  font-weight: 400;
-}
-.title-row.stacked-title .title-text strong {
-  font-weight: 700;
+/* responsive: mantieni le tue media queries originali */
+@media (max-width:600px) {
+  .title-row.stacked-title .home-icon { width:72px; }
+  /* ...resto delle regole mobile... */
 }
