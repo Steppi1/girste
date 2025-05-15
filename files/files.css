@@ -259,3 +259,20 @@ body.dark .arrow-icon, body.dark .contrast-icon{filter:brightness(0) saturate(10
     overflow-y: auto !important;
   }
 }
+
+
+/* MOBILE FINAL NAVIGATION FIX: enable horizontal swipe and prevent vertical container scroll */
+@media (max-width: 600px) {
+  .container {
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    height: 100vh !important;
+  }
+  .sidebar {
+    flex: 0 0 var(--sidebar-width) !important;
+  }
+  .main-content {
+    flex: 0 0 100vw !important;
+    overflow-y: auto !important;
+  }
+}
