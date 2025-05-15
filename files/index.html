@@ -7,22 +7,22 @@
   <link rel="icon" href="/assets/girstefav.png">
   <link rel="stylesheet" href="files.css">
 </head>
-<body class="dark"> <!-- Always start in dark -->
+<body class="dark">
   <div class="container">
     <nav class="sidebar">
       <div class="title-block">
-        <h1 class="site-title">
-          <span class="title-text"><strong>GIRSTE’S</strong> files</span>
-        </h1>
+        <h1 class="site-title">GIRSTE’S files</h1>
         <div class="icon-row">
-          <a href="/"><img src="/assets/arrow.svg" alt="Home" class="home-icon"></a>
-          <img src="/assets/contrast.svg" alt="Toggle contrast" class="contrast-icon" id="contrast-toggle">
+          <img src="/assets/arrow.svg" alt="Home" class="icon arrow-icon">
+          <img src="/assets/contrast.svg" alt="Toggle contrast" class="icon contrast-icon" id="contrast-toggle">
         </div>
       </div>
-      <hr class="separator">
+      <!-- splash text closer -->
       <p class="header-phrase"><span class="breathing-text"></span></p>
+      <!-- single separator -->
       <hr class="separator">
-      <details class="filters-accordion"> <!-- start closed -->
+      <!-- filters accordion -->
+      <details class="filters-accordion">
         <summary class="filters-summary">FILTERS</summary>
         <div class="filters-list">
           <span class="filter-pill active" data-filter="all">ALL</span>
@@ -31,7 +31,6 @@
           <span class="filter-pill" data-filter="blog">NOTES</span>
         </div>
       </details>
-      <hr class="separator filters-sep"> <!-- adjust spacing -->
       <ul class="articles" id="article-list"></ul>
     </nav>
     <main class="main-content">
