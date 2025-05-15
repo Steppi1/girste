@@ -5,7 +5,6 @@ html,body{width:100%;height:100%;font-family:'AkkuratLight',monospace;font-size:
 body.dark{background:#000;color:#fff;}
 .container{display:flex;height:100%;overflow-x:auto;overflow-y:hidden;}
 .sidebar{flex:0 0 220px;height:100vh;display:flex;flex-direction:column;border-right:1px solid rgba(255,255,255,0.1);background:inherit;position:sticky;top:0;}
-/* Title block: align title and icons on one row */
 .title-block{display:flex;justify-content:space-between;align-items:center;padding:0.8rem 1rem;}
 .site-title{font-family:'AkkuratMono',monospace;font-size:1.35rem;font-weight:400;}
 .icon-row{display:flex;gap:1rem;}
@@ -16,15 +15,13 @@ body.dark .icon.contrast-icon{filter:brightness(0) saturate(100%) invert(1);}
 .header-phrase{text-align:center;margin:0.25rem 0;font-family:'AkkuratLight',monospace;font-size:0.9rem;}
 .breathing-text{display:inline-block;font-weight:300;animation:breathe 1.5s ease-in-out infinite;color:inherit;}
 @keyframes breathe{0%,100%{transform:scale(1);}50%{transform:scale(1.05);}}
-/* Single separator before filters, aligned to filters */
-.separator.filters-separator{width:60%;margin:0.5rem auto 0 auto;border:none;border-top:1px solid rgba(0,0,0,0.3);}
-body.dark .separator.filters-separator{border-top-color:rgba(255,255,255,0.3);}
+.separator.filters-separator{width:60%;margin:0.5rem auto 0 auto;border:none;border-top:1px solid rgba(255,255,255,0.3);}
+html:not(.dark) .separator.filters-separator{border-top-color:rgba(0,0,0,0.3);}
 .filters-accordion{margin:0.5rem 0.8rem;text-align:left;}
 .filters-summary{font-family:'AkkuratMono',monospace;font-size:0.9rem;cursor:pointer;list-style:none;}
 .filters-summary::-webkit-details-marker{display:none;}
 .filters-summary::after{content:'▼';margin-left:0.3rem;}
 .filters-accordion[open] .filters-summary::after{content:'▲';}
-/* Filters list with gaps */
 .filters-list{display:flex;flex-direction:column;gap:1rem;padding:0.6rem 0 0 1rem;}
 .filter-pill{font-family:'AkkuratLight',monospace;font-size:0.85rem;text-transform:uppercase;cursor:pointer;color:inherit;text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px;font-weight:300;}
 .filter-pill.active{font-family:'AkkuratMono',monospace;font-weight:700;}
