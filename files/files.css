@@ -48,9 +48,11 @@ body.dark .arrow-icon, body.dark .contrast-icon{filter:brightness(0) saturate(10
 /* responsive */
 @media(max-width:600px){.icon{width:30px;} .filters-static{gap:0.6rem;}}
 
-/* Forza il word-break nei titoli della lista, senza modificare la larghezza della sidebar */
-.articles .article {
-  white-space: normal;
-  overflow-wrap: anywhere;
-  word-break: break-all;
+/* 3) Su desktop: fai sparire il max-width e usa width 100% per coprire tutto lo spazio rimanente */
+@media (min-width: 600px) {
+  .article-content {
+    max-width: none;
+    width: 100%;
+    margin: 0;
+  }
 }
