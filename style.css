@@ -16,7 +16,14 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  background: #fff;
   color: #000;
+  transition: background 0.3s, color 0.3s;
+}
+
+body.dark {
+  background: #000;
+  color: #fff;
 }
 
 .top-bar {
@@ -26,9 +33,39 @@ body {
   padding: 1rem 2rem;
 }
 
-.intro p {
-  font-size: 1rem;
-  line-height: 1.4;
+.intro {
+  display: flex;
+  align-items: center;
+}
+
+.intro h1 {
+  margin-right: 0.5rem;
+}
+
+.icon-group {
+  display: flex;
+  align-items: center;
+}
+
+.icon {
+  width: 24px;
+  margin-left: 0.5rem;
+  cursor: pointer;
+  transition: transform 0.2s, filter 0.3s;
+}
+
+.icon:hover {
+  transform: scale(1.2);
+}
+
+body.dark .icon {
+  filter: invert(1);
+}
+
+.arrow-link img {
+  width: 80px;
+  animation: breath 2s ease-in-out infinite;
+  transform-origin: center center;
 }
 
 @keyframes breath {
@@ -38,12 +75,6 @@ body {
   50% {
     transform: scaleX(-1) scale(1.2);
   }
-}
-
-.arrow-link img {
-  width: 80px;
-  animation: breath 2s ease-in-out infinite;
-  transform-origin: center center;
 }
 
 main {
