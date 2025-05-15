@@ -64,7 +64,7 @@ body.dark .icon {
 }
 
 .arrow-link img {
-  width: 80px;
+  width: 60px; /* reduced size */
   animation: breath 2s ease-in-out infinite;
   transform-origin: center center;
 }
