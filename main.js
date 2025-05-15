@@ -1,5 +1,6 @@
 import { supabase } from './supabase.js';
-import panzoom from 'https://cdn.jsdelivr.net/npm/@panzoom/panzoom@9.4.0/dist/panzoom.es.js';
+// Correct ES module import path for panzoom
+import panzoom from 'https://cdn.jsdelivr.net/npm/@panzoom/panzoom@9.4.0/dist/panzoom.esm.js';
 
 const viewport = document.getElementById('viewport');
 const imageGrid = document.getElementById('image-grid');
