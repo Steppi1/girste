@@ -38,7 +38,8 @@ body.dark {
 .title-block .title-text strong { font-weight:700; }
 
 /* Icon row under title */
-.icon-row { display:flex; align-items:center; gap:1rem; margin-top:0.5rem; } /* increased gap */
+/* Increase gap to separate icons more */
+.icon-row { display:flex; align-items:center; gap:2rem; margin-top:0.5rem; }
 .home-icon { width:55px; height:auto; cursor:pointer; }
 body.dark .home-icon { filter: invert(1); }
 
@@ -47,7 +48,6 @@ body.dark .home-icon { filter: invert(1); }
   width:55px; height:auto; cursor:pointer;
   filter: brightness(0) saturate(100%); /* solid black */
 }
-/* In dark mode, invert both icons */
 body.dark .contrast-icon,
 body.dark .home-icon {
   filter: brightness(0) saturate(100%) invert(1); /* solid white */
@@ -67,7 +67,6 @@ body.dark .home-icon {
 @keyframes breathe { 0%,100%{transform:scale(1);}50%{transform:scale(1.05);} }
 
 /* Filters */
-/* Buttons font in Light */
 .filters { display:flex; flex-direction:column; gap:0.4rem; margin:0.6rem 0; padding:0 0.8rem; }
 .filter-pill {
   font-family: 'AkkuratLight', monospace;
@@ -76,7 +75,6 @@ body.dark .home-icon {
   padding:0.4rem 0.8rem; cursor:pointer; border-radius:999px;
 }
 .filter-pill:hover { background: rgba(0,0,0,0.05); }
-/* Dark mode: invert border/text, no fill */
 body.dark .filter-pill { color: #fff; border-color: #fff; background: transparent; }
 .filter-pill.active { font-weight:700; }
 

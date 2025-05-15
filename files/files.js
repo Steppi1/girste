@@ -26,31 +26,33 @@ document.addEventListener('DOMContentLoaded', () => {
       li.textContent = post.title;
       li.className = 'article';
       li.dataset.id = post.id;
-      li.dataset.filter = post.tag; // use the 'tag' field for filtering
+      li.dataset.filter = post.tag;
       li.addEventListener('click', () => {
         document.querySelectorAll('.article.selected').forEach(el => el.classList.remove('selected'));
         li.classList.add('selected');
         content.innerHTML = `<h2>${post.title}</h2>${post.content}`;
       });
       list.appendChild(li);
-      if (idx === 0) {
-        li.click(); // select latest
-      }
+      if (idx === 0) li.click();
     });
 
     // Setup filter buttons
     filters.forEach(btn => {
       btn.addEventListener('click', () => {
         filters.forEach(b => b.classList.toggle('active', b === btn));
-        const filter = btn.dataset.filter;
+        const filterVal = btn.getAttribute('data-filter');
         document.querySelectorAll('.article').forEach(li => {
-          li.style.display = (filter === 'all' || li.dataset.filter === filter) ? '' : 'none';
+          li.style.display = (filterVal === 'all' || li.dataset.filter === filterVal) ? '' : 'none';
         });
+        // After filtering, open first visible article
+        const firstVisible = Array.from(document.querySelectorAll('.article'))
+          .find(li => li.style.display !== 'none');
+        if (firstVisible) firstVisible.click();
       });
     });
 
     // Activate 'all' filter by default
-    const allBtn = filters.find(b => b.dataset.filter === 'all');
+    const allBtn = filters.find(b => b.getAttribute('data-filter') === 'all');
     if (allBtn) allBtn.click();
   })();
 });
