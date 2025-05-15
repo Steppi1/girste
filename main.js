@@ -1,66 +1,54 @@
 import { supabase } from './supabase.js';
-// Reverted to original working CDN path
-import panzoom from 'https://cdn.jsdelivr.net/npm/@panzoom/panzoom@9.4.0/dist/panzoom.es.js';
-
-const viewport = document.getElementById('viewport');
-const imageGrid = document.getElementById('image-grid');
+import { zoom, select } from 'https://cdn.jsdelivr.net/npm/d3@7/+esm';
 
 async function init() {
-  // Fetch list of image files from Supabase
-  const { data: files, error } = await supabase.storage.from('images').list('', { limit: 1000 });
-  if (error) {
-    console.error('Errore nel recupero delle immagini:', error);
-    return;
-  }
+  // 1. Recupera lista immagini
+  const { data: files, error } = await supabase
+    .storage.from('images').list('', { limit: 1000 });
+  if (error) { console.error(error); return; }
   const count = files.length;
-  if (count === 0) return;
+  if (!count) return;
 
-  // Determine grid dimensions for a roughly square mosaic
-  const columns = Math.ceil(Math.sqrt(count));
-  const rows = Math.ceil(count / columns);
-  const cellSize = 200; // px
-  const gap = 12; // match CSS
+  // 2. Calcola dimensioni griglia
+  const cols = Math.ceil(Math.sqrt(count));
+  const rows = Math.ceil(count / cols);
+  const cell = 200; // px
+  const gap = 12;
 
-  // Configure grid layout
-  imageGrid.style.gridTemplateColumns = `repeat(${columns}, ${cellSize}px)`;
-  imageGrid.style.gridAutoRows = `${cellSize}px`;
-  imageGrid.style.gap = `${gap}px`;
+  const width  = cols * cell + (cols - 1) * gap;
+  const height = rows * cell + (rows - 1) * gap;
 
-  // Calculate full grid size
-  const gridWidth = columns * cellSize + (columns - 1) * gap;
-  const gridHeight = rows * cellSize + (rows - 1) * gap;
-  imageGrid.style.width = `${gridWidth}px`;
-  imageGrid.style.height = `${gridHeight}px`;
+  // 3. Crea SVG e <g> per zoom/pan
+  const svg = select('#svg-canvas')
+    .attr('viewBox', [0, 0, width, height]);
+  const container = svg.append('g');
 
-  // Populate grid with images
-  files.forEach(file => {
-    const { data } = supabase.storage.from('images').getPublicUrl(file.name);
-    const url = data.publicUrl;
-    const img = document.createElement('img');
-    img.src = url;
-    imageGrid.appendChild(img);
+  // 4. Inserisci immagini
+  files.forEach((file, i) => {
+    const col = i % cols, row = Math.floor(i / cols);
+    const x = col * (cell + gap);
+    const y = row * (cell + gap);
+    const url = supabase
+      .storage.from('images').getPublicUrl(file.name).data.publicUrl;
+    container.append('image')
+      .attr('x', x).attr('y', y)
+      .attr('width', cell).attr('height', cell)
+      .attr('href', url);
   });
 
-  // Initialize panzoom for panning and pinch-zoom
-  const panzoomInstance = panzoom(imageGrid, {
-    contain: 'outside',
-    maxZoom: 4,
-    minZoom: 0.1,
-    panOnlyWhenZoomed: false,
-    smoothScroll: false,
-    beforeWheel: () => false,  // disable wheel zoom/scroll
-    beforeMouseDown: () => true // allow dragging with mouse
-  });
+  // 5. Configura zoom con bound ampio
+  svg.call(zoom()
+    .scaleExtent([0.1, 4])
+    .translateExtent([[-width, -height], [2*width, 2*height]])
+    .on('zoom', (event) => {
+      container.attr('transform', event.transform);
+    })
+  );
 
-  // Fit the entire grid within the viewport on load
-  const vpRect = viewport.getBoundingClientRect();
-  const scale = Math.min(vpRect.width / gridWidth, vpRect.height / gridHeight);
-  panzoomInstance.zoomAbs(0, 0, scale);
-
-  // Center the grid
-  const offsetX = (vpRect.width - gridWidth * scale) / 2;
-  const offsetY = (vpRect.height - gridHeight * scale) / 2;
-  panzoomInstance.moveTo(offsetX, offsetY);
+  // 6. De-zoom iniziale per fit-to-screen
+  const vp = document.getElementById('viewport').getBoundingClientRect();
+  const initScale = Math.min(vp.width/width, vp.height/height);
+  container.attr('transform', `translate(${(vp.width-width*initScale)/2},${(vp.height-height*initScale)/2}) scale(${initScale})`);
 }
 
 window.addEventListener('DOMContentLoaded', init);

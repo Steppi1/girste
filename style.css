@@ -1,32 +1,14 @@
-/* Reset margins and padding, set background to black */
 html, body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  overflow: hidden;
-  background-color: #000;
+  margin: 0; padding: 0;
+  width: 100vw; height: 100vh;
+  overflow: hidden; background: #000;
 }
-
-/* Fixed viewport covering full screen */
 #viewport {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
+  position: fixed; top: 0; left: 0;
+  width: 100%; height: 100%;
 }
-
-/* Grid container; layout controlled via JS */
-#image-grid {
-  display: grid;
-  gap: 12px;
+#svg-canvas {
+  width: 100%; height: 100%;
+  cursor: grab;
 }
-
-/* Images fill their cells */
-#image-grid img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
+#svg-canvas:active { cursor: grabbing; }
