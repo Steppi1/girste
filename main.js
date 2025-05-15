@@ -2,10 +2,10 @@ import { supabase } from './supabase.js';
 import { zoom, select } from 'https://cdn.jsdelivr.net/npm/d3@7/+esm';
 
 async function init() {
-  // 1. Recupera lista immagini
+  // 1. Recupera lista immagini dal bucket 'mosaic'
   const { data: files, error } = await supabase
-    .storage.from('images').list('', { limit: 1000 });
-  if (error) { console.error(error); return; }
+    .storage.from('mosaic').list('', { limit: 1000 });
+  if (error) { console.error('Errore nel recupero delle immagini:', error); return; }
   const count = files.length;
   if (!count) return;
 
@@ -23,13 +23,13 @@ async function init() {
     .attr('viewBox', [0, 0, width, height]);
   const container = svg.append('g');
 
-  // 4. Inserisci immagini
+  // 4. Inserisci immagini dal bucket 'mosaic'
   files.forEach((file, i) => {
     const col = i % cols, row = Math.floor(i / cols);
     const x = col * (cell + gap);
     const y = row * (cell + gap);
     const url = supabase
-      .storage.from('images').getPublicUrl(file.name).data.publicUrl;
+      .storage.from('mosaic').getPublicUrl(file.name).data.publicUrl;
     container.append('image')
       .attr('x', x).attr('y', y)
       .attr('width', cell).attr('height', cell)
