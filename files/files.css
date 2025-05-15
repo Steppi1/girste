@@ -240,3 +240,22 @@ body.dark .arrow-icon, body.dark .contrast-icon{filter:brightness(0) saturate(10
     overflow-y: hidden !important;
   }
 }
+
+
+/* MOBILE: Restore horizontal swipe navigation between sidebar and article */
+@media (max-width: 600px) {
+  .container {
+    display: flex !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    scroll-snap-type: x mandatory !important;
+  }
+  .sidebar {
+    scroll-snap-align: start !important;
+  }
+  .main-content {
+    flex: 0 0 100vw !important;
+    scroll-snap-align: start !important;
+    overflow-y: auto !important;
+  }
+}
