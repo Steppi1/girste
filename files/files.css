@@ -504,3 +504,44 @@ body.dark .arrow-icon, body.dark .contrast-icon{filter:brightness(0) saturate(10
 .main-content, .article-content {
   overflow-y: auto !important;
 }
+
+
+/* ===== Increased bottom spacing for lists and articles ===== */
+.articles {
+  padding-bottom: 4rem !important;
+}
+.articles .article {
+  margin-bottom: 2rem !important;
+}
+.article-content {
+  padding-bottom: 4rem !important;
+}
+
+/* ===== Restore improved mobile swipe navigation ===== */
+@media (max-width: 600px) {
+  .container {
+    display: flex !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch !important;
+    touch-action: pan-x !important;
+    width: 100vw !important;
+    height: 100vh !important;
+  }
+  .container::-webkit-scrollbar {
+    display: none !important;
+  }
+  .sidebar {
+    flex: 0 0 var(--sidebar-width) !important;
+    scroll-snap-align: start !important;
+  }
+  .main-content {
+    flex: 0 0 100vw !important;
+    scroll-snap-align: start !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    touch-action: pan-x pan-y !important;
+    overscroll-behavior: contain !important;
+  }
+}
