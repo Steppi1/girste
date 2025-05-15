@@ -2,7 +2,8 @@ import { getPosts, getSplashTxts } from '../supabase.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   // Contrast toggle
-  document.getElementById('contrast-toggle').addEventListener('click', () => {
+  const contrastToggle = document.getElementById('contrast-toggle');
+  contrastToggle.addEventListener('click', () => {
     document.body.classList.toggle('dark');
   });
 
@@ -18,11 +19,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const posts = await getPosts();
     const list = document.getElementById('article-list');
     const content = document.querySelector('.article-content');
+    // Filter functionality
+    const filters = document.querySelectorAll('.filter-pill');
+    filters.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filters.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const filter = btn.getAttribute('data-filter');
+        document.querySelectorAll('.article').forEach(li => {
+          li.style.display = filter === 'all' ? '' : (li.getAttribute('data-filter') === filter ? '' : 'none');
+        });
+      });
+    });
+
     posts.forEach((post, idx) => {
       const li = document.createElement('li');
       li.textContent = post.title;
       li.className = 'article';
       li.dataset.id = post.id;
+      li.dataset.filter = post.type || post.category || 'all';
       li.addEventListener('click', () => {
         document.querySelectorAll('.article.selected').forEach(el => el.classList.remove('selected'));
         li.classList.add('selected');
