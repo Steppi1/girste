@@ -79,3 +79,14 @@ body.dark .arrow-icon, body.dark .contrast-icon{filter:brightness(0) saturate(10
   display: block;
   margin: 0 auto;
 }
+
+
+/* === Override for .article-content: fill remaining space, contained within viewport === */
+@media (min-width: 600px) {
+  .article-content {
+    max-width: none !important;
+    width: 100% !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+  }
+}
