@@ -48,15 +48,17 @@ body.dark .arrow-icon, body.dark .contrast-icon{filter:brightness(0) saturate(10
 /* responsive */
 @media(max-width:600px){.icon{width:30px;} .filters-static{gap:0.6rem;}}
 
-/* 1) Forza il wrapping dei titoli nella lista, senza allargare la sidebar */
+/* 1) Anteponi wrapping dei titoli nella lista per forzare il word break */
 .articles .article {
-  white-space: normal;
+  word-wrap: break-word;
   overflow-wrap: break-word;
 }
 
-/* 2) Su desktop, fissa la larghezza del contenuto articolo per far andare a capo i paragrafi */
+/* 2) Su desktop, fissa la larghezza e abilita wrapping forzato nel content pane */
 @media (min-width: 600px) {
   .article-content {
     width: 700px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
   }
 }
