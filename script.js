@@ -1,6 +1,5 @@
 import { getImageUrls } from './supabase.js';
 
-document.body.classList.add('dark');
 const toggle = document.getElementById('dark-toggle');
 toggle.addEventListener('click', () => {
   document.body.classList.toggle('dark');
