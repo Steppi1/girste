@@ -63,3 +63,19 @@ body.dark .arrow-icon, body.dark .contrast-icon{filter:brightness(0) saturate(10
     margin: 0;
   }
 }
+
+
+/* Mantieni sidebar inalterata, aggiungi padding e responsive per articolo a destra */
+/* Limita il contenuto dell'articolo dentro lo schermo senza toccare i bordi */
+.article-content {
+  box-sizing: border-box;
+  padding: 20px;
+}
+
+/* Rendere le immagini dell'articolo responsive */
+.article-content img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
