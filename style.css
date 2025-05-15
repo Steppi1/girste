@@ -4,6 +4,12 @@
   font-weight: normal;
   font-style: normal;
 }
+@font-face {
+  font-family: 'AkkuratLight';
+  src: url('fonts/Akkurat-Light.woff') format('woff');
+  font-weight: 300;
+  font-style: normal;
+}
 
 * {
   margin: 0;
@@ -36,6 +42,7 @@ body {
 .intro h1 {
   font-size: 2rem;
   margin-bottom: 0.5rem;
+  /* uses AkkuratMono by default */
 }
 
 .nav-buttons {
@@ -45,6 +52,7 @@ body {
 }
 
 .nav-buttons a {
+  font-family: 'AkkuratLight', monospace;
   text-transform: uppercase;
   text-decoration: underline;
   text-underline-offset: 4px;
@@ -68,7 +76,7 @@ body {
     transform: scaleX(-1) scale(1);
   }
   50% {
-    transform: scaleX(-1) scale(1.2);
+    transform: scaleX(-1) scale(1.1);
   }
 }
 
