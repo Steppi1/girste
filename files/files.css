@@ -1,3 +1,6 @@
+/* Define sidebar width variable */
+:root { --sidebar-width: 220px; }
+
 /* fonts */
 @font-face{font-family:'AkkuratMono';src:url('../fonts/Akkurat-Mono.woff') format('woff');}
 @font-face{font-family:'AkkuratLight';src:url('../fonts/Akkurat-Light.woff') format('woff');}
@@ -151,5 +154,27 @@ body.dark .arrow-icon, body.dark .contrast-icon{filter:brightness(0) saturate(10
     white-space: normal !important;
     overflow-wrap: anywhere !important;
     word-break: break-all !important;
+  }
+}
+
+
+/* ==== MOBILE REFINEMENT: preserve sidebar width, wrap titles, contain article text ==== */
+@media (max-width: 600px) {
+  /* Sidebar titles wrapping, no width change */
+  .articles .article {
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    word-break: break-all !important;
+  }
+
+  /* Article pane: full viewport width minus sidebar, text containment */
+  .main-content, .article-content {
+    width: calc(100vw - var(--sidebar-width)); /* use existing sidebar width variable */
+    max-width: calc(100vw - var(--sidebar-width)) !important;
+    box-sizing: border-box;
+    padding: 16px; /* optional padding */
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
   }
 }
