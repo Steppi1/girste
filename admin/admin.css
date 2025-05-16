@@ -417,3 +417,14 @@ button { cursor:pointer; }
 .section#manage-splash .new-splash {
   align-items: stretch;
 }
+
+/* Allineamento verticale preciso per il pulsante + */
+.section#manage-splash .new-splash button {
+  height: 100%;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 1rem;
+  font-size: 1.2rem;
+}
