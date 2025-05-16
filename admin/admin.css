@@ -113,10 +113,7 @@ button { cursor:pointer; }
   opacity: 0.7;
   margin-right: 0.5rem;
 }
-.post-item .post-title {
-  font-weight: 600;
-  margin-right: auto;
-}
+.post-item .post-title { font-weight: 600; }
 .post-item .edit-btn, .post-item .delete-btn {
   padding: 0.3rem 0.6rem;
   border: none;
@@ -126,3 +123,20 @@ button { cursor:pointer; }
 }
 .post-item .edit-btn { background: #007bff; color: #fff; }
 .post-item .delete-btn { background: #dc3545; color: #fff; }
+
+
+/* Bulk Delete button spacing */
+#bulk-delete-btn {
+  display: block;
+  margin-bottom: 1rem;
+}
+
+/* Align post-item left */
+.post-item {
+  justify-content: flex-start;
+}
+
+/* Emoji buttons spacing */
+.post-item .edit-btn, .post-item .delete-btn {
+  margin-right: 0.5rem;
+}

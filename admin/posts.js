@@ -41,10 +41,10 @@ async function loadPosts() {
     div.className = 'post-item';
     div.innerHTML = `
       <input type="checkbox" class="select-post" data-id="${post.id}" />
+      <button class="delete-btn" data-id="${post.id}">❌</button>
+      <button class="edit-btn" data-id="${post.id}">✏️</button>
       <span class="post-tag">${post.tag}</span>
       <span class="post-title">${post.title}</span>
-      <button class="edit-btn" data-id="${post.id}">Modifica</button>
-      <button class="delete-btn" data-id="${post.id}">Elimina</button>
     `;
     listPosts.append(div);
   });
