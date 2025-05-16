@@ -1,5 +1,6 @@
-import { loadSplashTexts } from './splashes.js';
 import { loadMosaic } from './mosaic.js';
+import { loadSplashTexts } from './splashes.js';
+
 export function showSection(id) {
   if (id === 'manage-mosaic') loadMosaic();
   if (id === 'manage-splash') loadSplashTexts();
