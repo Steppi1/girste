@@ -173,3 +173,14 @@ button { cursor:pointer; }
   cursor: pointer;
   margin-right: 0.5rem;
 }
+
+
+
+/* Draft badge style in orange */
+.badge.draft {
+  background: #fd7e14 !important;
+  color: #fff !important;
+  padding: 0.2rem 0.5rem !important;
+  border-radius: 4px !important;
+  margin-right: 0.5rem !important;
+}
