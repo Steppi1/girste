@@ -1,6 +1,8 @@
 import { supabase } from '/supabase.js';
+import { showSection } from './nav.js';
 
-const npTitle = document.getElementById('np-title'),
+const listPosts = document.getElementById('list-posts'),
+      npTitle = document.getElementById('np-title'),
       npContent = document.getElementById('np-content'),
       npTag = document.getElementById('np-tag'),
       uploadInput = document.getElementById('newpost-upload'),
@@ -19,6 +21,73 @@ async function uploadFile(file, prefix = '') {
   if (upErr) throw upErr;
   const { data } = supabase.storage.from('images').getPublicUrl(fileName);
   return data.publicUrl;
+}
+
+// Load posts into edit section
+async function loadPosts() {
+  listPosts.textContent = '⏳ Caricamento…';
+  const { data, error } = await supabase.from('posts').select('*').order('date', { ascending: false });
+  if (error) {
+    listPosts.textContent = '❌ ' + error.message;
+    return;
+  }
+  if (data.length === 0) {
+    listPosts.textContent = 'Nessun post trovato.';
+    return;
+  }
+  listPosts.innerHTML = '';
+  data.forEach(post => {
+    const div = document.createElement('div');
+    div.className = 'post-item';
+    div.innerHTML = `
+      <span class="post-title">${post.title}</span>
+      <button class="edit-btn" data-id="${post.id}">Modifica</button>
+      <button class="delete-btn" data-id="${post.id}">Elimina</button>
+    `;
+    listPosts.append(div);
+  });
+  // Attach events
+  document.querySelectorAll('.edit-btn').forEach(btn => {
+    btn.onclick = async () => {
+      const id = btn.dataset.id;
+      const { data: post, error: err } = await supabase.from('posts').select('*').eq('id', id).single();
+      if (err) return alert('Errore fetch post: ' + err.message);
+      npTitle.value = post.title;
+      npContent.value = post.content;
+      npTag.value = post.tag;
+      coverImageUrl = post.image_url;
+      coverPreview.innerHTML = post.image_url ? `<img src="${post.image_url}" />` : '';
+      uploadedList.innerHTML = '';
+      showSection('new-post');
+      btnNewPost.dataset.editId = id;
+      btnNewPost.textContent = 'Salva Modifiche';
+    };
+  });
+  document.querySelectorAll('.delete-btn').forEach(btn => {
+    btn.onclick = async () => {
+      if (!confirm('Eliminare questo post e tutte le sue immagini?')) return;
+      const id = btn.dataset.id;
+      const { data: post, error: err2 } = await supabase.from('posts').select('*').eq('id', id).single();
+      if (err2) return alert('Errore fetch post: ' + err2.message);
+      // Collect filenames to delete
+      const urls = [];
+      if (post.image_url) urls.push(post.image_url);
+      const regex = /<img src="(.*?)"/g;
+      let m;
+      while ((m = regex.exec(post.content)) !== null) {
+        urls.push(m[1]);
+      }
+      const fileNames = urls.map(u => decodeURIComponent(u.split('/').pop()));
+      if (fileNames.length) {
+        const { error: delErr } = await supabase.storage.from('images').remove(fileNames);
+        if (delErr) console.warn('Errore delete storage:', delErr.message);
+      }
+      const { error: err3 } = await supabase.from('posts').delete().eq('id', id);
+      if (err3) return alert('Errore delete post: ' + err3.message);
+      await loadPosts();
+      alert('Post eliminato');
+    };
+  });
 }
 
 // Multiple images for content
@@ -60,7 +129,7 @@ coverInput.addEventListener('change', async e => {
   coverInput.value = '';
 });
 
-// Publish post
+// Publish or update post
 btnNewPost.addEventListener('click', async () => {
   fbNewPost.textContent = '';
   const payload = {
@@ -70,8 +139,16 @@ btnNewPost.addEventListener('click', async () => {
     image_url: coverImageUrl
   };
   try {
-    const { error } = await supabase.from('posts').insert([payload]);
-    if (error) throw error;
+    if (btnNewPost.dataset.editId) {
+      const { error } = await supabase.from('posts').update(payload).eq('id', btnNewPost.dataset.editId);
+      delete btnNewPost.dataset.editId;
+      btnNewPost.textContent = 'Pubblica Post';
+      if (error) throw error;
+    } else {
+      const { error } = await supabase.from('posts').insert([payload]);
+      if (error) throw error;
+    }
+    // reset form
     npTitle.value = '';
     npContent.value = '';
     npTag.value = '';
@@ -79,7 +156,11 @@ btnNewPost.addEventListener('click', async () => {
     coverPreview.innerHTML = '';
     coverImageUrl = null;
     fbNewPost.textContent = '✅ Operazione completata';
+    await loadPosts();
   } catch(err) {
     fbNewPost.textContent = '❌ ' + err.message;
   }
 });
+
+// Initial load
+loadPosts();
