@@ -31,7 +31,7 @@ async function loadPosts() {
     listPosts.textContent = '❌ ' + error.message;
     return;
   }
-  if (data.length === 0) {
+  if (!data.length) {
     listPosts.textContent = 'Nessun post trovato.';
     return;
   }
@@ -40,13 +40,25 @@ async function loadPosts() {
     const div = document.createElement('div');
     div.className = 'post-item';
     div.innerHTML = `
+      <input type="checkbox" class="select-post" data-id="${post.id}" />
+      <span class="post-tag">${post.tag}</span>
       <span class="post-title">${post.title}</span>
       <button class="edit-btn" data-id="${post.id}">Modifica</button>
       <button class="delete-btn" data-id="${post.id}">Elimina</button>
     `;
     listPosts.append(div);
   });
-  // Attach events
+  // Checkbox handlers
+  const bulkBtn = document.getElementById('bulk-delete-btn');
+  const selected = new Set();
+  document.querySelectorAll('.select-post').forEach(cb => {
+    cb.onchange = () => {
+      if (cb.checked) selected.add(cb.dataset.id);
+      else selected.delete(cb.dataset.id);
+      bulkBtn.disabled = selected.size === 0;
+    };
+  });
+  // Edit handlers
   document.querySelectorAll('.edit-btn').forEach(btn => {
     btn.onclick = async () => {
       const id = btn.dataset.id;
@@ -63,33 +75,51 @@ async function loadPosts() {
       btnNewPost.textContent = 'Salva Modifiche';
     };
   });
+  // Delete handlers
   document.querySelectorAll('.delete-btn').forEach(btn => {
     btn.onclick = async () => {
       if (!confirm('Eliminare questo post e tutte le sue immagini?')) return;
       const id = btn.dataset.id;
+      // fetch post and delete logic...
+      // reuse existing delete code
       const { data: post, error: err2 } = await supabase.from('posts').select('*').eq('id', id).single();
       if (err2) return alert('Errore fetch post: ' + err2.message);
-      // Collect filenames to delete
       const urls = [];
       if (post.image_url) urls.push(post.image_url);
       const regex = /<img src="(.*?)"/g;
       let m;
-      while ((m = regex.exec(post.content)) !== null) {
-        urls.push(m[1]);
-      }
+      while ((m = regex.exec(post.content)) !== null) urls.push(m[1]);
       const fileNames = urls.map(u => decodeURIComponent(u.split('/').pop()));
       if (fileNames.length) {
-        const { error: delErr } = await supabase.storage.from('images').remove(fileNames);
-        if (delErr) console.warn('Errore delete storage:', delErr.message);
+        await supabase.storage.from('images').remove(fileNames);
       }
       const { error: err3 } = await supabase.from('posts').delete().eq('id', id);
       if (err3) return alert('Errore delete post: ' + err3.message);
-      await loadPosts();
+      loadPosts();
       alert('Post eliminato');
     };
   });
+  // Bulk delete
+  bulkBtn.onclick = async () => {
+    if (!confirm(`Eliminare ${selected.size} posts?`)) return;
+    for (let id of selected) {
+      const { data: post } = await supabase.from('posts').select('*').eq('id', id).single();
+      const urls = [];
+      if (post.image_url) urls.push(post.image_url);
+      const regex = /<img src="(.*?)"/g;
+      let m;
+      while ((m = regex.exec(post.content)) !== null) urls.push(m[1]);
+      const fileNames = urls.map(u => decodeURIComponent(u.split('/').pop()));
+      if (fileNames.length) await supabase.storage.from('images').remove(fileNames);
+    }
+    const { error } = await supabase.from('posts').delete().in('id', Array.from(selected));
+    if (error) return alert('Errore bulk delete: ' + error.message);
+    loadPosts();
+    selected.clear();
+    bulkBtn.disabled = true;
+    alert('Posts eliminati');
+  };
 }
-
 // Multiple images for content
 uploadInput.addEventListener('change', async e => {
   for (const file of e.target.files) {

@@ -76,3 +76,53 @@ button { cursor:pointer; }
   background: #dc3545;
   color: #fff;
 }
+
+
+/* Cover preview size */
+#cover-preview img {
+  max-width: 120px;
+  height: auto;
+}
+
+/* Edit Post List */
+#bulk-delete-btn {
+  background: #dc3545;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 1rem;
+}
+#bulk-delete-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.post-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+.post-item .select-post {
+  margin-right: 0.5rem;
+}
+.post-item .post-tag {
+  font-size: 0.9rem;
+  opacity: 0.7;
+  margin-right: 0.5rem;
+}
+.post-item .post-title {
+  font-weight: 600;
+  margin-right: auto;
+}
+.post-item .edit-btn, .post-item .delete-btn {
+  padding: 0.3rem 0.6rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 0.5rem;
+}
+.post-item .edit-btn { background: #007bff; color: #fff; }
+.post-item .delete-btn { background: #dc3545; color: #fff; }
