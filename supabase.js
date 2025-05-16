@@ -9,11 +9,11 @@ export async function getPosts() {
   const { data, error } = await supabase
     .from('posts')
     .select('*')
+    .eq('status', 'published')
     .order('date', { ascending: false })
   if (error) throw error
   return data
 }
-
 
 /** Ottiene tutte le splash-text */
 export async function getSplashTxts() {
