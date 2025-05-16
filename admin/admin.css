@@ -29,13 +29,14 @@ body { background: #fff; color: #000; font-family: sans-serif; min-height:100vh;
 
 /* — Buttons — */
 button { cursor:pointer; }
-#submit-new-post, #submit-new-splash { margin-top:1rem; padding:0.6rem 1rem; background:#000; color:#fff; border:none; border-radius:4px; }
+#submit-new-post, #submit-new-splash, #btn-set-cover { display:block; margin-top:1rem; padding:0.6rem 1rem; background:#000; color:#fff; border:none; border-radius:4px; }
+#btn-set-cover { background: #007bff; }
 
 /* — Uploaded Images List in New Post — */
 #uploaded-images-list { margin-top:1rem; display:flex; flex-wrap:wrap; gap:1rem; }
-.uploaded-image { border:1px solid #eee; padding:0.5rem; text-align:center; width:120px; }
+.uploaded-image { border:1px solid #eee; padding:0.5rem; text-align:center; width:120px; cursor: pointer; }
 .uploaded-image img { max-width:100%; height:auto; display:block; margin-bottom:0.5rem; }
-.uploaded-image button { margin-top:0.3rem; padding:0.3rem 0.5rem; font-size:0.8rem; }
+.uploaded-image.selected { border-color: #007bff; }
 
 /* — Manage Photos — */
 #list-photos { display:flex; flex-wrap:wrap; gap:0.5rem; margin-top:1rem; }
@@ -47,4 +48,13 @@ button { cursor:pointer; }
   #admin-panel .container { flex-direction:column; }
   .sidebar { flex-direction:row; overflow-x:auto; width:100%; }
   .sidebar button { flex:1; margin:0.25rem; font-size:0.85rem; }
+}
+
+/* — New Post Form Width & Spacing — */
+#new-post {
+  max-width: 600px;
+  margin: 0 auto;
+}
+#new-post h1 {
+  margin-bottom: 1.5rem;
 }
