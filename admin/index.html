@@ -24,18 +24,42 @@
         <button id="btn-logout">🚪 Logout</button>
       </nav>
       <main class="content">
-        <!-- New and Edit Post sections remain unchanged -->
-        ...
-        <!-- Splash-Text merged section -->
+        <!-- Nuovo Post -->
+        <section id="new-post" class="section">
+          <h1>Nuovo Post</h1>
+          <div class="field-group"><label for="np-title">Titolo</label><input type="text" id="np-title"/></div>
+          <div class="field-group"><label for="np-content">Contenuto</label><textarea id="np-content" rows="5"></textarea></div>
+          <div class="field-group"><label for="np-tag">Tag</label><select id="np-tag">
+            <option value="tools">tools</option>
+            <option value="cases">cases</option>
+            <option value="notes">notes</option>
+          </select></div>
+          <div class="field-group"><label for="newpost-upload">Upload Immagine</label><input type="file" id="newpost-upload" accept="image/*" multiple/></div>
+          <div id="uploaded-images-list"></div>
+          <div class="field-group"><label for="cover-input">Copertina (una sola)</label><input type="file" id="cover-input" accept="image/*"/></div>
+          <div id="cover-preview"></div>
+          <button id="save-draft">Salva Bozza</button>
+          <button id="submit-new-post">Pubblica Post</button>
+          <div class="feedback" id="fb-new-post"></div>
+        </section>
+        <!-- Modifica / Cancella Post -->
+        <section id="edit-post" class="section">
+          <h1>Modifica / Cancella Post</h1>
+          <button id="bulk-delete-btn" disabled>🗑 Elimina Selezionati</button>
+          <div id="list-posts">⏳ Caricamento…</div>
+        </section>
+        <!-- Splash-Text -->
         <section id="splash" class="section">
           <h1>Splash-Text</h1>
-          <div class="field-group">
-            <label for="splash-input">Phrase</label>
-            <input type="text" id="splash-input"/>
-          </div>
+          <div class="field-group"><label for="splash-input">Phrase</label><input type="text" id="splash-input"/></div>
           <button id="save-splash">Salva</button>
           <div class="feedback" id="fb-splash"></div>
           <div id="list-splashes" style="margin-top:1rem;">⏳ Caricamento…</div>
+        </section>
+        <!-- Gestione Foto -->
+        <section id="manage-photos" class="section">
+          <h1>Gestione Foto</h1>
+          <div id="list-photos">⏳ Caricamento…</div>
         </section>
       </main>
     </div>
