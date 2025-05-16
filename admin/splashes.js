@@ -6,8 +6,8 @@ export async function loadSplashes() {
 
   listSplashes.innerHTML = `
     <div class="splash-item new-splash">
+      <button id="submit-new-splash" title="Aggiungi">➕</button>
       <input type="text" id="new-splash-input" placeholder="Scrivi un nuovo splash…" />
-      <button id="submit-new-splash">➕</button>
       <div class="feedback" id="fb-new-splash"></div>
     </div>
   `;
@@ -44,16 +44,16 @@ export async function loadSplashes() {
     const div = document.createElement('div');
     div.className = 'splash-item';
     div.innerHTML = `
+      <button class="save-btn" title="Salva">💾</button>
       <button class="del-btn" title="Elimina">🗑️</button>
       <input type="text" value="${s.phrase}" data-id="${s.id}" />
-      <button class="save-btn" title="Salva">💾</button>
     `;
     listSplashes.appendChild(div);
   });
 
   listSplashes.querySelectorAll('.save-btn').forEach(btn => {
     btn.onclick = async () => {
-      const inp = btn.previousElementSibling;
+      const inp = btn.nextElementSibling.nextElementSibling;
       const phrase = inp.value.trim();
       const id = inp.dataset.id;
       try {
