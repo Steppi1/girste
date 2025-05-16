@@ -157,3 +157,8 @@ button { cursor:pointer; }
   word-wrap: break-word;
   overflow-wrap: break-word;
 }
+
+/* Add spacing below section titles */
+.content section h1 {
+  margin-bottom: 1.5rem;
+}
