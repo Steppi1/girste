@@ -187,37 +187,6 @@ button { cursor:pointer; }
 }
 
 /* Splash-Text merged section styling */
-#splash .field-group { margin-bottom: 1rem; }
-#save-splash {
-  background: #000;
-  color: #fff;
-  border: none;
-  padding: 0.6rem 1rem;
-  border-radius: 4px;
-  cursor: pointer;
-}
-#save-splash:hover { opacity: 0.9; }
-#list-splashes .splash-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0.75rem;
-}
-#list-splashes .splash-item input {
-  flex: 1;
-  padding: 0.4rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-#list-splashes .splash-item button {
-  padding: 0.3rem 0.6rem;
-  border: none;
-  background: #000;
-  color: #fff;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
 
 /* Manage Photos Bulk Delete Button */
 #bulk-delete-photos-btn {
@@ -357,4 +326,38 @@ button { cursor:pointer; }
   margin-top: 0.5rem;
   transform: scale(1.2);
   cursor: pointer;
+}
+/* Splash Section Items */
+#list-splash {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+.splash-item {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 240px;
+  border: 1px solid #eee;
+  border-radius: 6px;
+  padding: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  background: #fff;
+}
+.splash-item input {
+  flex: 1;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+}
+.splash-item button {
+  padding: 0.4rem 0.6rem;
+  border: none;
+  background: #000;
+  color: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 0.4rem;
 }
