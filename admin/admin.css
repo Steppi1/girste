@@ -58,3 +58,6 @@ button { cursor:pointer; }
 #new-post h1 {
   margin-bottom: 1.5rem;
 }
+
+/* Cover Preview */
+#cover-preview img { max-width: 120px; display: block; margin-bottom: 0.5rem; }

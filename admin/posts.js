@@ -40,9 +40,7 @@ btnNewPost.addEventListener('click', async () => {
     uploadedList.innerHTML = '';
     coverImageUrl = null;
     btnSetCover.disabled = true;
-    btnNewPost.textContent = '✅ Operazione completata';
-    await loadPosts();
-  } catch (err) {
+    btnNewPost.textContent = '✅ Operazione completata';} catch (err) {
     fbNewPost.textContent = '❌ ' + err.message;
     fbNewPost.className = 'feedback error';
   }
@@ -87,10 +85,38 @@ uploadInput.addEventListener('change', async e => {
   }
 });
 
-// Set cover explicit
-btnSetCover.addEventListener('click', () => {
-  if (coverImageUrl) {
-    btnSetCover.textContent = 'Copertina ✓';
-    btnSetCover.disabled = true;
+// Set cover explicit removed
+
+
+// Cover logic
+const coverInput = document.getElementById('cover-input'),
+      coverPreview = document.getElementById('cover-preview');
+
+document.getElementById('btn-set-cover').addEventListener('click', () => {
+  coverInput.click();
+});
+
+coverInput.addEventListener('change', async e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  // clear previous preview
+  coverPreview.innerHTML = '';
+  try {
+    const fileName = `cover_${Date.now()}_${file.name}`;
+    const { error: upErr } = await supabase.storage.from('images').upload(fileName, file);
+    if (upErr) throw upErr;
+    const { data: urlData } = supabase.storage.from('images').getPublicUrl(fileName);
+    const url = urlData.publicUrl;
+    coverImageUrl = url;
+    // show preview
+    const img = document.createElement('img');
+    img.src = url;
+    coverPreview.appendChild(img);
+    // disable button to prevent re-click
+    const btn = document.getElementById('btn-set-cover');
+    btn.textContent = 'Copertina ✓';
+    btn.disabled = true;
+  } catch (err) {
+    alert('Errore upload copertina: ' + err.message);
   }
 });
