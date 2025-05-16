@@ -330,7 +330,16 @@ button { cursor:pointer; }
 /* Splash Section Items */
 #list-splash {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+
+/* — Splash Items — */
+#list-splash {
+  display: flex;
+  flex-direction: column;
   gap: 1rem;
   margin-top: 1rem;
 }
@@ -343,21 +352,23 @@ button { cursor:pointer; }
   border-radius: 6px;
   padding: 0.75rem;
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-  background: #fff;
 }
 .splash-item input {
-  flex: 1;
+  width: 100%;
   padding: 0.5rem;
+  margin-top: 0.5rem;
   border: 1px solid #ccc;
   border-radius: 4px;
-  margin-bottom: 0.5rem;
 }
 .splash-item button {
   padding: 0.4rem 0.6rem;
+  margin-top: 0.5rem;
   border: none;
+  border-radius: 4px;
   background: #000;
   color: #fff;
-  border-radius: 4px;
   cursor: pointer;
-  margin-bottom: 0.4rem;
+}
+.splash-item button:hover {
+  opacity: 0.9;
 }
