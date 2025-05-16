@@ -21,6 +21,7 @@
         <button data-section="edit-post" class="nav-btn">✏️ Modifica Post</button>
         <button data-section="splash" class="nav-btn">💬 Splash-Text</button>
         <button data-section="manage-photos" class="nav-btn">📷 Gestione Foto</button>
+        <button data-section="manage-mosaic" class="nav-btn">🖼 Gestione Mosaic</button>
         <button id="btn-logout">🚪 Logout</button>
       </nav>
       <main class="content">
@@ -58,9 +59,15 @@
         </section>
         <!-- Gestione Foto -->
         <section id="manage-photos" class="section">
+          <button id="bulk-delete-photos-btn" disabled>🗑️ Elimina Selezionati</button>
           <h1>Gestione Foto</h1>
           <button id="bulk-delete-photos-btn" disabled>🗑️ Elimina Selezionati</button>
           <div id="list-photos">⏳ Caricamento…</div>
+        </section>
+        <section id="manage-mosaic" class="section">
+          <h1>Gestione Mosaic</h1>
+          <button id="bulk-delete-mosaic" disabled>🗑️ Elimina Selezionati</button>
+          <div id="list-mosaic">⏳ Caricamento…</div>
         </section>
       </main>
     </div>
