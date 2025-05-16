@@ -1,17 +1,64 @@
 import { supabase } from '/supabase.js';
-import { showSection } from './nav.js';
 
-const listPosts = document.getElementById('list-posts'),
-      btnNewPost = document.getElementById('submit-new-post'),
-      btnSetCover = document.getElementById('btn-set-cover'),
-      fbNewPost = document.getElementById('fb-new-post'),
-      npTitle = document.getElementById('np-title'),
+const npTitle = document.getElementById('np-title'),
       npContent = document.getElementById('np-content'),
       npTag = document.getElementById('np-tag'),
       uploadInput = document.getElementById('newpost-upload'),
-      uploadedList = document.getElementById('uploaded-images-list');
+      coverInput = document.getElementById('cover-input'),
+      uploadedList = document.getElementById('uploaded-images-list'),
+      coverPreview = document.getElementById('cover-preview'),
+      btnNewPost = document.getElementById('submit-new-post'),
+      fbNewPost = document.getElementById('fb-new-post');
 
-let 
+let coverImageUrl = null;
+
+// Helper to upload file and return public URL
+async function uploadFile(file, prefix = '') {
+  const fileName = `${prefix}${Date.now()}_${file.name}`;
+  const { error: upErr } = await supabase.storage.from('images').upload(fileName, file);
+  if (upErr) throw upErr;
+  const { data } = supabase.storage.from('images').getPublicUrl(fileName);
+  return data.publicUrl;
+}
+
+// Multiple images for content
+uploadInput.addEventListener('change', async e => {
+  for (const file of e.target.files) {
+    try {
+      const url = await uploadFile(file);
+      const snippet = `<img src=\"${url}\" />`;
+      const div = document.createElement('div');
+      div.className = 'uploaded-image';
+      const img = document.createElement('img');
+      img.src = url;
+      const copyBtn = document.createElement('button');
+      copyBtn.textContent = 'Copia';
+      copyBtn.onclick = () => navigator.clipboard.writeText(snippet);
+      div.append(img, copyBtn);
+      uploadedList.append(div);
+    } catch(err) {
+      alert('Errore upload: ' + err.message);
+    }
+  }
+  uploadInput.value = '';
+});
+
+// Single cover image
+coverInput.addEventListener('change', async e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  coverPreview.innerHTML = '';
+  try {
+    const url = await uploadFile(file, 'cover_');
+    coverImageUrl = url;
+    const img = document.createElement('img');
+    img.src = url;
+    coverPreview.appendChild(img);
+  } catch(err) {
+    alert('Errore upload copertina: ' + err.message);
+  }
+  coverInput.value = '';
+});
 
 // Publish post
 btnNewPost.addEventListener('click', async () => {
@@ -23,87 +70,16 @@ btnNewPost.addEventListener('click', async () => {
     image_url: coverImageUrl
   };
   try {
-    if (btnNewPost.dataset.editId) {
-      const { error } = await supabase.from('posts').update(payload).eq('id', btnNewPost.dataset.editId);
-      delete btnNewPost.dataset.editId;
-      if (error) throw error;
-      btnNewPost.textContent = 'Pubblica Post';
-    } else {
-      const { error } = await supabase.from('posts').insert([payload]);
-      if (error) throw error;
-    }
-    // reset form
+    const { error } = await supabase.from('posts').insert([payload]);
+    if (error) throw error;
     npTitle.value = '';
     npContent.value = '';
     npTag.value = '';
-    uploadInput.value = '';
     uploadedList.innerHTML = '';
-    
-    
-    btnNewPost.textContent = '✅ Operazione completata';} catch (err) {
+    coverPreview.innerHTML = '';
+    coverImageUrl = null;
+    fbNewPost.textContent = '✅ Operazione completata';
+  } catch(err) {
     fbNewPost.textContent = '❌ ' + err.message;
-    fbNewPost.className = 'feedback error';
-  }
-});
-
-// Handle uploads
-
-uploadInput.addEventListener('change', async e => {
-  for (const file of e.target.files) {
-    const fileName = `${Date.now()}_${file.name}`;
-    try {
-      const { error: upErr } = await supabase.storage.from('images').upload(fileName, file);
-      if (upErr) throw upErr;
-      const { data: urlData } = supabase.storage.from('images').getPublicUrl(fileName);
-      const url = urlData.publicUrl;
-      const snippet = `<img src=\"${url}\" />`;
-      const div = document.createElement('div');
-      div.className = 'uploaded-image';
-      const imgEl = document.createElement('img');
-      imgEl.src = url;
-      const copyBtn = document.createElement('button');
-      copyBtn.textContent = 'Copia';
-      copyBtn.onclick = () => navigator.clipboard.writeText(snippet);
-      div.append(imgEl, copyBtn);
-      uploadedList.appendChild(div);
-    } catch (err) {
-      alert('Errore upload: ' + err.message);
-    }
-  }
-  // reset input to allow re-uploading same file
-  uploadInput.value = '';
-});
-
-// Cover logic
-
-const coverInput = document.getElementById('cover-input'),
-      coverPreview = document.getElementById('cover-preview');
-
-document.getElementById('btn-set-cover').addEventListener('click', () => {
-  coverInput.click();
-});
-
-coverInput.addEventListener('change', async e => {
-  const file = e.target.files[0];
-  if (!file) return;
-  // clear previous preview
-  coverPreview.innerHTML = '';
-  try {
-    const fileName = `cover_${Date.now()}_${file.name}`;
-    const { error: upErr } = await supabase.storage.from('images').upload(fileName, file);
-    if (upErr) throw upErr;
-    const { data: urlData } = supabase.storage.from('images').getPublicUrl(fileName);
-    const url = urlData.publicUrl;
-    coverImageUrl = url;
-    // show preview
-    const img = document.createElement('img');
-    img.src = url;
-    coverPreview.appendChild(img);
-    // disable button to prevent re-click
-    const btn = document.getElementById('btn-set-cover');
-    btn.textContent = 'Copertina ✓';
-    btn.disabled = true;
-  } catch (err) {
-    alert('Errore upload copertina: ' + err.message);
   }
 });
