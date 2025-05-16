@@ -14,6 +14,7 @@ export async function getPosts() {
   return data
 }
 
+
 /** Ottiene tutte le splash-text */
 export async function getSplashTxts() {
   const { data, error } = await supabase
