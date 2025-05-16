@@ -4,17 +4,42 @@ export async function loadSplashes() {
   const listSplashes = document.getElementById('list-splash');
   if (!listSplashes) return;
 
-  listSplashes.textContent = '⏳ Caricamento…';
+  listSplashes.innerHTML = `
+    <div class="splash-item new-splash">
+      <input type="text" id="new-splash-input" placeholder="Scrivi un nuovo splash…" />
+      <button id="submit-new-splash">➕ Aggiungi</button>
+      <div class="feedback" id="fb-new-splash"></div>
+    </div>
+  `;
+
+  const addBtn = listSplashes.querySelector('#submit-new-splash');
+  const addInput = listSplashes.querySelector('#new-splash-input');
+  const fb = listSplashes.querySelector('#fb-new-splash');
+
+  addBtn.onclick = async () => {
+    const phrase = addInput.value.trim();
+    if (!phrase) return;
+    try {
+      const { error } = await supabase.from('splashtxt').insert({ phrase });
+      if (error) throw error;
+      addInput.value = '';
+      fb.textContent = '✅ Aggiunto!';
+      await loadSplashes();
+    } catch (err) {
+      fb.textContent = '❌ ' + err.message;
+    }
+  };
+
   const { data, error } = await supabase.from('splashtxt').select('*');
   if (error) {
-    listSplashes.textContent = '❌ ' + error.message;
+    listSplashes.innerHTML += '<div>❌ ' + error.message + '</div>';
     return;
   }
   if (!data.length) {
-    listSplashes.textContent = 'Nessuno splash.';
+    listSplashes.innerHTML += '<div>Nessuno splash.</div>';
     return;
   }
-  listSplashes.innerHTML = '';
+
   data.forEach(s => {
     const div = document.createElement('div');
     div.className = 'splash-item';
@@ -26,8 +51,7 @@ export async function loadSplashes() {
     listSplashes.appendChild(div);
   });
 
-  // Attach handlers
-  document.querySelectorAll('.save-btn').forEach(btn => {
+  listSplashes.querySelectorAll('.save-btn').forEach(btn => {
     btn.onclick = async () => {
       const inp = btn.previousElementSibling;
       const phrase = inp.value.trim();
@@ -42,7 +66,7 @@ export async function loadSplashes() {
     };
   });
 
-  document.querySelectorAll('.del-btn').forEach(btn => {
+  listSplashes.querySelectorAll('.del-btn').forEach(btn => {
     btn.onclick = async () => {
       const inp = btn.previousElementSibling.previousElementSibling;
       const id = inp.dataset.id;
@@ -56,26 +80,3 @@ export async function loadSplashes() {
     };
   });
 }
-
-// Optional: Safe splash create button (if exists)
-window.addEventListener('load', () => {
-  const btnSaveSplash = document.getElementById('save-splash');
-  const inputSplash = document.getElementById('splash-input');
-  const fbSplash = document.getElementById('fb-splash');
-
-  if (btnSaveSplash && inputSplash && fbSplash) {
-    btnSaveSplash.addEventListener('click', async () => {
-      const phrase = inputSplash.value.trim();
-      if (!phrase) return;
-      try {
-        const { error } = await supabase.from('splashtxt').insert({ phrase });
-        if (error) throw error;
-        inputSplash.value = '';
-        fbSplash.textContent = '✅ Aggiunto!';
-        await loadSplashes();
-      } catch (err) {
-        fbSplash.textContent = '❌ ' + err.message;
-      }
-    });
-  }
-});
