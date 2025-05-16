@@ -19,16 +19,32 @@
       <nav class="sidebar">
         <button data-section="new-post" class="nav-btn">📝 Nuovo Post</button>
         <button data-section="edit-post" class="nav-btn">✏️ Modifica Post</button>
-        <button data-section="splash" class="nav-btn">💬 Splash-Text</button>
+        <button data-section="new-splash" class="nav-btn">💬 Nuovo Splash</button>
+        <button data-section="manage-splash" class="nav-btn">🗑️ Gestione Splash</button>
         <button data-section="manage-photos" class="nav-btn">📷 Gestione Foto</button>
-        <button data-section="manage-mosaic" class="nav-btn">🖼 Gestione Mosaic</button>
+        <button data-section="manage-mosaic" class="nav-btn">🖼️ Gestione Mosaic</button>
         <button id="btn-logout">🚪 Logout</button>
       </nav>
       <main class="content">
         <!-- Nuovo Post -->
         <section id="new-post" class="section">
           <h1>Nuovo Post</h1>
-          <!-- form fields unchanged -->
+          <div class="field-group"><label for="np-title">Titolo</label><input type="text" id="np-title"/></div>
+          <div class="field-group"><label for="np-content">Contenuto</label><textarea id="np-content" rows="5"></textarea></div>
+          <div class="field-group"><label for="np-tag">Tag</label>
+            <select id="np-tag">
+              <option value="tools">tools</option>
+              <option value="cases">cases</option>
+              <option value="notes">notes</option>
+            </select>
+          </div>
+          <div class="field-group"><label for="newpost-upload">Upload Immagine</label><input type="file" id="newpost-upload" accept="image/*" multiple/></div>
+          <div id="uploaded-images-list"></div>
+          <div class="field-group"><label for="cover-input">Copertina (una sola)</label><input type="file" id="cover-input" accept="image/*"/></div>
+          <div id="cover-preview"></div>
+          <button id="save-draft">Salva Bozza</button>
+          <button id="submit-new-post">Pubblica Post</button>
+          <div class="feedback" id="fb-new-post"></div>
         </section>
         <!-- Modifica / Cancella Post -->
         <section id="edit-post" class="section">
@@ -36,10 +52,17 @@
           <button id="bulk-delete-btn" disabled>🗑️ Elimina Selezionati</button>
           <div id="list-posts">⏳ Caricamento…</div>
         </section>
-        <!-- Splash-Text -->
-        <section id="splash" class="section">
-          <h1>Splash-Text</h1>
-          <!-- splash form unchanged -->
+        <!-- Nuovo Splash -->
+        <section id="new-splash" class="section">
+          <h1>Nuovo Splash-Text</h1>
+          <div class="field-group"><label for="new-splash-input">Phrase</label><input type="text" id="new-splash-input"/></div>
+          <button id="submit-new-splash">Aggiungi Splash-Text</button>
+          <div class="feedback" id="fb-new-splash"></div>
+        </section>
+        <!-- Gestione Splash -->
+        <section id="manage-splash" class="section">
+          <h1>Modifica / Cancella Splash</h1>
+          <div id="list-splash">⏳ Caricamento…</div>
         </section>
         <!-- Gestione Foto -->
         <section id="manage-photos" class="section">
@@ -50,10 +73,7 @@
         <!-- Gestione Mosaic -->
         <section id="manage-mosaic" class="section">
           <h1>Gestione Mosaic</h1>
-          <div class="field-group">
-            <label for="mosaic-upload">Inserisci Immagine</label>
-            <input type="file" id="mosaic-upload" accept="image/*"/>
-          </div>
+          <div class="field-group"><label for="mosaic-upload">Inserisci Immagine</label><input type="file" id="mosaic-upload" accept="image/*"/></div>
           <button id="bulk-delete-mosaic" disabled>🗑️ Elimina Selezionati</button>
           <div id="list-mosaic">⏳ Caricamento…</div>
         </section>
