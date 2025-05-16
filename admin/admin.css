@@ -428,3 +428,7 @@ button { cursor:pointer; }
   padding: 0 1rem;
   font-size: 1.2rem;
 }
+
+.section#manage-splash .new-splash button {
+  height: 40px;
+}
