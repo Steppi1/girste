@@ -216,3 +216,38 @@ button { cursor:pointer; }
   border-radius: 4px;
   cursor: pointer;
 }
+
+
+/* Manage Photos Bulk Delete Button */
+#bulk-delete-photos-btn {
+  display: block;
+  margin-bottom: 1rem;
+  background: transparent;
+  border: 1px solid #000;
+  color: #000;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+#bulk-delete-photos-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* Photo items */
+.photo-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+.photo-item img {
+  width: 80px;
+  height: auto;
+}
+.photo-item .tick {
+  font-size: 1.2rem;
+}
+.photo-item .select-photo {
+  cursor: pointer;
+}
