@@ -27,57 +27,28 @@
       <main class="content">
         <section id="new-post" class="section">
           <h1>Nuovo Post</h1>
-          <div class="field-group">
-            <label for="np-title">Titolo</label>
-            <input type="text" id="np-title"/>
-          </div>
-          <div class="field-group">
-            <label for="np-content">Contenuto</label>
-            <textarea id="np-content" rows="5"></textarea>
-          </div>
-          <div class="field-group">
-            <label for="np-tag">Tag</label>
-            <select id="np-tag">
-              <option value="tools">tools</option>
-              <option value="cases">cases</option>
-              <option value="notes">notes</option>
-            </select>
-          </div>
-          <div class="field-group">
-            <label for="newpost-upload">Upload Immagine</label>
-            <input type="file" id="newpost-upload" accept="image/*" multiple/>
-          </div>
+          <div class="field-group"><label for="np-title">Titolo</label><input type="text" id="np-title"/></div>
+          <div class="field-group"><label for="np-content">Contenuto</label><textarea id="np-content" rows="5"></textarea></div>
+          <div class="field-group"><label for="np-tag">Tag</label><select id="np-tag">
+            <option value="tools">tools</option>
+            <option value="cases">cases</option>
+            <option value="notes">notes</option>
+          </select></div>
+          <div class="field-group"><label for="newpost-upload">Upload Immagine</label><input type="file" id="newpost-upload" accept="image/*" multiple/></div>
           <div id="uploaded-images-list"></div>
-          <div class="field-group">
-            <label for="cover-input">Copertina (una sola)</label>
-            <input type="file" id="cover-input" accept="image/*"/>
-          </div>
+          <div class="field-group"><label for="cover-input">Copertina (una sola)</label><input type="file" id="cover-input" accept="image/*"/></div>
           <div id="cover-preview"></div>
+          <button id="save-draft">Salva Bozza</button>
           <button id="submit-new-post">Pubblica Post</button>
           <div class="feedback" id="fb-new-post"></div>
         </section>
-        <section id="edit-post" class="section">
-          <h1>Modifica / Cancella Post</h1>
+        <section id="edit-post" class="section"><h1>Modifica / Cancella Post</h1>
           <button id="bulk-delete-btn" disabled>🗑 Elimina Selezionati</button>
-<div id="list-posts">⏳ Caricamento…</div>
+          <div id="list-posts">⏳ Caricamento…</div>
         </section>
-        <section id="new-splash" class="section">
-          <h1>Nuovo Splash-Text</h1>
-          <div class="field-group">
-            <label for="new-splash-input">Phrase</label>
-            <input type="text" id="new-splash-input"/>
-          </div>
-          <button id="submit-new-splash">Aggiungi Splash-Text</button>
-          <div class="feedback" id="fb-new-splash"></div>
-        </section>
-        <section id="manage-splash" class="section">
-          <h1>Modifica / Cancella Splash</h1>
-          <div id="list-splash">⏳ Caricamento…</div>
-        </section>
-        <section id="manage-photos" class="section">
-          <h1>Gestione Foto</h1>
-          <div id="list-photos">⏳ Caricamento…</div>
-        </section>
+        <section id="new-splash" class="section"><h1>Nuovo Splash-Text</h1><div class="field-group"><label for="new-splash-input">Phrase</label><input type="text" id="new-splash-input"/></div><button id="submit-new-splash">Aggiungi Splash-Text</button><div class="feedback" id="fb-new-splash"></div></section>
+        <section id="manage-splash" class="section"><h1>Modifica / Cancella Splash</h1><div id="list-splash">⏳ Caricamento…</div></section>
+        <section id="manage-photos" class="section"><h1>Gestione Foto</h1><div id="list-photos">⏳ Caricamento…</div></section>
       </main>
     </div>
   </div>
