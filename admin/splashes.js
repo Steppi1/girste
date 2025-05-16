@@ -1,26 +1,9 @@
 import { supabase } from '../supabase.js';
-const listSplashes = document.getElementById('list-splashes'),
-  inputSplash = document.getElementById('splash-input'),
-  btnSaveSplash = document.getElementById('save-splash'),
-  fbSplash = document.getElementById('fb-splash');
 
-// Save new splash
-btnSaveSplash.addEventListener('click', async () => {
-  const phrase = inputSplash.value.trim();
-  if (!phrase) return;
-  try {
-    const { error } = await supabase.from('splashtxt').insert({ phrase });
-    if (error) throw error;
-    inputSplash.value = '';
-    fbSplash.textContent = '✅ Aggiunto!';
-    await loadSplashes();
-  } catch (err) {
-    fbSplash.textContent = '❌ ' + err.message;
-  }
-});
-
-// Load and manage splashes
 export async function loadSplashes() {
+  const listSplashes = document.getElementById('list-splash');
+  if (!listSplashes) return;
+
   listSplashes.textContent = '⏳ Caricamento…';
   const { data, error } = await supabase.from('splashtxt').select('*');
   if (error) {
@@ -42,6 +25,7 @@ export async function loadSplashes() {
     `;
     listSplashes.appendChild(div);
   });
+
   // Attach handlers
   document.querySelectorAll('.save-btn').forEach(btn => {
     btn.onclick = async () => {
@@ -57,6 +41,7 @@ export async function loadSplashes() {
       }
     };
   });
+
   document.querySelectorAll('.del-btn').forEach(btn => {
     btn.onclick = async () => {
       const inp = btn.nextElementSibling;
@@ -72,5 +57,25 @@ export async function loadSplashes() {
   });
 }
 
-// Initialize on load
-window.addEventListener('load', () => loadSplashes());
+// Optional: Safe splash create button (if exists)
+window.addEventListener('load', () => {
+  const btnSaveSplash = document.getElementById('save-splash');
+  const inputSplash = document.getElementById('splash-input');
+  const fbSplash = document.getElementById('fb-splash');
+
+  if (btnSaveSplash && inputSplash && fbSplash) {
+    btnSaveSplash.addEventListener('click', async () => {
+      const phrase = inputSplash.value.trim();
+      if (!phrase) return;
+      try {
+        const { error } = await supabase.from('splashtxt').insert({ phrase });
+        if (error) throw error;
+        inputSplash.value = '';
+        fbSplash.textContent = '✅ Aggiunto!';
+        await loadSplashes();
+      } catch (err) {
+        fbSplash.textContent = '❌ ' + err.message;
+      }
+    });
+  }
+});
