@@ -251,3 +251,37 @@ button { cursor:pointer; }
 .photo-item .select-photo {
   cursor: pointer;
 }
+
+
+/* Manage Photos: card layout */
+#list-photos {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 1rem !important;
+  margin-top: 1rem !important;
+}
+#list-photos .photo-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 140px;
+  border: 1px solid #eee;
+  border-radius: 6px;
+  padding: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+#list-photos .photo-item img {
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+#list-photos .photo-item .tick {
+  margin-top: 0.5rem;
+  color: green;
+  font-size: 1.2rem;
+}
+#list-photos .photo-item .select-photo {
+  margin-top: 0.5rem;
+  transform: scale(1.2);
+  cursor: pointer;
+}
