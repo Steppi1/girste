@@ -412,3 +412,8 @@ button { cursor:pointer; }
 .section#manage-splash .new-splash {
   flex-direction: row !important;
 }
+
+/* Fix allineamento "+" accanto all'input nella sezione Splash */
+.section#manage-splash .new-splash {
+  align-items: stretch;
+}
