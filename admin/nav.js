@@ -1,6 +1,8 @@
+import { loadSplashTexts } from './splashes.js';
 import { loadMosaic } from './mosaic.js';
 export function showSection(id) {
   if (id === 'manage-mosaic') loadMosaic();
+  if (id === 'manage-splash') loadSplashTexts();
   document.querySelectorAll('.section').forEach(s=>s.id===id?s.classList.add('active'):s.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b=>b.dataset.section===id?b.classList.add('active'):b.classList.remove('active'));
 }
