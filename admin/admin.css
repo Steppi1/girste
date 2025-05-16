@@ -140,3 +140,20 @@ button { cursor:pointer; }
 .post-item .edit-btn, .post-item .delete-btn {
   margin-right: 0.5rem;
 }
+
+/* Black-outlined buttons */
+#bulk-delete-btn, .delete-btn, .edit-btn {
+  background: transparent !important;
+  border: 1px solid #000 !important;
+  color: #000 !important;
+}
+
+/* Allow wrapping of long titles */
+.post-item {
+  flex-wrap: wrap;
+}
+.post-title {
+  flex: 1 1 auto;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
