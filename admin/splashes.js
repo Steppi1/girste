@@ -36,16 +36,16 @@ export async function loadSplashes() {
     const div = document.createElement('div');
     div.className = 'splash-item';
     div.innerHTML = `
-      <input type="text" value="${s.phrase}" data-id="${s.id}" />
       <button class="save-btn">Save</button>
       <button class="del-btn">Del</button>
+      <input type="text" value="${s.phrase}" data-id="${s.id}" />
     `;
     listSplashes.appendChild(div);
   });
   // Attach handlers
   document.querySelectorAll('.save-btn').forEach(btn => {
     btn.onclick = async () => {
-      const inp = btn.previousElementSibling;
+      const inp = btn.nextElementSibling.nextElementSibling;
       const phrase = inp.value.trim();
       const id = inp.dataset.id;
       try {
@@ -59,7 +59,8 @@ export async function loadSplashes() {
   });
   document.querySelectorAll('.del-btn').forEach(btn => {
     btn.onclick = async () => {
-      const id = btn.previousElementSibling.previousElementSibling.dataset.id;
+      const inp = btn.nextElementSibling;
+      const id = inp.dataset.id;
       try {
         const { error } = await supabase.from('splashtxt').delete().eq('id', id);
         if (error) throw error;
@@ -71,5 +72,5 @@ export async function loadSplashes() {
   });
 }
 
-// Initialize
+// Initialize on load
 window.addEventListener('load', () => loadSplashes());
