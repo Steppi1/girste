@@ -56,21 +56,27 @@ uploadInput.addEventListener('change', async e => {
       const snippet = `<img src="${url}" />`;
       const div = document.createElement('div');
       div.className = 'uploaded-image';
-      div.innerHTML = `
-        <img src="${url}">
-        <code>${snippet}</code>
-        <button class="copy-btn">Copia</button>
-        <button class="cover-btn">Copertina</button>
-      `;
-      // copy-to-clipboard
-      div.querySelector('.copy-btn').onclick = () => navigator.clipboard.writeText(snippet);
-      // set cover image
-      div.querySelector('.cover-btn').onclick = () => {
+      // preview image
+      const imgEl = document.createElement('img');
+      imgEl.src = url;
+      // code snippet (escaped)
+      const codeEl = document.createElement('code');
+      codeEl.textContent = snippet;
+      // copy button
+      const copyBtn = document.createElement('button');
+      copyBtn.className = 'copy-btn';
+      copyBtn.textContent = 'Copia';
+      copyBtn.onclick = () => navigator.clipboard.writeText(snippet);
+      // cover button
+      const coverBtn = document.createElement('button');
+      coverBtn.className = 'cover-btn';
+      coverBtn.textContent = 'Copertina';
+      coverBtn.onclick = () => {
         coverImageUrl = url;
-        // reset other cover buttons
         document.querySelectorAll('.cover-btn').forEach(btn => btn.textContent = 'Copertina');
-        div.querySelector('.cover-btn').textContent = 'Copertina ✓';
+        coverBtn.textContent = 'Copertina ✓';
       };
+      div.append(imgEl, codeEl, copyBtn, coverBtn);
       uploadedList.appendChild(div);
     } catch (err) {
       alert('Errore upload: ' + err.message);
