@@ -616,3 +616,19 @@ body.dark .arrow-icon, body.dark .contrast-icon{filter:brightness(0) saturate(10
 .article-content {
   padding-bottom: 7rem !important; /* increased from 6rem */
 }
+
+
+/* MOBILE: Hide scrollbars on mobile devices, including iPhone */
+@media (max-width: 600px) {
+  /* For Firefox */
+  .container, .main-content {
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important; /* IE and Edge */
+  }
+  /* For Chrome, Safari, Opera, and WebKit */
+  .container::-webkit-scrollbar, .main-content::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+  }
+}
