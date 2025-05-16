@@ -5,7 +5,6 @@ const listPosts = document.getElementById('list-posts'),
       btnNewPost = document.getElementById('submit-new-post'),
       fbNewPost = document.getElementById('fb-new-post'),
       npTitle = document.getElementById('np-title'),
-      npSnippet = document.getElementById('np-snippet'),
       npContent = document.getElementById('np-content'),
       npTag = document.getElementById('np-tag'),
       uploadInput = document.getElementById('newpost-upload'),
@@ -17,7 +16,6 @@ btnNewPost.addEventListener('click', async () => {
   fbNewPost.textContent = '';
   const payload = {
     title: npTitle.value,
-    snippet: npSnippet.value,
     content: npContent.value,
     tag: npTag.value,
     image_url: coverImageUrl
@@ -34,7 +32,6 @@ btnNewPost.addEventListener('click', async () => {
     }
     // reset form
     npTitle.value = '';
-    npSnippet.value = '';
     npContent.value = '';
     npTag.value = '';
     uploadInput.value = '';
