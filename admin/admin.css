@@ -372,3 +372,22 @@ button { cursor:pointer; }
 .splash-item button:hover {
   opacity: 0.9;
 }
+
+.splash-item {
+  flex-direction: row !important;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+}
+.splash-item input {
+  flex: 1;
+  margin: 0 !important;
+}
+.splash-item button {
+  padding: 0.4rem 0.6rem;
+  background: #000;
+  color: #fff;
+  border-radius: 4px;
+  border: none;
+  font-size: 1rem;
+}
