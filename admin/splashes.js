@@ -1,36 +1,75 @@
 import { supabase } from '/supabase.js';
-const listSplash=document.getElementById('list-splash'),
-  btnNewSplash=document.getElementById('submit-new-splash'),
-  fbNewSplash=document.getElementById('fb-new-splash'),
-  inputSplash=document.getElementById('new-splash-input');
-btnNewSplash.addEventListener('click',async()=>{
-  const phrase=inputSplash.value.trim(); if(!phrase)return;
-  try{const{error}=await supabase.from('splashtxt').insert({phrase}); if(error)throw error;
-    inputSplash.value=''; fbNewSplash.textContent='✅ Aggiunto!'; await loadSplashes();
-  }catch(err){fbNewSplash.textContent='❌ '+err.message;}
+const listSplashes = document.getElementById('list-splashes'),
+  inputSplash = document.getElementById('splash-input'),
+  btnSaveSplash = document.getElementById('save-splash'),
+  fbSplash = document.getElementById('fb-splash');
+
+// Save new splash
+btnSaveSplash.addEventListener('click', async () => {
+  const phrase = inputSplash.value.trim();
+  if (!phrase) return;
+  try {
+    const { error } = await supabase.from('splashtxt').insert({ phrase });
+    if (error) throw error;
+    inputSplash.value = '';
+    fbSplash.textContent = '✅ Aggiunto!';
+    await loadSplashes();
+  } catch (err) {
+    fbSplash.textContent = '❌ ' + err.message;
+  }
 });
-export async function loadSplashes(){
-  listSplash.textContent='⏳ Caricamento…';
-  const{data,error}=await supabase.from('splashtxt').select('*');
-  if(error){listSplash.textContent=error.message;return;}
-  if(!data.length){listSplash.textContent='Nessuno splash.';return;}
-  listSplash.innerHTML=data.map(s=>`<div data-id="${s.id}" style="margin-bottom:0.5rem;">
-    <input type="text" value="${s.phrase}" data-id="${s.id}" style="width:70%;"/>
-    <button class="save-splash">Save</button>
-    <button class="del-splash">Del</button>
-  </div>`).join('');
-  document.querySelectorAll('.save-splash').forEach(btn=>{
-    btn.onclick=async()=>{
-      const inp=btn.previousElementSibling; const id=inp.dataset.id; const np=inp.value.trim();
-      const{error}=await supabase.from('splashtxt').update({phrase:np}).eq('id',id);
-      if(error)alert('Errore update: '+error.message); await loadSplashes();
+
+// Load and manage splashes
+export async function loadSplashes() {
+  listSplashes.textContent = '⏳ Caricamento…';
+  const { data, error } = await supabase.from('splashtxt').select('*');
+  if (error) {
+    listSplashes.textContent = '❌ ' + error.message;
+    return;
+  }
+  if (!data.length) {
+    listSplashes.textContent = 'Nessuno splash.';
+    return;
+  }
+  listSplashes.innerHTML = '';
+  data.forEach(s => {
+    const div = document.createElement('div');
+    div.className = 'splash-item';
+    div.innerHTML = `
+      <input type="text" value="${s.phrase}" data-id="${s.id}" />
+      <button class="save-btn">Save</button>
+      <button class="del-btn">Del</button>
+    `;
+    listSplashes.appendChild(div);
+  });
+  // Attach handlers
+  document.querySelectorAll('.save-btn').forEach(btn => {
+    btn.onclick = async () => {
+      const inp = btn.previousElementSibling;
+      const phrase = inp.value.trim();
+      const id = inp.dataset.id;
+      try {
+        const { error } = await supabase.from('splashtxt').update({ phrase }).eq('id', id);
+        if (error) throw error;
+        await loadSplashes();
+      } catch (err) {
+        alert('Errore update: ' + err.message);
+      }
     };
   });
-  document.querySelectorAll('.del-splash').forEach(btn=>{
-    btn.onclick=async()=>{
-      const id=btn.previousElementSibling.previousElementSibling.dataset.id;
-      await supabase.from('splashtxt').delete().eq('id',id); await loadSplashes();
+  document.querySelectorAll('.del-btn').forEach(btn => {
+    btn.onclick = async () => {
+      const id = btn.previousElementSibling.previousElementSibling.dataset.id;
+      try {
+        const { error } = await supabase.from('splashtxt').delete().eq('id', id);
+        if (error) throw error;
+        await loadSplashes();
+      } catch (err) {
+        alert('Errore delete: ' + err.message);
+      }
     };
   });
 }
-window.addEventListener('load',()=>loadSplashes());
+
+// Initialize
+window.addEventListener('load', () => loadSplashes());
