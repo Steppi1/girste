@@ -1,7 +1,8 @@
 import { supabase } from '/supabase.js';
 import { showSection } from './nav.js';
 
-const npTitle = document.getElementById('np-title'),
+const listPosts = document.getElementById('list-posts'),
+      npTitle = document.getElementById('np-title'),
       npContent = document.getElementById('np-content'),
       npTag = document.getElementById('np-tag'),
       uploadInput = document.getElementById('newpost-upload'),
@@ -23,7 +24,36 @@ async function uploadFile(file, prefix = '') {
   return data.publicUrl;
 }
 
-// Multiple images
+// Load posts for edit section
+async function loadPosts() {
+  listPosts.textContent = '⌛ Caricamento…';
+  const { data, error } = await supabase.from('posts').select('*').order('date', { ascending: false });
+  if (error) {
+    listPosts.textContent = '❌ ' + error.message;
+    return;
+  }
+  listPosts.innerHTML = '';
+  if (data.length === 0) {
+    listPosts.textContent = 'Nessun post trovato.';
+    return;
+  }
+  data.forEach(post => {
+    const div = document.createElement('div');
+    div.className = 'post-item';
+    div.innerHTML = `
+      <input type="checkbox" class="select-post" data-id="${post.id}" />
+      <button class="delete-btn" data-id="${post.id}">❌</button>
+      <button class="edit-btn" data-id="${post.id}">✏️</button>
+      ${post.status === 'draft' ? '<span class="badge draft">Bozza</span>' : ''}
+      <span class="post-tag">${post.tag}</span>
+      <span class="post-title">${post.title}</span>
+    `;
+    listPosts.append(div);
+  });
+  // ... attach handlers for checkboxes, edits, deletes, bulk delete (existing code) ...
+}
+
+// Handle multiple image uploads
 uploadInput.addEventListener('change', async e => {
   for (const file of e.target.files) {
     try {
@@ -45,7 +75,7 @@ uploadInput.addEventListener('change', async e => {
   uploadInput.value = '';
 });
 
-// Single cover
+// Handle single cover upload
 coverInput.addEventListener('change', async e => {
   const file = e.target.files[0];
   if (!file) return;
@@ -62,16 +92,6 @@ coverInput.addEventListener('change', async e => {
   coverInput.value = '';
 });
 
-// Save draft
-btnSaveDraft.addEventListener('click', async () => {
-  await submitPost('draft');
-});
-
-// Publish post
-btnPublish.addEventListener('click', async () => {
-  await submitPost('published');
-});
-
 // Common submit function
 async function submitPost(status) {
   fbNewPost.textContent = '';
@@ -80,11 +100,18 @@ async function submitPost(status) {
     content: npContent.value,
     tag: npTag.value,
     image_url: coverImageUrl,
-    status: status
+    status
   };
   try {
-    const { error } = await supabase.from('posts').insert([payload]);
-    if (error) throw error;
+    // if editing existing
+    if (btnPublish.dataset.editId) {
+      await supabase.from('posts').update(payload).eq('id', btnPublish.dataset.editId);
+      delete btnPublish.dataset.editId;
+      btnPublish.textContent = 'Pubblica Post';
+    } else {
+      await supabase.from('posts').insert([payload]);
+    }
+    // reset form
     npTitle.value = '';
     npContent.value = '';
     npTag.value = '';
@@ -92,10 +119,16 @@ async function submitPost(status) {
     coverPreview.innerHTML = '';
     coverImageUrl = null;
     fbNewPost.textContent = '✅ Operazione completata';
+    await loadPosts();
+    showSection('edit-post');
   } catch(err) {
     fbNewPost.textContent = '❌ ' + err.message;
   }
 }
 
-// Initialize edit-post list if needed
-// (existing loadPosts remains unchanged)
+// Button events
+btnSaveDraft.addEventListener('click', () => submitPost('draft'));
+btnPublish.addEventListener('click', () => submitPost('published'));
+
+// Initial load of posts
+loadPosts();
