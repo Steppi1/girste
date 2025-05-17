@@ -5,7 +5,7 @@ const bulkDeleteBtn = document.getElementById('bulk-delete-photos-btn');
 
 let selected = new Set();
 
-// Fetch all used image URLs from posts
+// Fetch all used image filenames from posts
 async function fetchUsedUrls() {
   const { data: posts, error } = await supabase.from('posts').select('image_url, content');
   if (error) {
@@ -14,11 +14,15 @@ async function fetchUsedUrls() {
   }
   const used = new Set();
   posts.forEach(post => {
-    if (post.image_url) used.add(post.image_url);
+    if (post.image_url) {
+      const name = post.image_url.split('/').pop();
+      used.add(name);
+    }
     const regex = /<img src=\"(.*?)\"/g;
     let m;
     while ((m = regex.exec(post.content)) !== null) {
-      used.add(m[1]);
+      const name = m[1].split('/').pop();
+      used.add(name);
     }
   });
   return used;
@@ -39,17 +43,17 @@ export async function loadPhotos() {
 
   files.forEach(file => {
     const publicUrl = supabase.storage.from('images').getPublicUrl(file.name).data.publicUrl;
-    const isUsed = usedUrls.has(publicUrl);
+    const isUsed = usedUrls.has(file.name);
 
     const div = document.createElement('div');
     div.className = 'photo-item';
     div.innerHTML = `
       <img src="${publicUrl}" alt="${file.name}" />
-      <div style="position: absolute; bottom: 0.5rem; left: 0.5rem; display: flex; align-items: center; gap: 0.4rem;">
+      <div style="position: absolute; bottom: 0.5rem; left: 0.5rem; display: flex; align-items: center; gap: 0.3rem;">
         <input type="checkbox" class="select-photo" data-name="${file.name}" />
-        <button class="copy-link" title="Copia HTML">📋</button>
+        <button class="copy-link" title="Copia HTML" style="font-size:1.2rem; background:transparent; border:none; cursor:pointer;">📋</button>
+        ${isUsed ? '<span class="tick" style="margin-left: 0.3rem; font-size: 1.2rem; color: #2ecc71;">✅</span>' : ''}
       </div>
-      ${isUsed ? '<span class="tick" style="position: absolute; bottom: 0.5rem; left: 5.2rem; font-size: 1.2rem; color: #2ecc71;">✅</span>' : ''}
     `;
     listPhotos.appendChild(div);
   });
