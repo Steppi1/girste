@@ -75,7 +75,20 @@ async function loadPosts() {
       npContent.value = post.content;
       npTag.value = post.tag;
       coverImageUrl = post.image_url;
-      coverPreview.innerHTML = post.image_url ? `<img src="${post.image_url}" />` : '';
+      coverPreview.innerHTML = '';
+        if (post.image_url) {
+          const img = document.createElement('img');
+          img.src = post.image_url;
+          coverPreview.appendChild(img);
+          const delBtn2 = document.createElement('button');
+          delBtn2.textContent = '❌';
+          delBtn2.addEventListener('click', () => {
+            coverImageUrl = null;
+            coverPreview.innerHTML = '';
+            coverInput.value = '';
+          });
+          coverPreview.appendChild(delBtn2);
+        }
       uploadedList.innerHTML = '';
       showSection('new-post');
       btnPublish.dataset.editId = id;
@@ -201,7 +214,7 @@ coverInput.addEventListener('change', async e => {
     coverPreview.appendChild(img);
       // Pulsante per rimuovere la copertina
     const delBtn = document.createElement('button');
-    delBtn.textContent = 'Rimuovi copertina';
+    delBtn.textContent = '❌';
     delBtn.addEventListener('click', () => {
       coverImageUrl = null;
       coverPreview.innerHTML = '';
