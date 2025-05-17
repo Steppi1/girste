@@ -44,12 +44,12 @@ export async function loadPhotos() {
     const div = document.createElement('div');
     div.className = 'photo-item';
     div.innerHTML = `
-      <div style="position: absolute; bottom: 0.5rem; left: 0.5rem; display: flex; gap: 0.4rem; align-items: center;">
+      <img src="${publicUrl}" alt="${file.name}" />
+      <div style="position: absolute; bottom: 0.5rem; left: 0.5rem; display: flex; align-items: center; gap: 0.4rem;">
         <input type="checkbox" class="select-photo" data-name="${file.name}" />
-        <span class="tick">${isUsed ? '✅' : ''}</span>
         <button class="copy-link" title="Copia HTML">📋</button>
       </div>
-      <img src="${publicUrl}" alt="${file.name}" />
+      ${isUsed ? '<span class="tick" style="position: absolute; bottom: 0.5rem; left: 5.2rem; font-size: 1.2rem; color: #2ecc71;">✅</span>' : ''}
     `;
     listPhotos.appendChild(div);
   });
@@ -67,11 +67,11 @@ export async function loadPhotos() {
   // Copy HTML buttons
   document.querySelectorAll('.copy-link').forEach(btn => {
     btn.onclick = () => {
-      const img = btn.parentElement.parentElement.querySelector('img');
+      const img = btn.closest('.photo-item').querySelector('img');
       const html = `<img src=\"${img.src}\" alt=\"${img.alt}\" />`;
       navigator.clipboard.writeText(html).then(() => {
         btn.style.opacity = '0.5';
-        setTimeout(() => (btn.style.opacity = '1'), 1000);
+        setTimeout(() => (btn.style.opacity = '1'), 800);
       });
     };
   });
