@@ -673,3 +673,14 @@ body.dark .arrow-icon, body.dark .contrast-icon{filter:brightness(0) saturate(10
   overflow-wrap: break-word !important;
   hyphens: none !important;
 }
+
+
+/* Override finale: disabilita il wrapping mid-word */
+.article-content {
+  white-space: pre-wrap !important;
+  word-break: normal !important;
+  overflow-wrap: normal !important;
+  word-wrap: normal !important;
+  hyphens: none !important;
+  -webkit-hyphens: none !important;
+}
