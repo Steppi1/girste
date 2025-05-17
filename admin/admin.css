@@ -183,37 +183,22 @@ button {
 }
 
 /* — Photo Controls — */
-.photo-item .select-photo {
+.photo-item-controls {
   position: absolute;
   bottom: 0.5rem;
   left: 0.5rem;
-  transform: scale(1.2);
-  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
 }
+
 .photo-item .tick {
-  position: absolute;
-  bottom: 0.5rem;
-  left: 2.5rem;
   font-size: 1.2rem;
-  color: transparent;
+  color: #2ecc71;
+  margin-left: 0.4rem;
 }
-.photo-item .tick::before {
-  content: "✅";
-  display: inline-block;
-}
-.photo-item .notebook-icon {
-  position: absolute;
-  bottom: 0.5rem;
-  left: 4.5rem;
-  font-size: 1.2rem;
-}
-.photo-item .notebook-icon::before {
-  content: "📓";
-}
-.photo-item .copy-link {
-  position: absolute;
-  bottom: 0.5rem;
-  right: 0.5rem;
+
+.copy-link {
   font-size: 1.2rem;
   background: transparent;
   border: none;
@@ -366,26 +351,4 @@ button {
     margin: 0.25rem;
     font-size: 0.85rem;
   }
-}
-
-.photo-item-controls {
-  position: absolute;
-  bottom: 0.5rem;
-  left: 0.5rem;
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-}
-
-.photo-item .tick {
-  font-size: 1.2rem;
-  color: #2ecc71;
-  margin-left: 0.4rem;
-}
-
-.copy-link {
-  font-size: 1.2rem;
-  background: transparent;
-  border: none;
-  cursor: pointer;
 }
