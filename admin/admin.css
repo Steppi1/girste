@@ -107,6 +107,52 @@ button { cursor:pointer; }
   cursor: pointer;
 }
 
+/* — Manage Mosaic section styling — */
+#bulk-delete-mosaic {
+  display: block;
+  margin-bottom: 1rem;
+  background: transparent;
+  border: 1px solid #000;
+  color: #000;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+#bulk-delete-mosaic:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* Uniform Mosaic Cards (no tick) */
+#list-mosaic {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+.mosaic-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 120px;
+  height: 140px;
+  border: 1px solid #eee;
+  border-radius: 6px;
+  padding: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+.mosaic-item img {
+  width: 100%;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+.mosaic-item .select-mosaic {
+  margin-top: 0.5rem;
+  transform: scale(1.2);
+  cursor: pointer;
+}
+
 /* — Responsive — */
 @media(max-width:600px){
   #admin-panel .container { flex-direction:column; }
@@ -142,7 +188,6 @@ button { cursor:pointer; }
   color: #fff;
 }
 
-
 /* Cover preview size */
 #cover-preview img {
   max-width: 120px;
@@ -163,7 +208,6 @@ button { cursor:pointer; }
   opacity: 0.5;
   cursor: default;
 }
-
 .post-item .select-post {
   margin-right: 0.5rem;
 }
@@ -253,4 +297,8 @@ button { cursor:pointer; }
   align-items: center;
   justify-content: center;
 }
-.section#manage-splash .new-splash { flex-direction: row !important; align-items: stretch; }
+/* Allineamento "+" accanto all’input */
+.section#manage-splash .new-splash {
+  flex-direction: row !important;
+  align-items: stretch;
+}
