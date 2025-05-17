@@ -199,7 +199,16 @@ coverInput.addEventListener('change', async e => {
     const img = document.createElement('img');
     img.src = url;
     coverPreview.appendChild(img);
-  } catch (error) {
+      // Pulsante per rimuovere la copertina
+    const delBtn = document.createElement('button');
+    delBtn.textContent = 'Rimuovi copertina';
+    delBtn.addEventListener('click', () => {
+      coverImageUrl = null;
+      coverPreview.innerHTML = '';
+      coverInput.value = '';
+    });
+    coverPreview.appendChild(delBtn);
+} catch (error) {
     alert('Errore upload copertina: ' + error.message);
   }
   coverInput.value = '';
