@@ -14,6 +14,22 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(updateSplash, 4000);
   })();
   (async () => {
+    function textToHtml(text) {
+      return text
+        .split(/\n{2,}/g)
+        .map(para =>
+          `<p>${para.split('\n').join('<br>')}</p>`
+        )
+        .join('');
+    }
+    function textToHtml(text) {
+      return text
+        .split(/\n{2,}/g)
+        .map(para =>
+          `<p>${para.split('\n').join('<br>')}</p>`
+        )
+        .join('');
+    }
     const posts = await getPosts();
     const list = document.getElementById('article-list');
     const content = document.querySelector('.article-content');
@@ -25,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
       li.addEventListener('click', () => {
         document.querySelectorAll('.article.selected').forEach(el=>el.classList.remove('selected'));
         li.classList.add('selected');
-        content.innerHTML = `<h2>${post.title}</h2>${post.content}`;
+        content.innerHTML = `<h2>${post.title}</h2>${textToHtml(post.content)}`;
       });
       list.appendChild(li); if(idx===0) li.click();
     });

@@ -632,3 +632,17 @@ body.dark .arrow-icon, body.dark .contrast-icon{filter:brightness(0) saturate(10
     height: 0 !important;
   }
 }
+
+
+/* Override: preserve manual line breaks and prevent word splitting */
+.article-content {
+  word-break: normal !important;
+  overflow-wrap: break-word !important;
+}
+
+
+/* Override: preserve manual line breaks and prevent word splitting */
+.article-content {
+  word-break: normal !important;
+  overflow-wrap: break-word !important;
+}
