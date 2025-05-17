@@ -188,6 +188,7 @@ body.dark .contrast-icon {
   max-width: 700px;
   margin: 0 auto;
   padding: 2rem;
+  padding-bottom: 7rem;
   font-family: 'AkkuratLight', monospace;
   box-sizing: border-box;
 }
@@ -218,6 +219,7 @@ body.dark .contrast-icon {
     width: calc(100vw - var(--sidebar-width));
     margin: 0;
     padding: 2rem;
+    padding-bottom: 7rem;
     overflow-wrap: break-word;
     word-break: break-word;
   }
