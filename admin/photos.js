@@ -49,10 +49,10 @@ export async function loadPhotos() {
     div.className = 'photo-item';
     div.innerHTML = `
       <img src="${publicUrl}" alt="${file.name}" />
-      <div style="position: absolute; bottom: 0.5rem; left: 0.5rem; display: flex; align-items: center; gap: 0.3rem;">
+      <div class="photo-item-controls">
         <input type="checkbox" class="select-photo" data-name="${file.name}" />
-        <button class="copy-link" title="Copia HTML" style="font-size:1.2rem; background:transparent; border:none; cursor:pointer;">📋</button>
-        ${isUsed ? '<span class="tick" style="margin-left: 0.3rem; font-size: 1.2rem; color: #2ecc71;">✅</span>' : ''}
+        <button class="copy-link" title="Copia HTML">📋</button>
+        ${isUsed ? '<span class="tick">✅</span>' : ''}
       </div>
     `;
     listPhotos.appendChild(div);

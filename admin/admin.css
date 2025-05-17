@@ -367,3 +367,25 @@ button {
     font-size: 0.85rem;
   }
 }
+
+.photo-item-controls {
+  position: absolute;
+  bottom: 0.5rem;
+  left: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.photo-item .tick {
+  font-size: 1.2rem;
+  color: #2ecc71;
+  margin-left: 0.4rem;
+}
+
+.copy-link {
+  font-size: 1.2rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
