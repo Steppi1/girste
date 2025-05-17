@@ -22,9 +22,13 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  background: #fff;
+  color: #000;
+  transition: background 0.3s, color 0.3s;
+}
+body.dark {
   background: #000;
   color: #fff;
-  transition: background 0.3s, color 0.3s;
 }
 
 .top-bar {
@@ -100,12 +104,12 @@ main {
 
 @media (min-width: 600px) {
   .mosaic-container {
-    column-count: 1;
+    column-count: 2;
   }
 }
 
 @media (min-width: 900px) {
   .mosaic-container {
-    column-count: 3;
+    column-count: 4;
   }
 }
