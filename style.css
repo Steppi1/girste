@@ -104,12 +104,12 @@ main {
 
 @media (min-width: 600px) {
   .mosaic-container {
-    column-count: 2;
+    column-count: 1;
   }
 }
 
 @media (min-width: 900px) {
   .mosaic-container {
-    column-count: 4;
+    column-count: 2;
   }
 }
