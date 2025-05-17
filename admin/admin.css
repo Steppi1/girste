@@ -39,9 +39,73 @@ button { cursor:pointer; }
 .uploaded-image button { margin-top:0.3rem; padding:0.3rem 0.5rem; font-size:0.8rem; }
 
 /* — Manage Photos — */
-#list-photos { display:flex; flex-wrap:wrap; gap:0.5rem; margin-top:1rem; }
-#list-photos div { text-align:center; width:80px; }
-#list-photos img { width:80px; height:auto; display:block; }
+/* Manage Photos Bulk Delete Button */
+#bulk-delete-photos-btn {
+  display: block;
+  margin-bottom: 1rem;
+  background: transparent;
+  border: 1px solid #000;
+  color: #000;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+#bulk-delete-photos-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+/* Photo items */
+.photo-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+.photo-item img {
+  width: 80px;
+  height: auto;
+}
+.photo-item .tick {
+  font-size: 1.2rem;
+}
+.photo-item .select-photo {
+  cursor: pointer;
+}
+
+/* Manage Photos: card layout (identical to Mosaic) */
+#list-photos {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 1rem !important;
+  margin-top: 1rem !important;
+}
+#list-photos .photo-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 120px;
+  height: 140px;
+  border: 1px solid #eee;
+  border-radius: 6px;
+  padding: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+#list-photos .photo-item img {
+  width: 100%;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+#list-photos .photo-item .tick {
+  margin-top: 0.5rem;
+  color: green;
+  font-size: 1.2rem;
+}
+#list-photos .photo-item .select-photo {
+  margin-top: 0.5rem;
+  transform: scale(1.2);
+  cursor: pointer;
+}
 
 /* — Responsive — */
 @media(max-width:600px){
@@ -85,7 +149,7 @@ button { cursor:pointer; }
   height: auto;
 }
 
-/* Edit Post List */
+/* Edit Post List Bulk Delete */
 #bulk-delete-btn {
   background: #dc3545;
   color: #fff;
@@ -100,12 +164,6 @@ button { cursor:pointer; }
   cursor: default;
 }
 
-.post-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-}
 .post-item .select-post {
   margin-right: 0.5rem;
 }
@@ -125,38 +183,14 @@ button { cursor:pointer; }
 .post-item .edit-btn { background: #007bff; color: #fff; }
 .post-item .delete-btn { background: #dc3545; color: #fff; }
 
-
-/* Bulk Delete button spacing */
-#bulk-delete-btn {
-  display: block;
-  margin-bottom: 1rem;
-}
-
 /* Align post-item left */
-.post-item {
-  justify-content: flex-start;
-}
-
-/* Emoji buttons spacing */
-.post-item .edit-btn, .post-item .delete-btn {
-  margin-right: 0.5rem;
-}
+.post-item { justify-content: flex-start; flex-wrap: wrap; }
 
 /* Black-outlined buttons */
 #bulk-delete-btn, .delete-btn, .edit-btn {
   background: transparent !important;
   border: 1px solid #000 !important;
   color: #000 !important;
-}
-
-/* Allow wrapping of long titles */
-.post-item {
-  flex-wrap: wrap;
-}
-.post-title {
-  flex: 1 1 auto;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
 }
 
 /* Add spacing below section titles */
@@ -175,8 +209,6 @@ button { cursor:pointer; }
   margin-right: 0.5rem;
 }
 
-
-
 /* Draft badge style in orange */
 .badge.draft {
   background: #fd7e14 !important;
@@ -186,160 +218,13 @@ button { cursor:pointer; }
   margin-right: 0.5rem !important;
 }
 
-/* Splash-Text merged section styling */
-
-/* Manage Photos Bulk Delete Button */
-#bulk-delete-photos-btn {
-  display: block;
-  margin-bottom: 1rem;
-  background: transparent;
-  border: 1px solid #000;
-  color: #000;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  cursor: pointer;
-}
-#bulk-delete-photos-btn:disabled {
-  opacity: 0.5;
-  cursor: default;
-}
-
-/* Photo items */
-.photo-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-}
-.photo-item img {
-  width: 80px;
-  height: auto;
-}
-.photo-item .tick {
-  font-size: 1.2rem;
-}
-.photo-item .select-photo {
-  cursor: pointer;
-}
-
-
-/* Manage Photos: card layout */
-#list-photos {
-  display: flex !important;
-  flex-wrap: wrap !important;
-  gap: 1rem !important;
-  margin-top: 1rem !important;
-}
-#list-photos .photo-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 140px;
-  border: 1px solid #eee;
-  border-radius: 6px;
-  padding: 0.5rem;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-}
-#list-photos .photo-item img {
-  width: 100%;
-  height: auto;
-  border-radius: 4px;
-}
-#list-photos .photo-item .tick {
-  margin-top: 0.5rem;
-  color: green;
-  font-size: 1.2rem;
-}
-#list-photos .photo-item .select-photo {
-  margin-top: 0.5rem;
-  transform: scale(1.2);
-  cursor: pointer;
-}
-
-/* Manage Mosaic section styling */
-#bulk-delete-mosaic {
-  display: block;
-  margin-bottom: 1rem;
-  background: transparent;
-  border: 1px solid #000;
-  color: #000;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  cursor: pointer;
-}
-#bulk-delete-mosaic:disabled {
-  opacity: 0.5;
-  cursor: default;
-}
-#list-mosaic {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  margin-top: 1rem;
-}
-.mosaic-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 120px;
-  border: 1px solid #eee;
-  border-radius: 6px;
-  padding: 0.5rem;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-}
-.mosaic-item img {
-  width: 100%;
-  height: auto;
-  border-radius: 4px;
-}
-.mosaic-item .select-mosaic {
-  margin-top: 0.5rem;
-  transform: scale(1.2);
-  cursor: pointer;
-}
-
-/* Uniform Mosaic Cards (no tick) */
-#list-mosaic {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  margin-top: 1rem;
-}
-.mosaic-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 120px;
-  height: 140px;
-  border: 1px solid #eee;
-  border-radius: 6px;
-  padding: 0.5rem;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-}
-.mosaic-item img {
-  width: 100%;
-  height: 100px;
-  object-fit: cover;
-  border-radius: 4px;
-}
-.mosaic-item .select-mosaic {
-  margin-top: 0.5rem;
-  transform: scale(1.2);
-  cursor: pointer;
-}
-/* Splash Section Items */
-
-
 /* — Splash Items — */
-
-/* Override visivo solo per Splash */
 .section#manage-splash #list-splash {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
   margin-top: 1rem;
 }
-
 .section#manage-splash .splash-item {
   display: flex;
   flex-direction: row;
@@ -349,17 +234,6 @@ button { cursor:pointer; }
   box-shadow: none !important;
   padding: 0;
 }
-
-.section#manage-splash .splash-item button {
-  background: transparent;
-  color: #000;
-  border: 1px solid #000;
-  padding: 0.4rem 0.6rem;
-  font-size: 1rem;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
 .section#manage-splash .splash-item input {
   flex: 1;
   padding: 0.5rem;
@@ -367,34 +241,6 @@ button { cursor:pointer; }
   border-radius: 4px;
   font-size: 1rem;
 }
-
-/* Correzione finale posizione bottoni Splash */
-
-.section#manage-splash #list-splash {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin-top: 1rem;
-}
-
-.section#manage-splash .splash-item {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 0.5rem;
-  border: none !important;
-  box-shadow: none !important;
-  padding: 0;
-}
-
-.section#manage-splash .splash-item input {
-  flex: 1;
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 1rem;
-}
-
 .section#manage-splash .splash-item button {
   background: transparent;
   color: #000;
@@ -407,13 +253,4 @@ button { cursor:pointer; }
   align-items: center;
   justify-content: center;
 }
-
-/* Allineamento "+" accanto all’input */
-.section#manage-splash .new-splash {
-  flex-direction: row !important;
-}
-
-/* Fix allineamento "+" accanto all'input nella sezione Splash */
-.section#manage-splash .new-splash {
-  align-items: stretch;
-}
+.section#manage-splash .new-splash { flex-direction: row !important; align-items: stretch; }
