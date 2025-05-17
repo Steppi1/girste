@@ -1,81 +1,205 @@
-/* Define sidebar width variable */
-:root { --sidebar-width: 220px; }
+/* ==================================================
+   Variables
+   ================================================== */
+:root {
+  /* Sidebar width for layout calculations */
+  --sidebar-width: 220px;
+}
 
-/* fonts */
-@font-face{font-family:'AkkuratMono';src:url('../fonts/Akkurat-Mono.woff') format('woff');}
-@font-face{font-family:'AkkuratLight';src:url('../fonts/Akkurat-Light.woff') format('woff');}
+/* ==================================================
+   Font Definitions
+   ================================================== */
+@font-face {
+  font-family: 'AkkuratMono';
+  src: url('../fonts/Akkurat-Mono.woff') format('woff');
+}
+@font-face {
+  font-family: 'AkkuratLight';
+  src: url('../fonts/Akkurat-Light.woff') format('woff');
+}
 
-/* base & dark */
-*{margin:0;padding:0;box-sizing:border-box;}
-html,body{width:100%;height:100%;font-family:'AkkuratLight',monospace;font-size:15px;overflow:hidden;background:#fff;color:#000;}
-body.dark{background:#000;color:#fff;}
+/* ==================================================
+   Base Styles & Dark Mode
+   ================================================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+html, body {
+  width: 100%;
+  height: 100%;
+  font-family: 'AkkuratLight', monospace;
+  font-size: 15px;
+  overflow: hidden;
+  background: #fff;
+  color: #000;
+}
+body.dark {
+  background: #000;
+  color: #fff;
+}
 
-/* layout */
-.container{display:flex;height:100%;overflow:hidden;}
-.sidebar{flex:0 0 220px;height:100vh;display:flex;flex-direction:column;border-right:1px solid rgba(200,200,200,0.2);background:inherit;position:sticky;top:0;}
-.main-content{flex:1;overflow-y:auto;background:inherit;}
+/* ==================================================
+   Layout
+   ================================================== */
+.container {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+.sidebar {
+  flex: 0 0 var(--sidebar-width);
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid rgba(200, 200, 200, 0.2);
+  background: inherit;
+}
+.main-content {
+  flex: 1;
+  overflow-y: auto;
+  background: inherit;
+}
 
-/* title & splash */
-.title-block{text-align:center;padding:1rem;}
-.site-title{font-family:'AkkuratMono',monospace;font-size:1.35rem;font-weight:400;}
-.header-phrase{margin:0.5rem 0;font-family:'AkkuratLight',monospace;font-size:0.9rem;}
-.breathing-text{display:inline-block;font-weight:300;animation:breathe 1.5s ease-in-out infinite;color:inherit;}
-@keyframes breathe{0%,100%{transform:scale(1);}50%{transform:scale(1.05);}}
+/* ==================================================
+   Title & Splash
+   ================================================== */
+.title-block {
+  text-align: center;
+  padding: 1rem;
+}
+.site-title {
+  font-family: 'AkkuratMono', monospace;
+  font-size: 1.35rem;
+  font-weight: 400;
+}
+.header-phrase {
+  margin: 0.5rem 0;
+  font-family: 'AkkuratLight', monospace;
+  font-size: 0.9rem;
+}
+.breathing-text {
+  display: inline-block;
+  font-weight: 300;
+  animation: breathe 1.5s ease-in-out infinite;
+  color: inherit;
+}
+@keyframes breathe {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.05); }
+}
 
-/* icons */
-.icon-row{display:flex;justify-content:center;gap:2.5rem;margin-bottom:1rem;}
-.icon{width:34px;cursor:pointer;transition:transform .2s;filter:brightness(0) saturate(100%);}
-.icon:hover{transform:scale(1.1) rotate(5deg);}
-body.dark .arrow-icon, body.dark .contrast-icon{filter:brightness(0) saturate(100%) invert(1);}
+/* ==================================================
+   Icons
+   ================================================== */
+.icon-row {
+  display: flex;
+  justify-content: center;
+  gap: 2.5rem;
+  margin-bottom: 1rem;
+}
+.icon {
+  width: 34px;
+  cursor: pointer;
+  transition: transform .2s;
+  filter: brightness(0) saturate(100%);
+}
+.icon:hover {
+  transform: scale(1.1) rotate(5deg);
+}
+body.dark .arrow-icon,
+body.dark .contrast-icon {
+  filter: brightness(0) saturate(100%) invert(1);
+}
 
-/* filters */
-.filters-static{display:flex;justify-content:center;gap:0.8rem;font-family:'AkkuratLight',monospace;font-size:0.8rem;text-transform:uppercase;}
-.filter-pill{cursor:pointer;color:inherit;text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px;font-weight:300;}
-.filter-pill.active{font-family:'AkkuratMono',monospace;font-weight:700;}
-.filter-pill:hover{opacity:0.7;}
+/* ==================================================
+   Filters
+   ================================================== */
+.filters-static {
+  display: flex;
+  justify-content: center;
+  gap: 0.8rem;
+  font-family: 'AkkuratLight', monospace;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+}
+.filter-pill {
+  cursor: pointer;
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  font-weight: 300;
+}
+.filter-pill.active {
+  font-family: 'AkkuratMono', monospace;
+  font-weight: 700;
+}
+.filter-pill:hover {
+  opacity: 0.7;
+}
 
-/* separator */
-.separator{width:80%;margin:0.5rem auto;border:none;border-top:1px solid currentColor;opacity:0.2;}
+/* ==================================================
+   Separator
+   ================================================== */
+.separator {
+  width: 80%;
+  margin: 0.5rem auto;
+  border: none;
+  border-top: 1px solid currentColor;
+  opacity: 0.2;
+}
 
-/* articles */
-.articles{flex:1;overflow-y:auto;list-style:none;padding:0 0.8rem 2rem;}
-.articles::-webkit-scrollbar{display:none;}
-.article{padding:0.5rem 0;cursor:pointer;font-family:'AkkuratLight',monospace;font-weight:300;color:inherit;}
-.article.selected{font-family:'AkkuratMono',monospace;font-weight:700;}
-
-/* article content */
-.article-content{padding:2rem;max-width:700px;margin:0 auto;font-family:'AkkuratLight',monospace;}
-.article-content h2{font-family:'AkkuratMono',monospace;font-size:1.2rem;margin-bottom:1rem;}
-.article-content p{line-height:1.5;margin-bottom:1rem;}
-
-/* responsive */
-@media(max-width:600px){.icon{width:30px;} .filters-static{gap:0.6rem;}}
-
-/* Sidebar titles wrapping */
-.articles .article {
+/* ==================================================
+   Articles List
+   ================================================== */
+.articles {
+  flex: 1;
+  overflow-y: auto;
+  list-style: none;
+  padding: 0 0.8rem 2rem;
+}
+.articles::-webkit-scrollbar {
+  display: none;
+}
+.article {
+  font-family: 'AkkuratLight', monospace;
+  font-weight: 300;
+  padding: 0.5rem 0;
+  cursor: pointer;
+  color: inherit;
+  /* Allow long titles to wrap */
   white-space: normal;
   overflow-wrap: anywhere;
   word-break: break-all;
 }
-
-/* Article content full width on desktop */
-@media (min-width: 600px) {
-  .article-content {
-    max-width: none;
-    width: 100%;
-    margin: 0;
-  }
+.article.selected {
+  font-family: 'AkkuratMono', monospace;
+  font-weight: 700;
 }
 
-
-/* Mantieni sidebar inalterata, aggiungi padding e responsive per articolo a destra */
-/* Limita il contenuto dell'articolo dentro lo schermo senza toccare i bordi */
+/* ==================================================
+   Article Content
+   ================================================== */
 .article-content {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: 'AkkuratLight', monospace;
   box-sizing: border-box;
-  padding: 20px;
 }
-
-/* Rendere le immagini dell'articolo responsive */
+.article-content h2 {
+  font-family: 'AkkuratMono', monospace;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+.article-content p {
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
 .article-content img {
   max-width: 100%;
   height: auto;
@@ -83,604 +207,73 @@ body.dark .arrow-icon, body.dark .contrast-icon{filter:brightness(0) saturate(10
   margin: 0 auto;
 }
 
-
-/* === Override for .article-content: fill remaining space, contained within viewport === */
+/* ==================================================
+   Responsive Styles
+   ================================================== */
+/* Desktop: overrides for layouts >= 600px */
 @media (min-width: 600px) {
+  /* Article content fills remaining space beside sidebar */
   .article-content {
-    max-width: none !important;
-    width: 100% !important;
-    margin: 0 !important;
-    box-sizing: border-box !important;
+    max-width: none;
+    width: calc(100vw - var(--sidebar-width));
+    margin: 0;
+    padding: 2rem;
+    overflow-wrap: break-word;
+    word-break: break-word;
   }
 }
 
-/* FINAL OVERRIDE FOR ARTICLE CONTENT TO FIT VIEWPORT */
-/* Sidebar width is 220px, so content fills remainder */
-@media (min-width: 600px) {
-  .article-content {
-    max-width: none !important;
-    width: calc(100vw - 220px) !important;
-    margin: 0 !important;
-    padding: 2rem !important;
-    box-sizing: border-box !important;
-    overflow-wrap: break-word !important;
-    word-break: break-word !important;
-  }
-}
-
-
-/* Mobile: enable horizontal swipe between sidebar and article */
+/* Mobile: screens < 600px */
 @media (max-width: 600px) {
+  /* Container horizontal scrolling between panels */
   .container {
     display: flex;
+    flex-direction: row;
+    width: 100vw;
+    height: 100vh;
     overflow-x: auto;
+    overflow-y: hidden;
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
+    overscroll-behavior: auto;
   }
-
+  .container::-webkit-scrollbar {
+    display: none;
+  }
+  /* Sidebar fixed width, snap start */
   .sidebar {
-    flex: 0 0 auto;
+    flex: 0 0 var(--sidebar-width);
+    max-width: var(--sidebar-width);
+    min-width: var(--sidebar-width);
     scroll-snap-align: start;
   }
-
+  /* Article panel full viewport width, vertical scroll only */
   .main-content {
     flex: 0 0 100vw;
     scroll-snap-align: start;
     overflow-y: auto;
+    overscroll-behavior-y: contain;
+    touch-action: pan-x pan-y;
   }
-}
-
-
-/* Mobile: force wrapping of sidebar titles as on desktop */
-@media (max-width: 600px) {
-  .articles .article {
-    white-space: normal !important;
-    overflow-wrap: anywhere !important;
-    word-break: break-all !important;
-  }
-}
-
-
-/* Mobile: force wrapping of article text and titles, ensure no overflow */
-@media (max-width: 600px) {
-  .articles .article {
-    white-space: normal !important;
-    overflow-wrap: anywhere !important;
-    word-break: break-all !important;
-  }
-
-  .main-content .article-content, 
-  .main-content .article-content * {
-    white-space: normal !important;
-    overflow-wrap: anywhere !important;
-    word-break: break-all !important;
-  }
-}
-
-
-/* ==== MOBILE REFINEMENT: preserve sidebar width, wrap titles, contain article text ==== */
-@media (max-width: 600px) {
-  /* Sidebar titles wrapping, no width change */
-  .articles .article {
-    white-space: normal !important;
-    overflow-wrap: anywhere !important;
-    word-break: break-all !important;
-  }
-
-  /* Article pane: full viewport width minus sidebar, text containment */
-  .main-content, .article-content {
-    width: calc(100vw - var(--sidebar-width)); /* use existing sidebar width variable */
-    max-width: calc(100vw - var(--sidebar-width)) !important;
-    box-sizing: border-box;
-    padding: 16px; /* optional padding */
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    hyphens: auto;
-  }
-}
-
-
-/* MOBILE FINAL: Preserve sidebar width, wrap sidebar titles, contain article content */
-@media (max-width: 600px) {
-  /* Sidebar titles wrap without changing sidebar width */
-  .articles .article {
-    white-space: normal !important;
-    overflow-wrap: break-word !important;
-    word-break: break-all !important;
-  }
-
-  /* Preserve sidebar width */
-  .sidebar {
-    flex: 0 0 auto !important;
-  }
-
-  /* Enable swipe between sidebar and article */
-  .container {
-    display: flex !important;
-    overflow-x: auto !important;
-    scroll-snap-type: x mandatory !important;
-    -webkit-overflow-scrolling: touch !important;
-  }
-
-  /* Main content pane as full viewport width */
-  .main-content {
-    flex: 0 0 100vw !important;
-    scroll-snap-align: start !important;
-    overflow-y: auto !important;
-  }
-
-  /* Article content fits viewport width, with wrapping */
+  /* Article content fits mobile width and wraps text */
   .article-content {
-    width: 100vw !important;
-    max-width: 100vw !important;
-    box-sizing: border-box !important;
-    padding: 16px !important;
-    white-space: normal !important;
-    overflow-wrap: break-word !important;
-    word-break: break-all !important;
+    width: calc(100vw - var(--sidebar-width));
+    max-width: calc(100vw - var(--sidebar-width));
+    padding: 16px;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    word-break: normal;
+    hyphens: none;
+    padding-bottom: 2rem;
   }
-}
-
-
-/* MOBILE: Reimposta la larghezza fissa della sidebar e forza wrapping dei titoli */
-@media (max-width: 600px) {
-  .sidebar {
-    flex: 0 0 var(--sidebar-width) !important;
-    max-width: var(--sidebar-width) !important;
-    min-width: var(--sidebar-width) !important;
+  /* Ensure list bottom padding and item spacing */
+  .articles {
+    padding-bottom: 7rem;
   }
   .articles .article {
-    white-space: normal !important;
-    overflow-wrap: break-word !important;
-    word-break: break-all !important;
-  }
-  /* Assicurati che il container scrolli orizzontalmente */
-  .container {
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
+    margin-bottom: 0;
+    padding-bottom: 1rem;
   }
 }
 
-
-/* MOBILE: Restore horizontal swipe navigation between sidebar and article */
-@media (max-width: 600px) {
-  .container {
-    display: flex !important;
-    overflow-x: auto !important;
-    -webkit-overflow-scrolling: touch !important;
-    scroll-snap-type: x mandatory !important;
-  }
-  .sidebar {
-    scroll-snap-align: start !important;
-  }
-  .main-content {
-    flex: 0 0 100vw !important;
-    scroll-snap-align: start !important;
-    overflow-y: auto !important;
-  }
-}
-
-
-/* MOBILE FINAL NAVIGATION FIX: enable horizontal swipe and prevent vertical container scroll */
-@media (max-width: 600px) {
-  .container {
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-    height: 100vh !important;
-  }
-  .sidebar {
-    flex: 0 0 var(--sidebar-width) !important;
-  }
-  .main-content {
-    flex: 0 0 100vw !important;
-    overflow-y: auto !important;
-  }
-}
-
-
-/* MOBILE NAVIGATION FINAL FIX: enable proper horizontal swipe and block vertical overflow */
-@media (max-width: 600px) {
-  .container {
-    display: flex !important;
-    flex-direction: row !important;
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-    scroll-snap-type: x mandatory !important;
-    -webkit-overflow-scrolling: touch !important;
-    width: 100vw !important;
-    height: 100vh !important;
-  }
-  .sidebar {
-    flex: 0 0 var(--sidebar-width) !important;
-    scroll-snap-align: start !important;
-  }
-  .main-content {
-    flex: 0 0 100vw !important;
-    scroll-snap-align: start !important;
-    overflow-y: auto !important;
-  }
-}
-
-
-/* MOBILE NAVIGATION REWORK: enable swipe between sidebar and article */
-@media (max-width: 600px) {
-  .container {
-    display: flex !important;
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-    scroll-snap-type: x mandatory !important;
-    -webkit-overflow-scrolling: touch !important;
-  }
-  .container::-webkit-scrollbar {
-    display: none !important;
-  }
-  .sidebar {
-    flex: 0 0 var(--sidebar-width) !important;
-    scroll-snap-align: start !important;
-  }
-  .main-content {
-    flex: 0 0 100vw !important;
-    scroll-snap-align: start !important;
-    overflow-y: auto !important;
-    -webkit-overflow-scrolling: touch !important;
-  }
-}
-
-/* FINAL MOBILE NAVIGATION OVERRIDE: free horizontal scroll without snapping */
-@media (max-width: 600px) {
-  .container {
-    display: flex !important;
-    flex-direction: row !important;
-    overflow-x: scroll !important;
-    overflow-y: hidden !important;
-    -webkit-overflow-scrolling: touch !important;
-    scroll-snap-type: none !important;
-    width: 100vw !important;
-    height: 100vh !important;
-  }
-  .container::-webkit-scrollbar {
-    display: none !important;
-  }
-  .sidebar {
-    flex: 0 0 var(--sidebar-width) !important;
-    max-width: var(--sidebar-width) !important;
-    min-width: var(--sidebar-width) !important;
-    position: relative !important;
-  }
-  .main-content {
-    flex: 0 0 100vw !important;
-    max-width: 100vw !important;
-    overflow-y: auto !important;
-    position: relative !important;
-    -webkit-overflow-scrolling: touch !important;
-  }
-}
-
-
-/* MOBILE TOUCH BEHAVIOR: disable bounce on article, allow swipe from article to sidebar */
-@media (max-width: 600px) {
-  .main-content {
-    overscroll-behavior-x: none !important;
-    touch-action: pan-x pan-y !important;
-  }
-  .container {
-    overscroll-behavior: contain !important;
-  }
-}
-
-
-/* MOBILE: Enable swipe-back to sidebar by resetting overscroll behavior */
-@media (max-width: 600px) {
-  .container {
-    overscroll-behavior-x: auto !important;
-  }
-  .main-content {
-    overscroll-behavior-x: auto !important;
-  }
-}
-
-/* MOBILE: Final swipe-back fix - remove overscroll restrictions and enforce snap stop */
-@media (max-width: 600px) {
-  .container {
-    overscroll-behavior: auto !important;
-    scroll-snap-type: x mandatory !important;
-  }
-  .sidebar, .main-content {
-    overscroll-behavior: auto !important;
-    scroll-snap-stop: always !important;
-  }
-}
-
-
-/* MOBILE REFINED NAVIGATION: allow swipe from article to sidebar and prevenire bounce */
-@media (max-width: 600px) {
-  .container {
-    display: flex !important;
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-    scroll-snap-type: x mandatory !important;
-    -webkit-overflow-scrolling: touch !important;
-  }
-  .sidebar,
-  .main-content {
-    scroll-snap-align: start !important;
-  }
-  .main-content {
-    flex: 0 0 100vw !important;
-    overflow-y: auto !important;
-    touch-action: pan-y !important;         /* only vertical scroll inside article */
-    overscroll-behavior-x: contain !important; /* prevent bounce */
-  }
-}
-
-
-/* MOBILE SWIPE-BACK REFINED: allow horizontal swipe on article to return */
-@media (max-width: 600px) {
-  .main-content {
-    /* Allow horizontal swipes to navigate between panels */
-    touch-action: pan-x pan-y !important;
-    /* Allow overscroll to reach the container for swipe-back */
-    overscroll-behavior-x: auto !important;
-  }
-}
-
-/* MOBILE ULTIMATE NAVIGATION FIX: enable smooth swipe-back and forward */
-@media (max-width: 600px) {
-  .container {
-    display: flex !important;
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-    -webkit-overflow-scrolling: touch !important;
-    scroll-snap-type: x proximity !important;
-    touch-action: pan-x !important;
-  }
-  .sidebar, 
-  .main-content {
-    flex-shrink: 0 !important;
-    scroll-snap-align: start !important;
-    scroll-snap-stop: always !important;
-  }
-  .main-content {
-    overscroll-behavior-x: contain !important;
-    touch-action: pan-x pan-y !important;
-  }
-}
-
-
-/* Add bottom spacing to article content to prevent text clipping on mobile browsers */
-.article-content {
-  padding-bottom: 2rem !important;
-}
-
-
-/* Add bottom spacing to each article in the sidebar list to prevent clipping */
-.articles .article {
-  padding-bottom: 1rem !important;
-}
-
-
-/* MOBILE: Restore swipe-back navigation from article to sidebar */
-@media (max-width: 600px) {
-  .container {
-    overscroll-behavior-x: auto !important;
-    scroll-snap-type: x mandatory !important;
-    touch-action: pan-x !important;
-  }
-  .main-content {
-    overscroll-behavior-x: auto !important;
-    touch-action: pan-x !important;
-  }
-}
-
-
-/* Add bottom spacing to the article list container to prevent clipping at the end */
-.articles {
-  padding-bottom: 2rem !important;
-}
-
-/* Add bottom spacing to article content to prevent clipping at the end */
-.article-content {
-  padding-bottom: 2rem !important;
-}
-
-
-/* Ensure bottom space for the entire article list container */
-.articles {
-  padding-bottom: 2rem !important;
-}
-
-/* Ensure space after each article item in the list */
-.articles .article {
-  margin-bottom: 1rem !important;
-}
-
-/* Ensure bottom spacing at the end of article content */
-.article-content {
-  padding-bottom: 2rem !important;
-}
-
-
-/* Restore vertical scrolling for article panel */
-.main-content, .article-content {
-  overflow-y: auto !important;
-}
-
-
-/* ===== Increased bottom spacing for lists and articles ===== */
-.articles {
-  padding-bottom: 4rem !important;
-}
-.articles .article {
-  margin-bottom: 2rem !important;
-}
-.article-content {
-  padding-bottom: 4rem !important;
-}
-
-/* ===== Restore improved mobile swipe navigation ===== */
-@media (max-width: 600px) {
-  .container {
-    display: flex !important;
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-    scroll-snap-type: x mandatory !important;
-    -webkit-overflow-scrolling: touch !important;
-    touch-action: pan-x !important;
-    width: 100vw !important;
-    height: 100vh !important;
-  }
-  .container::-webkit-scrollbar {
-    display: none !important;
-  }
-  .sidebar {
-    flex: 0 0 var(--sidebar-width) !important;
-    scroll-snap-align: start !important;
-  }
-  .main-content {
-    flex: 0 0 100vw !important;
-    scroll-snap-align: start !important;
-    overflow-y: auto !important;
-    -webkit-overflow-scrolling: touch !important;
-    touch-action: pan-x pan-y !important;
-    overscroll-behavior: contain !important;
-  }
-}
-
-
-/* Increase bottom spacing for lists and articles */
-.articles {
-  padding-bottom: 5rem !important;
-}
-.articles .article {
-  margin-bottom: 3rem !important;
-}
-.article-content {
-  padding-bottom: 5rem !important;
-}
-
-/* Reduce vertical bounce and restore horizontal swipe-back on mobile */
-@media (max-width: 600px) {
-  .main-content {
-    overscroll-behavior-y: contain !important;
-    overscroll-behavior-x: auto !important;
-  }
-  .container {
-    overscroll-behavior-x: auto !important;
-    overscroll-behavior-y: contain !important;
-  }
-}
-
-
-/* Remove bottom margin from individual article list items */
-.articles .article {
-  margin-bottom: 0 !important;
-}
-
-/* Ensure only the end of the article list has bottom padding */
-.articles {
-  padding-bottom: 6rem !important;
-}
-
-/* Increase bottom padding of article content for safety */
-.article-content {
-  padding-bottom: 6rem !important;
-}
-
-/* MOBILE: Refine overscroll to reduce bounce and restore smooth swipe-back */
-@media (max-width: 600px) {
-  .container {
-    /* Prevent vertical bounce while allowing horizontal swipe */
-    overscroll-behavior-y: contain !important;
-    overscroll-behavior-x: auto !important;
-  }
-  .main-content {
-    /* Keep horizontal swipe active and reduce vertical bounce */
-    overscroll-behavior-y: contain !important;
-    overscroll-behavior-x: auto !important;
-    touch-action: pan-x pan-y !important;
-  }
-}
-
-
-/* FINAL SPACING ADJUSTMENTS */
-
-/* Sidebar list: remove spacing between items, only add bottom padding at end */
-.articles .article {
-  margin-bottom: 0 !important;
-}
-.articles {
-  padding-bottom: 7rem !important; /* increased from 6rem */
-}
-
-/* Article content: increase bottom padding for safety */
-.article-content {
-  padding-bottom: 7rem !important; /* increased from 6rem */
-}
-
-
-/* MOBILE: Hide scrollbars on mobile devices, including iPhone */
-@media (max-width: 600px) {
-  /* For Firefox */
-  .container, .main-content {
-    scrollbar-width: none !important;
-    -ms-overflow-style: none !important; /* IE and Edge */
-  }
-  /* For Chrome, Safari, Opera, and WebKit */
-  .container::-webkit-scrollbar, .main-content::-webkit-scrollbar {
-    display: none !important;
-    width: 0 !important;
-    height: 0 !important;
-  }
-}
-
-
-/* Override: preserve manual line breaks and prevent word splitting */
-.article-content {
-  word-break: normal !important;
-  overflow-wrap: break-word !important;
-}
-
-
-/* Override: preserve manual line breaks and prevent word splitting */
-.article-content {
-  word-break: normal !important;
-  overflow-wrap: break-word !important;
-}
-
-
-/* Safari mobile compatibility */
-.article-content {
-  word-wrap: break-word !important;
-}
-.article-content p {
-  word-wrap: break-word !important;
-}
-
-
-/* Comprehensive override for preserving manual breaks and preventing mid-word cuts */
-.article-content {
-  /* Preserve your manual line breaks */
-  white-space: pre-wrap !important;
-  /* Ensure wrapping at word boundaries */
-  word-break: normal !important;
-  overflow-wrap: break-word !important;
-  hyphens: none !important;
-}
-.article-content p {
-  /* Apply same rules within paragraphs */
-  white-space: pre-wrap !important;
-  word-break: normal !important;
-  overflow-wrap: break-word !important;
-  hyphens: none !important;
-}
-
-
-/* Override finale: disabilita il wrapping mid-word */
-.article-content {
-  white-space: pre-wrap !important;
-  word-break: normal !important;
-  overflow-wrap: normal !important;
-  word-wrap: normal !important;
-  hyphens: none !important;
-  -webkit-hyphens: none !important;
-}
+/* End of CSS */
