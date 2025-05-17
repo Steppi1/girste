@@ -1,52 +1,148 @@
 /* ==== admin.css ==== */
 
-
 /* — Reset base for Admin — */
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { background: #fff; color: #000; font-family: sans-serif; min-height:100vh; }
+body { background: #fff; color: #000; font-family: sans-serif; min-height: 100vh; }
 
 /* — AUTH PANEL — */
-#auth-panel { max-width:400px; margin:2rem auto; padding:1rem; background:#f9f9f9; border:1px solid #ddd; border-radius:6px; }
-#auth-panel label, #auth-panel input, #auth-panel button { display:block; width:100%; }
-#auth-panel label { margin-top:1rem; font-size:1rem; }
-#auth-panel input { padding:0.5rem; margin-top:0.3rem; }
-#auth-panel button { margin-top:1rem; padding:0.6rem; background:#000; color:#fff; border:none; border-radius:4px; }
+#auth-panel {
+  max-width: 400px;
+  margin: 2rem auto;
+  padding: 1rem;
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+#auth-panel label,
+#auth-panel input,
+#auth-panel button {
+  display: block;
+  width: 100%;
+}
+#auth-panel label {
+  margin-top: 1rem;
+  font-size: 1rem;
+}
+#auth-panel input {
+  margin-top: 0.3rem;
+  padding: 0.5rem;
+}
+#auth-panel button {
+  margin-top: 1rem;
+  padding: 0.6rem;
+  background: #000;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+}
 
 /* — ADMIN PANEL — */
-#admin-panel .container { display:flex; min-height:100vh; }
-.sidebar { width:220px; background:#f5f5f5; padding:1rem; display:flex; flex-direction:column; }
-.sidebar button { margin-bottom:0.5rem; padding:0.6rem; border:none; background:#fff; border-radius:4px; text-align:left; cursor:pointer; }
-.sidebar button.active { background:#ddd; }
-#btn-logout { margin-top:auto; background:#fee !important; }
-.content { flex:1; padding:1.5rem; overflow-y:auto; }
+#admin-panel .container {
+  display: flex;
+  min-height: 100vh;
+}
+.sidebar {
+  width: 220px;
+  background: #f5f5f5;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+.sidebar button {
+  margin-bottom: 0.5rem;
+  padding: 0.6rem;
+  background: #fff;
+  border: none;
+  border-radius: 4px;
+  text-align: left;
+  cursor: pointer;
+}
+.sidebar button.active {
+  background: #ddd;
+}
+#btn-logout {
+  margin-top: auto;
+  background: #fee;
+}
+.content {
+  flex: 1;
+  padding: 1.5rem;
+  overflow-y: auto;
+}
 
 /* — SECTION DISPLAY & SPACING — */
-.section { display:none; }
-.section.active { display:block; }
-.field-group { margin-bottom:1rem; }
-.field-group label { margin-bottom:0.3rem; font-weight:600; }
-.field-group input, .field-group textarea, .field-group select { width:100%; padding:0.6rem; border:1px solid #ccc; border-radius:4px; }
-.field-group textarea { resize:vertical; }
+.section {
+  display: none;
+}
+.section.active {
+  display: block;
+}
+.field-group {
+  margin-bottom: 1rem;
+}
+.field-group label {
+  display: block;
+  margin-bottom: 0.3rem;
+  font-weight: 600;
+}
+.field-group input,
+.field-group textarea,
+.field-group select {
+  width: 100%;
+  padding: 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+.field-group textarea {
+  resize: vertical;
+}
 
 /* — Buttons — */
-button { cursor:pointer; }
-#submit-new-post, #submit-new-splash { margin-top:1rem; padding:0.6rem 1rem; background:#000; color:#fff; border:none; border-radius:4px; }
+button {
+  cursor: pointer;
+}
+#submit-new-post,
+#submit-new-splash {
+  margin-top: 1rem;
+  padding: 0.6rem 1rem;
+  background: #000;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+}
 
 /* — Uploaded Images List in New Post — */
-#uploaded-images-list { margin-top:1rem; display:flex; flex-wrap:wrap; gap:1rem; }
-.uploaded-image { border:1px solid #eee; padding:0.5rem; text-align:center; width:120px; }
-.uploaded-image img { max-width:100%; height:auto; display:block; margin-bottom:0.5rem; }
-.uploaded-image button { margin-top:0.3rem; padding:0.3rem 0.5rem; font-size:0.8rem; }
+#uploaded-images-list {
+  margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.uploaded-image {
+  width: 120px;
+  border: 1px solid #eee;
+  padding: 0.5rem;
+  text-align: center;
+}
+.uploaded-image img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 0.5rem;
+}
+.uploaded-image button {
+  margin-top: 0.3rem;
+  padding: 0.3rem 0.5rem;
+  font-size: 0.8rem;
+}
 
-/* — Manage Photos — */
-/* Manage Photos Bulk Delete Button */
+/* — Manage Photos Bulk Delete — */
 #bulk-delete-photos-btn {
   display: block;
   margin-bottom: 1rem;
+  padding: 0.5rem 1rem;
   background: transparent;
   border: 1px solid #000;
-  color: #000;
-  padding: 0.5rem 1rem;
   border-radius: 4px;
   cursor: pointer;
 }
@@ -54,83 +150,19 @@ button { cursor:pointer; }
   opacity: 0.5;
   cursor: default;
 }
-/* Photo items */
-.photo-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-}
-.photo-item img {
-  width: 80px;
-  height: auto;
-}
-.photo-item .tick {
-  font-size: 1.2rem;
-}
-.photo-item .select-photo {
-  cursor: pointer;
-}
 
-/* Manage Photos: card layout (identical to Mosaic) */
-#list-photos {
-  display: flex !important;
-  flex-wrap: wrap !important;
-  gap: 1rem !important;
-  margin-top: 1rem !important;
-}
-#list-photos .photo-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 120px;
-  height: 140px;
-  border: 1px solid #eee;
-  border-radius: 6px;
-  padding: 0.5rem;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-}
-#list-photos .photo-item img {
-  width: 100%;
-  height: 100px;
-  object-fit: cover;
-  border-radius: 4px;
-}
-#list-photos .photo-item .tick {
-  margin-top: 0.5rem;
-  color: green;
-  font-size: 1.2rem;
-}
-#list-photos .photo-item .select-photo {
-  margin-top: 0.5rem;
-  transform: scale(1.2);
-  cursor: pointer;
-}
-
-/* — Manage Mosaic section styling — */
-#bulk-delete-mosaic {
-  display: block;
-  margin-bottom: 1rem;
-  background: transparent;
-  border: 1px solid #000;
-  color: #000;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  cursor: pointer;
-}
-#bulk-delete-mosaic:disabled {
-  opacity: 0.5;
-  cursor: default;
-}
-
-/* Uniform Mosaic Cards (no tick) */
+/* — Manage Photos & Mosaic: Unified Card Layout — */
+#list-photos,
 #list-mosaic {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
   margin-top: 1rem;
 }
+
+.photo-item,
 .mosaic-item {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -141,25 +173,61 @@ button { cursor:pointer; }
   padding: 0.5rem;
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
+
+.photo-item img,
 .mosaic-item img {
   width: 100%;
   height: 100px;
   object-fit: cover;
   border-radius: 4px;
 }
+
+/* — Photo Controls — */
+.photo-item .select-photo {
+  position: absolute;
+  bottom: 0.5rem;
+  left: 0.5rem;
+  transform: scale(1.2);
+  cursor: pointer;
+}
+.photo-item .tick {
+  position: absolute;
+  bottom: 0.5rem;
+  left: 2.5rem;
+  font-size: 1.2rem;
+  color: transparent;
+}
+.photo-item .tick::before {
+  content: "✅";
+  display: inline-block;
+}
+.photo-item .notebook-icon {
+  position: absolute;
+  bottom: 0.5rem;
+  left: 4.5rem;
+  font-size: 1.2rem;
+}
+.photo-item .notebook-icon::before {
+  content: "📓";
+}
+.photo-item .copy-link {
+  position: absolute;
+  bottom: 0.5rem;
+  right: 0.5rem;
+  font-size: 1.2rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+/* — Mosaic Select Button — */
 .mosaic-item .select-mosaic {
   margin-top: 0.5rem;
   transform: scale(1.2);
   cursor: pointer;
 }
 
-/* — Responsive — */
-@media(max-width:600px){
-  #admin-panel .container { flex-direction:column; }
-  .sidebar { flex-direction:row; overflow-x:auto; width:100%; }
-  .sidebar button { flex:1; margin:0.25rem; font-size:0.85rem; }
-}
-/* Edit Post List */
+/* — Edit Post List — */
 #list-posts {
   margin-top: 1rem;
 }
@@ -167,46 +235,8 @@ button { cursor:pointer; }
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  margin-bottom: 0.75rem;
-}
-.post-item .post-title {
-  flex: 1;
-  font-weight: 600;
-}
-.post-item button {
-  padding: 0.3rem 0.6rem;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-.post-item .edit-btn {
-  background: #007bff;
-  color: #fff;
-}
-.post-item .delete-btn {
-  background: #dc3545;
-  color: #fff;
-}
-
-/* Cover preview size */
-#cover-preview img {
-  max-width: 120px;
-  height: auto;
-}
-
-/* Edit Post List Bulk Delete */
-#bulk-delete-btn {
-  background: #dc3545;
-  color: #fff;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  cursor: pointer;
   margin-bottom: 1rem;
-}
-#bulk-delete-btn:disabled {
-  opacity: 0.5;
-  cursor: default;
+  flex-wrap: wrap;
 }
 .post-item .select-post {
   margin-right: 0.5rem;
@@ -216,53 +246,73 @@ button { cursor:pointer; }
   opacity: 0.7;
   margin-right: 0.5rem;
 }
-.post-item .post-title { font-weight: 600; }
-.post-item .edit-btn, .post-item .delete-btn {
+.post-item .post-title {
+  flex: 1;
+  font-weight: 600;
+}
+.post-item button {
   padding: 0.3rem 0.6rem;
-  border: none;
+  border: 1px solid #000;
+  background: transparent;
   border-radius: 4px;
   cursor: pointer;
   margin-right: 0.5rem;
 }
-.post-item .edit-btn { background: #007bff; color: #fff; }
-.post-item .delete-btn { background: #dc3545; color: #fff; }
-
-/* Align post-item left */
-.post-item { justify-content: flex-start; flex-wrap: wrap; }
-
-/* Black-outlined buttons */
-#bulk-delete-btn, .delete-btn, .edit-btn {
-  background: transparent !important;
-  border: 1px solid #000 !important;
-  color: #000 !important;
+.post-item .edit-btn {
+  background: #007bff;
+  color: #fff;
+  border: none;
+}
+.post-item .delete-btn {
+  background: #dc3545;
+  color: #fff;
+  border: none;
 }
 
-/* Add spacing below section titles */
+/* — Cover Preview — */
+#cover-preview img {
+  max-width: 120px;
+  height: auto;
+}
+
+/* — Bulk Delete for Posts — */
+#bulk-delete-btn {
+  padding: 0.5rem 1rem;
+  background: transparent;
+  border: 1px solid #000;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 1rem;
+}
+#bulk-delete-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* — Section Spacing — */
 .content section h1 {
   margin-bottom: 1.5rem;
 }
 
-/* Draft button (arancione) */
+/* — Draft Button & Badge — */
 #save-draft {
+  padding: 0.6rem 1rem;
   background: #fd7e14;
   color: #fff;
   border: none;
-  padding: 0.6rem 1rem;
   border-radius: 4px;
   cursor: pointer;
   margin-right: 0.5rem;
 }
-
-/* Draft badge style in orange */
 .badge.draft {
-  background: #fd7e14 !important;
-  color: #fff !important;
-  padding: 0.2rem 0.5rem !important;
-  border-radius: 4px !important;
-  margin-right: 0.5rem !important;
+  background: #fd7e14;
+  color: #fff;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  margin-right: 0.5rem;
 }
 
-/* — Splash Items — */
+/* — Splash Section Items — */
 .section#manage-splash #list-splash {
   display: flex;
   flex-direction: column;
@@ -271,12 +321,11 @@ button { cursor:pointer; }
 }
 .section#manage-splash .splash-item {
   display: flex;
-  flex-direction: row;
   align-items: center;
   gap: 0.5rem;
-  border: none !important;
-  box-shadow: none !important;
   padding: 0;
+  border: none;
+  box-shadow: none;
 }
 .section#manage-splash .splash-item input {
   flex: 1;
@@ -287,8 +336,8 @@ button { cursor:pointer; }
 }
 .section#manage-splash .splash-item button {
   background: transparent;
-  color: #000;
   border: 1px solid #000;
+  color: #000;
   padding: 0.4rem 0.6rem;
   font-size: 1rem;
   border-radius: 4px;
@@ -297,8 +346,24 @@ button { cursor:pointer; }
   align-items: center;
   justify-content: center;
 }
-/* Allineamento "+" accanto all’input */
 .section#manage-splash .new-splash {
-  flex-direction: row !important;
+  flex-direction: row;
   align-items: stretch;
+}
+
+/* — Responsive — */
+@media (max-width: 600px) {
+  #admin-panel .container {
+    flex-direction: column;
+  }
+  .sidebar {
+    flex-direction: row;
+    overflow-x: auto;
+    width: 100%;
+  }
+  .sidebar button {
+    flex: 1;
+    margin: 0.25rem;
+    font-size: 0.85rem;
+  }
 }
