@@ -262,6 +262,7 @@ body.dark .contrast-icon {
     width: 100vw;
     max-width: 100vw;
     padding: 16px;
+    padding-bottom: 7rem;
     white-space: pre-wrap;
     overflow-wrap: break-word;
     word-break: normal;
