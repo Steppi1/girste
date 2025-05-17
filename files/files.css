@@ -215,9 +215,9 @@ body.dark .contrast-icon {
 @media (min-width: 600px) {
   /* Article content fills remaining space beside sidebar */
   .article-content {
-    max-width: none;
+    max-width: 800px;
     width: calc(100vw - var(--sidebar-width));
-    margin: 0;
+    margin: 0 auto;
     padding: 2rem;
     padding-bottom: 7rem;
     overflow-wrap: break-word;
