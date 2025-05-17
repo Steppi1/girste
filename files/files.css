@@ -271,11 +271,11 @@ body.dark .contrast-icon {
   }
   /* Ensure list bottom padding and item spacing */
   .articles {
-    padding-bottom: 7rem;
+    padding-bottom: 12rem;
   }
   .articles .article {
-    margin-bottom: 0;
-    padding-bottom: 1rem;
+    margin-bottom: 2rem;
+    padding-bottom: 4rem;
   }
 }
 
