@@ -646,3 +646,12 @@ body.dark .arrow-icon, body.dark .contrast-icon{filter:brightness(0) saturate(10
   word-break: normal !important;
   overflow-wrap: break-word !important;
 }
+
+
+/* Safari mobile compatibility */
+.article-content {
+  word-wrap: break-word !important;
+}
+.article-content p {
+  word-wrap: break-word !important;
+}
