@@ -5,45 +5,41 @@ const bulkDeleteBtn = document.getElementById('bulk-delete-photos-btn');
 
 let selected = new Set();
 
-// Fetch all used image filenames from posts
-async function fetchUsedUrls() {
+// Prendi solo i nomi file usati nei post
+async function fetchUsedFilenames() {
   const { data: posts, error } = await supabase.from('posts').select('image_url, content');
   if (error) {
-    console.error('Error fetching posts:', error);
+    console.error('Errore fetch post:', error);
     return new Set();
   }
+
   const used = new Set();
   posts.forEach(post => {
     if (post.image_url) {
-      const name = post.image_url.split('/').pop();
-      used.add(name);
+      used.add(post.image_url.split('/').pop());
     }
-    const regex = /<img src=\"(.*?)\"/g;
-    let m;
-    while ((m = regex.exec(post.content)) !== null) {
-      const name = m[1].split('/').pop();
-      used.add(name);
-    }
+    const matches = [...post.content.matchAll(/<img src="(.*?)"/g)];
+    matches.forEach(match => used.add(match[1].split('/').pop()));
   });
   return used;
 }
 
-// Load photos and mark used ones
 export async function loadPhotos() {
   listPhotos.textContent = '⏳ Caricamento…';
-  const usedUrls = await fetchUsedUrls();
+  const usedFilenames = await fetchUsedFilenames();
   const { data: files, error } = await supabase.storage.from('images').list('');
   if (error) {
     listPhotos.textContent = '❌ ' + error.message;
     return;
   }
+
   listPhotos.innerHTML = '';
   selected.clear();
   bulkDeleteBtn.disabled = true;
 
   files.forEach(file => {
     const publicUrl = supabase.storage.from('images').getPublicUrl(file.name).data.publicUrl;
-    const isUsed = usedUrls.has(file.name);
+    const isUsed = usedFilenames.has(file.name);
 
     const div = document.createElement('div');
     div.className = 'photo-item';
@@ -58,30 +54,28 @@ export async function loadPhotos() {
     listPhotos.appendChild(div);
   });
 
-  // Checkbox handlers
+  // Selezione immagini
   document.querySelectorAll('.select-photo').forEach(cb => {
     cb.onchange = () => {
       const name = cb.dataset.name;
-      if (cb.checked) selected.add(name);
-      else selected.delete(name);
+      cb.checked ? selected.add(name) : selected.delete(name);
       bulkDeleteBtn.disabled = selected.size === 0;
     };
   });
 
-  // Copy HTML buttons
+  // Copia HTML
   document.querySelectorAll('.copy-link').forEach(btn => {
     btn.onclick = () => {
       const img = btn.closest('.photo-item').querySelector('img');
-      const html = `<img src=\"${img.src}\" alt=\"${img.alt}\" />`;
+      const html = `<img src="${img.src}" alt="${img.alt}" />`;
       navigator.clipboard.writeText(html).then(() => {
-        btn.style.opacity = '0.5';
+        btn.style.opacity = '0.4';
         setTimeout(() => (btn.style.opacity = '1'), 800);
       });
     };
   });
 }
 
-// Bulk delete selected photos
 bulkDeleteBtn.onclick = async () => {
   if (!confirm(`Eliminare ${selected.size} foto selezionate?`)) return;
   const names = Array.from(selected);
@@ -93,7 +87,6 @@ bulkDeleteBtn.onclick = async () => {
   await loadPhotos();
 };
 
-// Initialize on load
 window.addEventListener('load', () => {
   loadPhotos();
 });
