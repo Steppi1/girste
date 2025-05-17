@@ -262,12 +262,11 @@ body.dark .contrast-icon {
     width: 100vw;
     max-width: 100vw;
     padding: 16px;
-    padding-bottom: 7rem;
+    padding-bottom: 7rem; /* <-- corretto qui */
     white-space: pre-wrap;
     overflow-wrap: break-word;
     word-break: normal;
     hyphens: none;
-    padding-bottom: 2rem;
   }
   /* Ensure list bottom padding and item spacing */
   .articles {
@@ -278,5 +277,6 @@ body.dark .contrast-icon {
     padding-bottom: 4rem;
   }
 }
+
 
 /* End of CSS */
