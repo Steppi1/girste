@@ -43,14 +43,31 @@ export async function loadPhotos() {
 
     const div = document.createElement('div');
     div.className = 'photo-item';
-    div.innerHTML = `
-      <img src="${publicUrl}" alt="${file.name}" />
-      <div class="photo-item-controls">
-        <input type="checkbox" class="select-photo" data-name="${file.name}" />
-        <button class="copy-link" title="Copia HTML">📋</button>
-        <span class="tick" style="visibility: ${isUsed ? 'visible' : 'hidden'}">✅</span>
-      </div>
-    `;
+
+    const controls = document.createElement('div');
+    controls.className = 'photo-item-controls';
+
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.className = 'select-photo';
+    checkbox.dataset.name = file.name;
+
+    const copyBtn = document.createElement('button');
+    copyBtn.className = 'copy-link';
+    copyBtn.title = 'Copia HTML';
+    copyBtn.textContent = '📋';
+
+    const tick = document.createElement('span');
+    tick.className = 'tick';
+    tick.textContent = '✅';
+    tick.style.display = isUsed ? 'inline' : 'none';
+
+    controls.appendChild(checkbox);
+    controls.appendChild(copyBtn);
+    controls.appendChild(tick);
+
+    div.innerHTML = `<img src="${publicUrl}" alt="${file.name}" />`;
+    div.appendChild(controls);
     listPhotos.appendChild(div);
   });
 
