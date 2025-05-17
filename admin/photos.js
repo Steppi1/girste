@@ -18,7 +18,7 @@ async function fetchUsedFilenames() {
     if (post.image_url) {
       used.add(post.image_url.split('/').pop());
     }
-    const matches = [...post.content.matchAll(/<img src="(.*?)"/g)];
+    const matches = [...post.content.matchAll(/<img src=\"(.*?)\"/g)];
     matches.forEach(match => used.add(match[1].split('/').pop()));
   });
   return used;
@@ -48,7 +48,7 @@ export async function loadPhotos() {
       <div class="photo-item-controls">
         <input type="checkbox" class="select-photo" data-name="${file.name}" />
         <button class="copy-link" title="Copia HTML">📋</button>
-        ${isUsed ? '<span class="tick">✅</span>' : ''}
+        <span class="tick" style="visibility: ${isUsed ? 'visible' : 'hidden'}">✅</span>
       </div>
     `;
     listPhotos.appendChild(div);
@@ -67,7 +67,7 @@ export async function loadPhotos() {
   document.querySelectorAll('.copy-link').forEach(btn => {
     btn.onclick = () => {
       const img = btn.closest('.photo-item').querySelector('img');
-      const html = `<img src="${img.src}" alt="${img.alt}" />`;
+      const html = `<img src=\"${img.src}\" alt=\"${img.alt}\" />`;
       navigator.clipboard.writeText(html).then(() => {
         btn.style.opacity = '0.4';
         setTimeout(() => (btn.style.opacity = '1'), 800);
