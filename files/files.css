@@ -655,3 +655,21 @@ body.dark .arrow-icon, body.dark .contrast-icon{filter:brightness(0) saturate(10
 .article-content p {
   word-wrap: break-word !important;
 }
+
+
+/* Comprehensive override for preserving manual breaks and preventing mid-word cuts */
+.article-content {
+  /* Preserve your manual line breaks */
+  white-space: pre-wrap !important;
+  /* Ensure wrapping at word boundaries */
+  word-break: normal !important;
+  overflow-wrap: break-word !important;
+  hyphens: none !important;
+}
+.article-content p {
+  /* Apply same rules within paragraphs */
+  white-space: pre-wrap !important;
+  word-break: normal !important;
+  overflow-wrap: break-word !important;
+  hyphens: none !important;
+}
