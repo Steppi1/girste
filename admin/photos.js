@@ -44,10 +44,12 @@ export async function loadPhotos() {
     const div = document.createElement('div');
     div.className = 'photo-item';
     div.innerHTML = `
-      <input type="checkbox" class="select-photo" data-name="${file.name}" />
-      <span class="tick">${isUsed ? '✅' : ''}</span>
+      <div style="position: absolute; bottom: 0.5rem; left: 0.5rem; display: flex; gap: 0.4rem; align-items: center;">
+        <input type="checkbox" class="select-photo" data-name="${file.name}" />
+        <span class="tick">${isUsed ? '✅' : ''}</span>
+        <button class="copy-link" title="Copia HTML">📋</button>
+      </div>
       <img src="${publicUrl}" alt="${file.name}" />
-      <button class="copy-link" title="Copia HTML">📋</button>
     `;
     listPhotos.appendChild(div);
   });
@@ -65,11 +67,11 @@ export async function loadPhotos() {
   // Copy HTML buttons
   document.querySelectorAll('.copy-link').forEach(btn => {
     btn.onclick = () => {
-      const img = btn.previousElementSibling;
+      const img = btn.parentElement.parentElement.querySelector('img');
       const html = `<img src=\"${img.src}\" alt=\"${img.alt}\" />`;
       navigator.clipboard.writeText(html).then(() => {
-        btn.textContent = '✅';
-        setTimeout(() => (btn.textContent = '📋'), 1000);
+        btn.style.opacity = '0.5';
+        setTimeout(() => (btn.style.opacity = '1'), 1000);
       });
     };
   });
