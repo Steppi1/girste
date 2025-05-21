@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8"/>
+  <title>girste's backend</title>
+  <link rel="icon" type="image/png" href="/assets/girstefav.png">
+
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <link rel="stylesheet" href="admin.css"/>
+</head>
+<body>
+  
+  <div id="auth-panel">
+    <h2>🔒 Accedi</h2>
+    <label for="email">Email</label><input type="email" id="email"/>
+    <label for="password">Password</label><input type="password" id="password"/>
+    <button id="btn-login">Accedi</button>
+    <div class="feedback" id="auth-feedback"></div>
+  </div>
+  <div id="admin-panel" style="display:none;">
+    <div class="container">
+      <nav class="sidebar">
+        <button data-section="new-post" class="nav-btn">📝 Nuovo Post</button>
+        <button data-section="edit-post" class="nav-btn">✏️ Modifica Post</button>
+        <button data-section="manage-splash" class="nav-btn">💬 Splash-Text</button>
+        <button data-section="manage-photos" class="nav-btn">📷 Gestione Foto</button>
+        <button data-section="manage-mosaic" class="nav-btn">🖼️ Gestione Mosaic</button>
+        <button id="btn-logout">🚪 Logout</button>
+      </nav>
+      <main class="content">
+        <!-- Nuovo Post -->
+        <section id="new-post" class="section">
+          <h1>Nuovo Post</h1>
+          <div class="field-group"><label for="np-title">Titolo</label><input type="text" id="np-title"/></div>
+          <div class="field-group"><label for="np-content">Contenuto</label><textarea id="np-content" rows="5"></textarea></div>
+          <div class="field-group"><label for="np-tag">Tag</label>
+            <select id="np-tag">
+              <option value="tools">tools</option>
+              <option value="cases">cases</option>
+              <option value="notes">notes</option>
+            </select>
+          </div>
+          <div class="field-group"><label for="newpost-upload">Upload Immagine</label><input type="file" id="newpost-upload" accept="image/*" multiple/></div>
+          <div id="uploaded-images-list"></div>
+          
+          <button id="save-draft">Salva Bozza</button>
+          <button id="submit-new-post">Pubblica Post</button>
+          <div class="feedback" id="fb-new-post"></div>
+        </section>
+        <!-- Modifica / Cancella Post -->
+        <section id="edit-post" class="section">
+          <h1>Modifica / Cancella Post</h1>
+          <button id="bulk-delete-btn" disabled>🗑️ Elimina Selezionati</button>
+          <div id="list-posts">⏳ Caricamento…</div>
+        </section>
+        <!-- Nuovo Splash -->
+        <section id="new-splash" class="section">
+          <h1>Nuovo Splash-Text</h1>
+          <div class="field-group"><label for="new-splash-input">Phrase</label><input type="text" id="new-splash-input"/></div>
+          <button id="submit-new-splash">Aggiungi Splash-Text</button>
+          <div class="feedback" id="fb-new-splash"></div>
+        </section>
+        <!-- Gestione Splash -->
+        <section id="manage-splash" class="section">
+          <h1>Modifica / Cancella Splash</h1>
+          <div id="list-splash">⏳ Caricamento…</div>
+        </section>
+        <!-- Gestione Foto -->
+        <section id="manage-photos" class="section">
+          <h1>Gestione Foto</h1>
+          <button id="bulk-delete-photos-btn" disabled>🗑️ Elimina Selezionati</button>
+          <div id="list-photos">⏳ Caricamento…</div>
+        </section>
+        <!-- Gestione Mosaic -->
+        <section id="manage-mosaic" class="section">
+          <h1>Gestione Mosaic</h1>
+          <div class="field-group"><label for="mosaic-upload">Inserisci Immagine</label><input type="file" id="mosaic-upload" accept="image/*"/></div>
+          <button id="bulk-delete-mosaic" disabled>🗑️ Elimina Selezionati</button>
+          <div id="list-mosaic">⏳ Caricamento…</div>
+        </section>
+      </main>
+    </div>
+  </div>
+  <script type="module" src="auth.js"></script>
+  <script type="module" src="nav.js"></script>
+  <script type="module" src="posts.js"></script>
+  <script type="module" src="splashes.js"></script>
+  <script type="module" src="photos.js"></script>
+  <script type="module" src="mosaic.js"></script>
+</body>
+</html>
