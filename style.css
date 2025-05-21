@@ -1,0 +1,120 @@
+@font-face {
+  font-family: 'AkkuratMono';
+  src: url('fonts/Akkurat-Mono.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'AkkuratLight';
+  src: url('fonts/Akkurat-Light.woff') format('woff');
+  font-weight: 300;
+  font-style: normal;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'AkkuratMono', monospace;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: #fff;
+  color: #000;
+  transition: background 0.3s, color 0.3s;
+}
+body.dark {
+  background: #000;
+  color: #fff;
+}
+
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 1rem 2rem;
+}
+
+.intro {
+  display: flex;
+  margin-top: 1rem;
+  flex-direction: column;
+}
+
+.intro h1 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  /* uses AkkuratMono by default */
+}
+
+.nav-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 0.1rem;
+}
+
+.nav-buttons a {
+  font-family: 'AkkuratLight', monospace;
+  text-transform: uppercase;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 1px;
+  color: inherit;
+  cursor: pointer;
+}
+
+.nav-buttons a:hover {
+  opacity: 0.7;
+}
+
+.arrow-link img {
+  width: 80px;
+  animation: breath 2s ease-in-out infinite;
+  transform-origin: center center;
+}
+
+@keyframes breath {
+  0%, 100% {
+    transform: scaleX(-1) scale(1);
+  }
+  50% {
+    transform: scaleX(-1) scale(1.1);
+  }
+}
+
+main {
+  flex: 1;
+  padding: 1rem 2rem;
+  overflow-y: auto;
+}
+
+.mosaic-container {
+  column-count: 1;
+  column-gap: 1rem;
+}
+
+.mosaic-container img {
+  width: 100%;
+  display: block;
+  margin-bottom: 1rem;
+  break-inside: avoid;
+}
+
+@media (min-width: 600px) {
+  .mosaic-container {
+    column-count: 1;
+  }
+}
+
+@media (min-width: 900px) {
+  .mosaic-container {
+    column-count: 2;
+  }
+}
+
+.spacer {
+  height: 2rem;
+}

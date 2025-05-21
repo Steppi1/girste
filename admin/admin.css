@@ -1,0 +1,360 @@
+/* ==== admin.css ==== */
+
+/* — Reset base for Admin — */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #fff; color: #000; font-family: sans-serif; min-height: 100vh; }
+
+/* — AUTH PANEL — */
+#auth-panel {
+  max-width: 400px;
+  margin: 2rem auto;
+  padding: 1rem;
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+#auth-panel label,
+#auth-panel input,
+#auth-panel button {
+  display: block;
+  width: 100%;
+}
+#auth-panel label {
+  margin-top: 1rem;
+  font-size: 1rem;
+}
+#auth-panel input {
+  margin-top: 0.3rem;
+  padding: 0.5rem;
+}
+#auth-panel button {
+  margin-top: 1rem;
+  padding: 0.6rem;
+  background: #000;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+}
+
+/* — ADMIN PANEL — */
+#admin-panel .container {
+  display: flex;
+  min-height: 100vh;
+}
+.sidebar {
+  width: 220px;
+  background: #f5f5f5;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+.sidebar button {
+  margin-bottom: 0.5rem;
+  padding: 0.6rem;
+  background: #fff;
+  border: none;
+  border-radius: 4px;
+  text-align: left;
+  cursor: pointer;
+}
+.sidebar button.active {
+  background: #ddd;
+}
+#btn-logout {
+  margin-top: auto;
+  background: #fee;
+}
+.content {
+  flex: 1;
+  padding: 1.5rem;
+  overflow-y: auto;
+}
+
+/* — SECTION DISPLAY & SPACING — */
+.section {
+  display: none;
+}
+.section.active {
+  display: block;
+}
+.field-group {
+  margin-bottom: 1rem;
+}
+.field-group label {
+  display: block;
+  margin-bottom: 0.3rem;
+  font-weight: 600;
+}
+.field-group input,
+.field-group textarea,
+.field-group select {
+  width: 100%;
+  padding: 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+.field-group textarea {
+  resize: vertical;
+}
+
+/* — Buttons — */
+button {
+  cursor: pointer;
+}
+#submit-new-post,
+#submit-new-splash {
+  margin-top: 1rem;
+  padding: 0.6rem 1rem;
+  background: #000;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+}
+
+/* — Uploaded Images List in New Post — */
+#uploaded-images-list {
+  margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.uploaded-image {
+  width: 120px;
+  border: 1px solid #eee;
+  padding: 0.5rem;
+  text-align: center;
+}
+.uploaded-image img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 0.5rem;
+}
+.uploaded-image button {
+  margin-top: 0.3rem;
+  padding: 0.3rem 0.5rem;
+  font-size: 0.8rem;
+}
+
+/* — Manage Photos Bulk Delete — */
+#bulk-delete-photos-btn {
+  display: block;
+  margin-bottom: 1rem;
+  padding: 0.5rem 1rem;
+  background: transparent;
+  border: 1px solid #000;
+  border-radius: 4px;
+  cursor: pointer;
+}
+#bulk-delete-photos-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* — Manage Photos & Mosaic: Unified Card Layout — */
+#list-photos,
+#list-mosaic {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.photo-item,
+.mosaic-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 120px;
+  height: 140px;
+  border: 1px solid #eee;
+  border-radius: 6px;
+  padding: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.photo-item img,
+.mosaic-item img {
+  width: 100%;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+/* — Photo Controls — */
+.photo-item-controls {
+  position: absolute;
+  bottom: 0.5rem;
+  left: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.photo-item .tick {
+  font-size: 1.2rem;
+  color: #2ecc71;
+  margin-left: 0.4rem;
+}
+
+.copy-link {
+  font-size: 1.2rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+/* — Mosaic Select Button — */
+.mosaic-item .select-mosaic {
+  margin-top: 0.5rem;
+  transform: scale(1.2);
+  cursor: pointer;
+}
+
+/* — Edit Post List — */
+#list-posts {
+  margin-top: 1rem;
+}
+.post-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+.post-item .select-post {
+  margin-right: 0.5rem;
+}
+.post-item .post-tag {
+  font-size: 0.9rem;
+  opacity: 0.7;
+  margin-right: 0.5rem;
+}
+.post-item .post-title {
+  flex: 1;
+  font-weight: 600;
+}
+.post-item button {
+  padding: 0.3rem 0.6rem;
+  border: 1px solid #000;
+  background: transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 0.5rem;
+}
+.post-item .edit-btn {
+  background: #ffffff00;
+  color: #fff;
+   border: 1px solid #000;
+}
+.post-item .delete-btn {
+  background: #ffffff00;
+  color: #fff;
+   border: 1px solid #000;
+}
+
+/* — Cover Preview — */
+#cover-preview img {
+  max-width: 120px;
+  height: auto;
+}
+
+/* — Bulk Delete for Posts — */
+#bulk-delete-btn {
+  padding: 0.5rem 1rem;
+  background: transparent;
+  border: 1px solid #000;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 1rem;
+}
+#bulk-delete-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* — Section Spacing — */
+.content section h1 {
+  margin-bottom: 1.5rem;
+}
+
+/* — Draft Button & Badge — */
+#save-draft {
+  padding: 0.6rem 1rem;
+  background: #fd7e14;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 0.5rem;
+}
+.badge.draft {
+  background: #fd7e14;
+  color: #fff;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  margin-right: 0.5rem;
+}
+
+/* — Splash Section Items — */
+.section#manage-splash #list-splash {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+.section#manage-splash .splash-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0;
+  border: none;
+  box-shadow: none;
+}
+.section#manage-splash .splash-item input {
+  flex: 1;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+.section#manage-splash .splash-item button {
+  background: transparent;
+  border: 1px solid #000;
+  color: #000;
+  padding: 0.4rem 0.6rem;
+  font-size: 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.section#manage-splash .new-splash {
+  flex-direction: row;
+  align-items: stretch;
+}
+
+/* — Responsive — */
+@media (max-width: 600px) {
+  #admin-panel .container {
+    flex-direction: column;
+  }
+  .sidebar {
+    flex-direction: row;
+    overflow-x: auto;
+    width: 100%;
+  }
+  .sidebar button {
+    flex: 1;
+    margin: 0.25rem;
+    font-size: 0.85rem;
+  }
+}
+
+#np-content {
+  min-height: 120px;
+  overflow-y: hidden;
+  resize: none;
+}
